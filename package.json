@@ -1,0 +1,26 @@
+{
+  "name": "mddb",
+  "module": "index.ts",
+  "type": "module",
+  "devDependencies": {
+    "bun-types": "latest",
+    "drizzle-kit": "^0.19.13"
+  },
+  "scripts": {
+    "generate": "drizzle-kit generate:sqlite"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.28.6",
+    "fdir": "^6.1.0",
+    "remark-frontmatter": "^4.0.1",
+    "remark-gfm": "^3.0.1",
+    "remark-parse": "^10.0.2",
+    "remark-rehype": "^10.1.0",
+    "remark-wiki-link": "^1.0.4",
+    "unified": "^11.0.3",
+    "yaml": "^2.3.2"
+  }
+}
