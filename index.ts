@@ -81,8 +81,13 @@ const result = files.map(async (file) => {
     if (node.type === "link") {
       const url = encodeURI(node.url);
       if (externalLinkRegexp.test(url)) {
-        // not interested in external links for now
-        // in future may be used to check if it returns <= 400
+        /**
+         * not interested in external links for now
+         * in future may be used
+         * - to check if it returns <= 400
+         * - to fetch icon
+         * - to generate screenshot
+         */
         return;
       }
       const start = node.position.start.offset as number;

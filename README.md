@@ -22,10 +22,11 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 - [ ] generate graph
 - [ ] convert graph to `dot` format
-- [ ] convert graph to `svg` with `graphviz`
+- [ ] convert graph to `svg` with [graphviz](https://github.com/hpcc-systems/hpcc-js-wasm)
+  - [href](https://graphviz.org/docs/attrs/href/) or [URL](https://graphviz.org/docs/attrs/URL/)
 - [ ] mark broken and ambigious links
 - [ ] mark broken anchors (assuming they all link to headings)
-- [ ] optimize resolution algorithm with `join`
+- [ ] optimize resolution algorithm with SQL `join`
 - [ ] generate markdown files with resolved links
 - generate JSON files with
   - [ ] backlinks
@@ -53,23 +54,28 @@ frontend
 
 ## Links
 
-- https://github.com/remarkjs/remark-validate-links/blob/main/lib/find/find-references.js#L73-L108
-- https://github.com/jackyzha0/hugo-obsidian/blob/master/util.go
+sql parsers
+- https://github.com/kristianmandrup/chevrotain-mini-sql-lang
+- https://nanosql.io/welcome.html
+- https://github.com/JavaScriptor/js-sql-parser
+- https://github.com/forward/sql-parser
+- https://alasql.org/
 
-https://github.com/tj/commander.js
-https://github.com/vadimdemedes/ink
-https://github.com/SBoudrias/Inquirer.js
-https://blog.logrocket.com/building-typescript-cli-node-js-commander/#why-commander-js
-https://github.com/patorjk/figlet.js
-https://dev.to/wesen/14-great-tips-to-make-amazing-cli-applications-3gp3
+CLI:
+- https://github.com/tj/commander.js
+- https://github.com/vadimdemedes/ink
+- https://github.com/SBoudrias/Inquirer.js
+- https://blog.logrocket.com/building-typescript-cli-node-js-commander/#why-commander-js
+- https://github.com/patorjk/figlet.js
+- https://dev.to/wesen/14-great-tips-to-make-amazing-cli-applications-3gp3
 
-https://github.com/microsoft/vscode-languageserver-node/tree/main/server
-https://github.com/ImperiumMaximus/ts-lsp-client
+LSP:
+- https://github.com/microsoft/vscode-languageserver-node/tree/main/server
+- https://github.com/ImperiumMaximus/ts-lsp-client
 
-https://stereobooster.com/posts/markdown-parsers/#tree-sitter
+Incremental parsing:
+- https://stereobooster.com/posts/markdown-parsers/#tree-sitter
 
-https://github.com/piscinajs/piscina
-https://github.com/poolifier/poolifier
-
-https://www.npmjs.com/package/@leafac/sqlite
-https://github.com/tc39/proposal-binary-ast
+Multithreading:
+- https://github.com/piscinajs/piscina
+- https://github.com/poolifier/poolifier
