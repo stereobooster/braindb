@@ -20,9 +20,10 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
+- [ ] store all required data in the database instead of calculating it on the fly
 - [ ] mark broken and ambigious links
-- [ ] mark broken anchors (assuming they all link to headings)
 - [ ] avoid reparsing with checksum
+- [ ] mark broken anchors (assuming they all link to headings)
 - [ ] optimize resolution algorithm with SQL `join`
 - [ ] generate markdown files with resolved links
 - generate JSON files with
