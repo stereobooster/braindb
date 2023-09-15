@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "1ba228d3-194c-4023-b4d5-b3cb07f373df",
+  "id": "585b6094-60a2-4b80-b839-83df8833fd08",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "documents": {
@@ -14,18 +14,25 @@
           "notNull": true,
           "autoincrement": false
         },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "url": {
           "name": "url",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "checksum": {
           "name": "checksum",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "frontmatter": {
@@ -58,9 +65,16 @@
     "links": {
       "name": "links",
       "columns": {
-        "path": {
-          "name": "path",
+        "from": {
+          "name": "from",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "start": {
+          "name": "start",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -76,11 +90,20 @@
           "name": "ast",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "from_start": {
+          "name": "from_start",
+          "columns": [
+            "from",
+            "start"
+          ],
+          "isUnique": true
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}

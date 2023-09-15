@@ -67,6 +67,9 @@ frontend
 
 ## Other
 
+- https://github.com/remarkjs/remark-validate-links/blob/main/lib/find/find-references.js#L73-L108
+- https://github.com/jackyzha0/hugo-obsidian/blob/master/util.go
+
 https://github.com/tj/commander.js
 https://github.com/vadimdemedes/ink
 https://github.com/SBoudrias/Inquirer.js
