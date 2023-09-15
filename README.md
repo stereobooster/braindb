@@ -17,6 +17,7 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 ## Names for the project
 
 - Second Brain DB?
+- Knowldge Database
 
 ## TODO
 
@@ -31,7 +32,7 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
   - [ ] local graph
   - [ ] global graph
 - CLI
-  - [ ] ability to path options: source, destination, db_path, watch mode etc.
+  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
 - watch mode
   - [ ] watch files with chokidar
   - [ ] on file deletion remove all links to it

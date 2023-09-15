@@ -49,6 +49,11 @@ const files = crawler.crawl(pathToCrawl).sync();
 const basePathRegexp = RegExp(`^${pathToCrawl}`);
 const externalLinkRegexp = RegExp(`^[a-z]+://`);
 
+// https://github.com/Cyan4973/xxHash
+const getCheksum = (str: string) =>
+  createHash("md5").update(str, "utf8").digest("base64url");
+const getId = (str: string) => getCheksum(str).replace("-", "").slice(0, 5);
+
 const result = files.map(async (file) => {
   const filePath = new URL(file, import.meta.url);
   const path = file.replace(basePathRegexp, "");
@@ -58,8 +63,7 @@ const result = files.map(async (file) => {
   // - if yes and the same checksum - skip
   // - if yes but different checksum - delete old links and proceed
 
-  // https://github.com/Cyan4973/xxHash
-  const checksum = createHash("md5").update(markdown, "utf8").digest("hex");
+  const checksum = getCheksum(markdown);
   db.delete(documents).where(eq(documents.path, path)).run();
   db.delete(links).where(eq(links.from, path)).run();
 
@@ -231,13 +235,8 @@ const edges = db
       ast.type === "wikiLink" ? ast.data.alias : ast.children[0].value;
 
     return {
-      fromId:
-        "n" +
-        createHash("md5").update(edge.from, "utf8").digest("hex").slice(0, 5),
-      toId: edge.to
-        ? "n" +
-          createHash("md5").update(edge.to, "utf8").digest("hex").slice(0, 5)
-        : undefined,
+      fromId: "n" + getId(edge.from),
+      toId: edge.to ? "n" + getId(edge.to) : undefined,
       // from: edge.from,
       // to: edge.to,
       label,
@@ -255,9 +254,7 @@ const nodes = db
   .map((node) => {
     const frontmatter = node.frontmatter as JsonObject;
     return {
-      id:
-        "n" +
-        createHash("md5").update(node.path, "utf8").digest("hex").slice(0, 5),
+      id: "n" + getId(node.path),
       url: node.url,
       title: frontmatter.title as string,
     };
