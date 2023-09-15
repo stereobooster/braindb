@@ -21,12 +21,16 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
+- [ ] figure out how to use `json_extract` with Drizzle
 - [ ] store all required data in the database instead of calculating it on the fly
-- [ ] mark broken and ambigious links
-- [ ] avoid reparsing with checksum
-- [ ] mark broken anchors (assuming they all link to headings)
+  - do I need to store AST for the link?
 - [ ] optimize resolution algorithm with SQL `join`
+- [ ] mark broken and ambigious links
+- [ ] mark broken anchors (assuming they all link to headings)
 - [ ] generate markdown files with resolved links
+  - resuse stored AST
+  - find away to effectively update AST
+- [ ] a way to clean up deleted files
 - generate JSON files with
   - [ ] backlinks
   - [ ] local graph

@@ -13,9 +13,9 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { createHash } from "node:crypto";
-import { and, eq, isNull } from "drizzle-orm";
+import { and, eq, isNotNull, isNull } from "drizzle-orm";
 
-import { documents, links } from "./src/schema";
+import { document, link } from "./src/schema";
 import { db } from "./src/db";
 import { JsonObject } from "./src/json";
 import { Graphviz } from "@hpcc-js/wasm/graphviz";
@@ -52,21 +52,29 @@ const externalLinkRegexp = RegExp(`^[a-z]+://`);
 // https://github.com/Cyan4973/xxHash
 const getCheksum = (str: string) =>
   createHash("md5").update(str, "utf8").digest("base64url");
-const getId = (str: string) => getCheksum(str).replace("-", "").slice(0, 5);
+// can as well use random id or autoincrement
+const getId = (str: string) =>
+  "n" + getCheksum(str).replace("-", "").slice(0, 5);
 
 const result = files.map(async (file) => {
   const filePath = new URL(file, import.meta.url);
   const path = file.replace(basePathRegexp, "");
   const markdown = await readFile(filePath, { encoding: "utf8" });
-  // check if item already in DB
-  // - if not proceed
-  // - if yes and the same checksum - skip
-  // - if yes but different checksum - delete old links and proceed
+  const existingFile = db
+    .select({ path: document.path, checksum: document.checksum })
+    .from(document)
+    .where(eq(document.path, path))
+    .all();
 
   const checksum = getCheksum(markdown);
-  db.delete(documents).where(eq(documents.path, path)).run();
-  db.delete(links).where(eq(links.from, path)).run();
+  if (existingFile.length > 0) {
+    if (existingFile[0].checksum === checksum) return;
+    // this needs to be more sophisticated
+    db.delete(document).where(eq(document.path, path)).run();
+    db.delete(link).where(eq(link.from, path)).run();
+  }
 
+  const id = getId(path);
   const ast = await mdParser.parse(markdown);
 
   let frontmatter: JsonObject = {};
@@ -98,11 +106,19 @@ const result = files.map(async (file) => {
         return;
       }
       const start = node.position.start.offset as number;
-      db.insert(links).values({ from: path, ast: node, start }).run();
+      const label = node.children[0].value as string;
+      // TODO: to_link (either URL (URLEncode?) or relative path), to_anchor
+      db.insert(link)
+        .values({ from: path, from_id: id, ast: node, start, label })
+        .run();
     }
     if (node.type === "wikiLink") {
       const start = node.position.start.offset as number;
-      db.insert(links).values({ from: path, ast: node, start }).run();
+      const label = node.data.alias as string;
+      // TODO: to_slug, to_anchor
+      db.insert(link)
+        .values({ from: path, from_id: id, ast: node, start, label })
+        .run();
     }
     // if (node.type === "heading") {
     //   console.log(slugger.slug(node.children[0].value));
@@ -145,11 +161,10 @@ const result = files.map(async (file) => {
     frontmatter.title = slug;
   }
 
-  const data = { frontmatter, slug, url, markdown, ast, checksum };
-
-  db.insert(documents)
+  const data = { id, frontmatter, slug, url, markdown, ast, checksum };
+  db.insert(document)
     .values({ path, ...data })
-    .onConflictDoUpdate({ target: documents.path, set: data })
+    .onConflictDoUpdate({ target: document.path, set: data })
     .run();
 });
 
@@ -159,28 +174,30 @@ await Promise.all(result);
  * Primitive way to resolve links
  * Better way would be to use JOIN to find all matches and separately report unmatched links
  */
-const linksToProcess = db.select().from(links).where(isNull(links.to)).all();
-linksToProcess.forEach((link) => {
-  const ast = link.ast as JsonObject;
+const links = db.select().from(link).where(isNull(link.to)).all();
+links.forEach((newLink) => {
+  const ast = newLink.ast as JsonObject;
 
-  const from = link.from as string;
+  const from = newLink.from as string;
   if (ast.type === "wikiLink") {
     const value = ast.value as string;
     const [slug, anchor] = value.split("#");
     const result = db
-      .select({ path: documents.path })
-      .from(documents)
-      .where(eq(documents.slug, slug))
+      .select({ path: document.path, id: document.id })
+      .from(document)
+      .where(eq(document.slug, slug))
       .all();
 
     if (result.length === 1) {
-      db.update(links)
-        .set({ to: result[0].path })
-        .where(and(eq(links.from, link.from), eq(links.from, link.from)))
+      db.update(link)
+        .set({ to: result[0].path, to_id: result[0].id })
+        .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
         .run();
     } else if (result.length === 0) {
+      // TODO: test
       console.log("wikiLink: broken");
     } else {
+      // TODO: test
       console.log("wikiLink: ambiguous");
     }
   }
@@ -189,8 +206,8 @@ linksToProcess.forEach((link) => {
 
     let [urlWithoutAnchor, anchor] = decodeURI(url).split("#");
     if (!urlWithoutAnchor.startsWith("/")) {
-      // resoolve relative path
-      urlWithoutAnchor = resolve(dirname(from), urlWithoutAnchor);
+      // resolve relative path
+      urlWithoutAnchor = resolve(dirname(from), urlWithoutAnchor)
     }
 
     if (!urlWithoutAnchor.endsWith(".md") && !urlWithoutAnchor.endsWith("/")) {
@@ -198,23 +215,25 @@ linksToProcess.forEach((link) => {
     }
 
     const result = db
-      .select({ path: documents.path })
-      .from(documents)
+      .select({ path: document.path, id: document.id })
+      .from(document)
       .where(
         urlWithoutAnchor.endsWith(".md")
-          ? eq(documents.path, urlWithoutAnchor)
-          : eq(documents.url, urlWithoutAnchor)
+          ? eq(document.path, urlWithoutAnchor)
+          : eq(document.url, urlWithoutAnchor)
       )
       .all();
 
     if (result.length === 1) {
-      db.update(links)
-        .set({ to: result[0].path })
-        .where(and(eq(links.from, link.from), eq(links.from, link.from)))
+      db.update(link)
+        .set({ to: result[0].path, to_id: result[0].id })
+        .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
         .run();
     } else if (result.length === 0) {
+      // TODO: test
       console.log("link: broken");
     } else {
+      // TODO: test
       console.log("link: ambiguous");
     }
   }
@@ -222,39 +241,28 @@ linksToProcess.forEach((link) => {
 
 const edges = db
   .select({
-    from: links.from,
-    to: links.to,
-    ast: links.ast,
+    from_id: link.from_id,
+    to_id: link.to_id,
+    label: link.label,
   })
-  .from(links)
-  .all()
-  .map((edge) => {
-    const ast = edge.ast as JsonObject;
-    const label: string =
-      // @ts-ignore
-      ast.type === "wikiLink" ? ast.data.alias : ast.children[0].value;
-
-    return {
-      fromId: "n" + getId(edge.from),
-      toId: edge.to ? "n" + getId(edge.to) : undefined,
-      // from: edge.from,
-      // to: edge.to,
-      label,
-    };
-  });
+  .from(link)
+  // need to show broken links on the graph
+  .where(isNotNull(link.to_id))
+  .all();
 
 const nodes = db
   .select({
-    path: documents.path,
-    url: documents.url,
-    frontmatter: documents.frontmatter,
+    id: document.id,
+    url: document.url,
+    // how to use SQLite's `json_extract('$.title', frontmatter)`?
+    frontmatter: document.frontmatter,
   })
-  .from(documents)
+  .from(document)
   .all()
   .map((node) => {
     const frontmatter = node.frontmatter as JsonObject;
     return {
-      id: "n" + getId(node.path),
+      id: node.id,
       url: node.url,
       title: frontmatter.title as string,
     };
@@ -269,7 +277,7 @@ ${nodes
 
 ${edges
   .map(
-    (edge) => `${edge.fromId} -> ${edge.toId};` /* [label="${edge.label}"]; */
+    (edge) => `${edge.from_id} -> ${edge.to_id};` /* [label="${edge.label}"]; */
   )
   .join("\n")}
 }`;

@@ -1,29 +1,34 @@
 import { text, sqliteTable, integer, unique } from "drizzle-orm/sqlite-core";
 
-export const documents = sqliteTable("documents", {
-  // maybe use id instead of path?
-  path: text("path").primaryKey(),
-  slug: text("slug").notNull(),
-  url: text("url").notNull(),
-  checksum: text("checksum").notNull(),
-  frontmatter: text("frontmatter", { mode: "json" }).notNull(),
-  ast: text("ast", { mode: "json" }).notNull(), //TODO: .$type<{ foo: string }>(),
-  markdown: text("markdown").notNull(),
-});
+export const document = sqliteTable(
+  "documents",
+  {
+    id: text("id").primaryKey(),
+    path: text("path").notNull(),
+    slug: text("slug").notNull(),
+    url: text("url").notNull(),
+    checksum: text("checksum").notNull(),
+    frontmatter: text("frontmatter", { mode: "json" }).notNull(),
+    ast: text("ast", { mode: "json" }).notNull(), //TODO: .$type<...>(),
+    markdown: text("markdown").notNull(),
+  },
+  (t) => ({
+    path: unique("path").on(t.path),
+  })
+);
 
-export type Document = typeof documents.$inferSelect;
-
-export const links = sqliteTable(
+export const link = sqliteTable(
   "links",
   {
-    from: text("from").notNull(),
+    from_id: text("from_id").notNull(),
+    from: text("from").notNull(), 
     start: integer("start").notNull(),
+    to_id: text("to_id"),
     to: text("to"),
     ast: text("ast", { mode: "json" }).notNull(),
+    label: text("label").notNull(),
   },
   (t) => ({
     from_start: unique("from_start").on(t.from, t.start),
   })
 );
-
-export type Link = typeof links.$inferSelect;
