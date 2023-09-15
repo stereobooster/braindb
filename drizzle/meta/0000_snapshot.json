@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "585b6094-60a2-4b80-b839-83df8833fd08",
+  "id": "34625ac7-8207-408c-bcf1-8c72969ee313",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "documents": {
@@ -46,7 +46,7 @@
           "name": "ast",
           "type": "text",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "autoincrement": false
         },
         "markdown": {

@@ -20,10 +20,6 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
-- [ ] generate graph
-- [ ] convert graph to `dot` format
-- [ ] convert graph to `svg` with [graphviz](https://github.com/hpcc-systems/hpcc-js-wasm)
-  - [href](https://graphviz.org/docs/attrs/href/) or [URL](https://graphviz.org/docs/attrs/URL/)
 - [ ] mark broken and ambigious links
 - [ ] mark broken anchors (assuming they all link to headings)
 - [ ] avoid reparsing with checksum

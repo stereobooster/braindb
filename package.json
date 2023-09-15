@@ -13,6 +13,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
+    "@hpcc-js/wasm": "^2.14.0",
     "drizzle-orm": "^0.28.6",
     "fdir": "^6.1.0",
     "rehype-slug": "^6.0.0",

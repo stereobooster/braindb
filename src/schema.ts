@@ -7,7 +7,7 @@ export const documents = sqliteTable("documents", {
   url: text("url").notNull(),
   checksum: text("checksum").notNull(),
   frontmatter: text("frontmatter", { mode: "json" }).notNull(),
-  ast: text("ast", { mode: "json" }),
+  ast: text("ast", { mode: "json" }).notNull(), //TODO: .$type<{ foo: string }>(),
   markdown: text("markdown").notNull(),
 });
 

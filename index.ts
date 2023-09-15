@@ -1,5 +1,5 @@
 import { fdir } from "fdir";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 import remarkFrontmatter from "remark-frontmatter";
 // https://github.com/remarkjs/remark-gfm#when-should-i-use-this
@@ -18,6 +18,9 @@ import { and, eq, isNull } from "drizzle-orm";
 import { documents, links } from "./src/schema";
 import { db } from "./src/db";
 import { JsonObject } from "./src/json";
+import { Graphviz } from "@hpcc-js/wasm/graphviz";
+
+const graphviz = await Graphviz.load();
 
 const pathToCrawl = "example";
 
@@ -134,7 +137,12 @@ const result = files.map(async (file) => {
       encodeURI(path.replace(/_?index\.md$/, "").replace(/\.md$/, "/")) || "/";
   }
 
+  if (!frontmatter.title) {
+    frontmatter.title = slug;
+  }
+
   const data = { frontmatter, slug, url, markdown, ast, checksum };
+
   db.insert(documents)
     .values({ path, ...data })
     .onConflictDoUpdate({ target: documents.path, set: data })
@@ -208,11 +216,68 @@ linksToProcess.forEach((link) => {
   }
 });
 
-console.log(db.select({ from: links.from, to: links.to }).from(links).all());
+const edges = db
+  .select({
+    from: links.from,
+    to: links.to,
+    ast: links.ast,
+  })
+  .from(links)
+  .all()
+  .map((edge) => {
+    const ast = edge.ast as JsonObject;
+    const label: string =
+      // @ts-ignore
+      ast.type === "wikiLink" ? ast.data.alias : ast.children[0].value;
 
-// console.log(
-//   db
-//     .select({ slug: documents.slug, path: documents.path, url: documents.url })
-//     .from(documents)
-//     .all()
-// );
+    return {
+      fromId:
+        "n" +
+        createHash("md5").update(edge.from, "utf8").digest("hex").slice(0, 5),
+      toId: edge.to
+        ? "n" +
+          createHash("md5").update(edge.to, "utf8").digest("hex").slice(0, 5)
+        : undefined,
+      // from: edge.from,
+      // to: edge.to,
+      label,
+    };
+  });
+
+const nodes = db
+  .select({
+    path: documents.path,
+    url: documents.url,
+    frontmatter: documents.frontmatter,
+  })
+  .from(documents)
+  .all()
+  .map((node) => {
+    const frontmatter = node.frontmatter as JsonObject;
+    return {
+      id:
+        "n" +
+        createHash("md5").update(node.path, "utf8").digest("hex").slice(0, 5),
+      url: node.url,
+      title: frontmatter.title as string,
+    };
+  });
+
+const dot = `digraph G {
+bgcolor=transparent;
+
+${nodes
+  .map((node) => `${node.id} [label="${node.title}",href="${node.url}"];`)
+  .join("\n")}  
+
+${edges
+  .map(
+    (edge) => `${edge.fromId} -> ${edge.toId};` /* [label="${edge.label}"]; */
+  )
+  .join("\n")}
+}`;
+
+// https://graphviz.org/docs/layouts/
+const svg = graphviz.layout(dot, "svg", "fdp");
+const svgPath = new URL("tmp/graph.svg", import.meta.url);
+await writeFile(svgPath, svg, { encoding: "utf8" });

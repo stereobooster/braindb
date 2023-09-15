@@ -4,7 +4,7 @@ CREATE TABLE `documents` (
 	`url` text NOT NULL,
 	`checksum` text NOT NULL,
 	`frontmatter` text NOT NULL,
-	`ast` text,
+	`ast` text NOT NULL,
 	`markdown` text NOT NULL
 );
 --> statement-breakpoint
