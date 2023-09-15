@@ -72,8 +72,9 @@ const result = files.map(async (file) => {
       frontmatter = parseYaml(node.value);
     }
     /**
-     * id for link:
-     * - uuid-like
+     * Options for id for link:
+     * - autoincrement
+     * - uuid-like (random)
      * - path + start.offset
      * - path + start.column + start.line
      */
@@ -108,6 +109,7 @@ const result = files.map(async (file) => {
    *   - one can specify `url` in frontmatter
    *   - path may contain [date and other things](https://gohugo.io/content-management/urls/#tokens)
    *   - path may end with `.html`
+   *   - path may be lowercased or slugified
    *   - aliases
    */
   let url: string;
@@ -123,12 +125,6 @@ const result = files.map(async (file) => {
     //   if (!url.endsWith("/")) url = url + "/";
   } else {
     slug = basename(path.replace(/_?index\.md$/, ""), ".md") || "/";
-    /**
-     * there can be another rules for url formation, for example:
-     * - instead of adding `/` in the end, Hugo can be configured to add `.html`
-     * - url can be lowercased
-     * - url can be slugified
-     */
     url =
       encodeURI(path.replace(/_?index\.md$/, "").replace(/\.md$/, "/")) || "/";
   }

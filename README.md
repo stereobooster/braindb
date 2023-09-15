@@ -14,45 +14,31 @@ bun run index.ts
 
 This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
 
-## Schema
+## Names for the project
 
-Documents/Nodes:
-
-- path (unique id)
-- frontmatter (JSON)
-- ast (JSON)
-- markdown (text)
-- checksum (text, only relevant if persist database on the disk)
-- ? url (unique)
-- ? processed_ast (text)
-- ? processed_markdown (text)
-- ? forward links - probably separate table
-- ? create_at
-- ? updated_at
-
-Links/Edges:
-
-- from (text - path)
-- to (text, nullable - path)
-- ast (JSON)
-- ? properties (JSON)
-  - raw_to (text, nullable) - wikilinks and external links
-  - label/alias (text from the link)
-- ? create_at
-- ? updated_at
+- Second Brain DB?
 
 ## TODO
 
-non-watch mode
-- resolve links
-- backlinks / local graph / global graph
-  - output as JSON
-  - output as DOT/SVG (graph as dot or any other vizualization)
-- update and output markdown
+- [ ] generate graph
+- [ ] convert graph to `dot` format
+- [ ] convert graph to `svg` with `graphviz`
+- [ ] mark broken and ambigious links
+- [ ] mark broken anchors (assuming they all link to headings)
+- [ ] optimize resolution algorithm with `join`
+- [ ] generate markdown files with resolved links
+- generate JSON files with
+  - [ ] backlinks
+  - [ ] local graph
+  - [ ] global graph
+- watch mode
+  - [ ] watch files with chokidar
+  - [ ] on file deletion remove all links to it
+  - [ ] on file update regenerate all links to it and file itself
 
-watch mode
-- watch files
-- tui to run SQL
+### Other
+
+tui to run SQL in watch mode
 
 API
 - https://github.com/drizzle-team/drizzle-trpc-zod
@@ -65,7 +51,7 @@ frontend
 - search api
 - graph query api or traverse with recursive
 
-## Other
+## Links
 
 - https://github.com/remarkjs/remark-validate-links/blob/main/lib/find/find-references.js#L73-L108
 - https://github.com/jackyzha0/hugo-obsidian/blob/master/util.go
