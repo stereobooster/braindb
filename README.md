@@ -22,7 +22,6 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
-- [ ] figure out how to use `json_extract` with Drizzle
 - [ ] store all required data in the database instead of calculating it on the fly
   - do I need to store AST for the link?
 - [ ] optimize resolution algorithm with SQL `join`

@@ -13,7 +13,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { createHash } from "node:crypto";
-import { and, eq, isNotNull, isNull } from "drizzle-orm";
+import { and, eq, isNotNull, isNull, sql } from "drizzle-orm";
 
 import { document, link } from "./src/schema";
 import { db } from "./src/db";
@@ -207,7 +207,7 @@ links.forEach((newLink) => {
     let [urlWithoutAnchor, anchor] = decodeURI(url).split("#");
     if (!urlWithoutAnchor.startsWith("/")) {
       // resolve relative path
-      urlWithoutAnchor = resolve(dirname(from), urlWithoutAnchor)
+      urlWithoutAnchor = resolve(dirname(from), urlWithoutAnchor);
     }
 
     if (!urlWithoutAnchor.endsWith(".md") && !urlWithoutAnchor.endsWith("/")) {
@@ -254,26 +254,17 @@ const nodes = db
   .select({
     id: document.id,
     url: document.url,
-    // how to use SQLite's `json_extract('$.title', frontmatter)`?
-    frontmatter: document.frontmatter,
+    title: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
   })
   .from(document)
-  .all()
-  .map((node) => {
-    const frontmatter = node.frontmatter as JsonObject;
-    return {
-      id: node.id,
-      url: node.url,
-      title: frontmatter.title as string,
-    };
-  });
+  .all();
 
 const dot = `digraph G {
 bgcolor=transparent;
 
 ${nodes
   .map((node) => `${node.id} [label="${node.title}",href="${node.url}"];`)
-  .join("\n")}  
+  .join("\n")}
 
 ${edges
   .map(
