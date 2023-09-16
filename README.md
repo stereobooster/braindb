@@ -16,6 +16,7 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## Names for the project
 
+- BrainDB - database for your second brain
 - Second Brain DB?
 - Knowldge Database
 
@@ -43,6 +44,9 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
   - [ ] on file update regenerate all links to it and file itself
   - [ ] on file insert
 - [ ] tag graph
+  - vizualiztion for hypergraph?
+- [ ] better layout for the graph
+  - maybe add colors, clustering, etc.
 
 ### Other ideas
 
@@ -64,14 +68,25 @@ tui to run SQL in watch mode
 
 ## Links
 
-CLI:
+TUI/CLI:
 
+- https://www.clack.cc/
+- https://github.com/helloIAmPau/node-spinner
 - https://github.com/tj/commander.js
 - https://github.com/vadimdemedes/ink
+- https://github.com/vadimdemedes/ink-ui
 - https://github.com/SBoudrias/Inquirer.js
 - https://blog.logrocket.com/building-typescript-cli-node-js-commander/#why-commander-js
 - https://github.com/patorjk/figlet.js
 - https://dev.to/wesen/14-great-tips-to-make-amazing-cli-applications-3gp3
+
+TUI/CLI for inspiration:
+
+- https://github.com/charmbracelet/bubbles
+- https://github.com/charmbracelet/bubbletea
+- https://github.com/ratatui-org/ratatui
+- https://github.com/Textualize/textual
+- https://github.com/Textualize/frogmouth
 
 sql parsers (to implement [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview)):
 
