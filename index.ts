@@ -8,19 +8,17 @@ import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import wikiLinkPlugin from "remark-wiki-link";
 import rehypeSlug from "rehype-slug";
-import GithubSlugger from "github-slugger";
+// import GithubSlugger from "github-slugger";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { createHash } from "node:crypto";
-import { SQL, and, eq, isNotNull, isNull, sql } from "drizzle-orm";
+import { SQL, and, eq, isNull, sql } from "drizzle-orm";
 
 import { document, link } from "./src/schema";
 import { db } from "./src/db";
 import { JsonObject } from "./src/json";
-import { Graphviz } from "@hpcc-js/wasm/graphviz";
-
-const graphviz = await Graphviz.load();
+import { toSvg } from "./src/graphVisualization";
 
 const pathToCrawl = "example";
 
@@ -40,7 +38,7 @@ const mdParser = unified()
   .use(remarkRehype, { allowDangerousHtml: true, fragment: true })
   .use(rehypeSlug);
 
-const slugger = new GithubSlugger();
+// const slugger = new GithubSlugger();
 
 const crawler = new fdir()
   .withBasePath()
@@ -255,40 +253,5 @@ links.forEach((newLink) => {
   }
 });
 
-const edges = db
-  .select({
-    from_id: sql<string>`json_extract(${link.properties}, '$.from_id')`,
-    to_id: sql<string>`json_extract(${link.properties}, '$.to_id')`,
-  })
-  .from(link)
-  // need to show broken links on the graph
-  .where(isNotNull(link.to))
-  .all();
-
-const nodes = db
-  .select({
-    id: sql<string>`json_extract(${document.properties}, '$.id')`,
-    title: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
-    url: document.url,
-  })
-  .from(document)
-  .all();
-
-const dot = `digraph G {
-bgcolor=transparent;
-
-${nodes
-  .map((node) => `${node.id} [label="${node.title}",href="${node.url}"];`)
-  .join("\n")}
-
-${edges
-  .map(
-    (edge) => `${edge.from_id} -> ${edge.to_id};` /* [label="${edge.label}"]; */
-  )
-  .join("\n")}
-}`;
-
-// https://graphviz.org/docs/layouts/
-const svg = graphviz.layout(dot, "svg", "fdp");
 const svgPath = new URL("tmp/graph.svg", import.meta.url);
-await writeFile(svgPath, svg, { encoding: "utf8" });
+await writeFile(svgPath, toSvg(db), { encoding: "utf8" });
