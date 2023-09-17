@@ -1,5 +1,5 @@
 import { fdir } from "fdir";
-import { readFile, writeFile } from "node:fs/promises";
+import { readFile, writeFile, stat } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 import remarkFrontmatter from "remark-frontmatter";
 // https://github.com/remarkjs/remark-gfm#when-should-i-use-this
@@ -12,8 +12,8 @@ import rehypeSlug from "rehype-slug";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
-import { createHash } from "node:crypto";
-import { SQL, and, eq, isNull, sql } from "drizzle-orm";
+import { createHash, randomBytes } from "node:crypto";
+import { eq, sql } from "drizzle-orm";
 
 import { document, link } from "./src/schema";
 import { db } from "./src/db";
@@ -40,6 +40,7 @@ const mdParser = unified()
 
 // const slugger = new GithubSlugger();
 
+// TODO: is there way to skip scanning folders if mtime didn't change?
 const crawler = new fdir()
   .withBasePath()
   .filter((path, _isDirectory) => path.endsWith(".md"));
@@ -50,30 +51,43 @@ const externalLinkRegexp = RegExp(`^[a-z]+://`);
 // https://github.com/Cyan4973/xxHash
 const getCheksum = (str: string) =>
   createHash("md5").update(str, "utf8").digest("base64url");
-// can as well use random id or autoincrement
-const getId = (str: string) =>
-  "n" + getCheksum(str).replace("-", "").slice(0, 5);
 
+const getUid = () =>
+  randomBytes(128).readBigInt64BE().toString(36).replace("-", "");
+
+let changedFiles = 0;
 const result = files.map(async (file) => {
   const filePath = new URL(file, import.meta.url);
   const path = file.replace(basePathRegexp, "");
-  const markdown = await readFile(filePath, { encoding: "utf8" });
+  // maybe use prepared statement?
   const existingFile = db
-    .select({ path: document.path, checksum: document.checksum })
+    .select({
+      path: document.path,
+      checksum: document.checksum,
+      mtime: document.mtime,
+    })
     .from(document)
     .where(eq(document.path, path))
     .all();
 
-  // maybe use date instead of checksum?
+  // https://nodejs.org/api/fs.html#class-fsstats
+  const mtime = (await stat(filePath)).mtimeMs;
+  // comparing dates is cheaper than checksum, but not as reliable
+  if (existingFile.length > 0 && existingFile[0].mtime === mtime) return;
+
+  const markdown = await readFile(filePath, { encoding: "utf8" });
   const checksum = getCheksum(markdown);
+  if (existingFile.length > 0 && existingFile[0].checksum === checksum) return;
+
+  changedFiles++;
+
   if (existingFile.length > 0) {
-    if (existingFile[0].checksum === checksum) return;
     // this needs to be more sophisticated
     db.delete(document).where(eq(document.path, path)).run();
     db.delete(link).where(eq(link.from, path)).run();
   }
 
-  const id = getId(path);
+  const id = getUid();
   const ast = await mdParser.parse(markdown);
 
   let frontmatter: JsonObject = {};
@@ -198,6 +212,7 @@ const result = files.map(async (file) => {
     ast,
     checksum,
     properties,
+    mtime,
   };
   db.insert(document)
     .values({ path, ...data })
@@ -207,11 +222,12 @@ const result = files.map(async (file) => {
 
 await Promise.all(result);
 
-// TODO: mayby use separate columns with indexes?
-// TODO: check for abiguous links
-// Maybe update would be better than replace?
-db.run(
-  sql`
+if (changedFiles > 0) {
+  // TODO: mayby use separate columns with indexes instead of JSON?
+  // TODO: check for abiguous links
+  // Maybe update would be better than replace?
+  db.run(
+    sql`
   REPLACE INTO links
   SELECT "from", path as "to", "start", 
       json_set(links.properties, '$.to_id', json_extract(documents.properties, '$.id')) as properties,
@@ -221,7 +237,8 @@ db.run(
       json_extract(links.properties, '$.to_url') = documents.url OR
       json_extract(links.properties, '$.to_url') = documents.path
   WHERE links."to" IS NULL;`
-);
+  );
+}
 
 // TODO: report unresolved links
 

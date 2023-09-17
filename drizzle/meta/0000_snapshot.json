@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "5d77ae26-b22c-4cc1-b696-502b4c5a3d58",
+  "id": "6e6959e3-1280-467a-9960-c670ce89849d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "documents": {
@@ -59,6 +59,13 @@
         "properties": {
           "name": "properties",
           "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "mtime": {
+          "name": "mtime",
+          "type": "real",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false

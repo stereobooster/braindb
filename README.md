@@ -22,11 +22,11 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
-- [ ] mark broken and ambigious links
-- [ ] mark broken anchors (assuming they all link to headings)
 - [ ] generate markdown files with resolved links
   - resuse stored AST
   - find away to effectively update AST
+- [ ] mark broken and ambigious links
+- [ ] mark broken anchors (assuming they all link to headings)
 - [ ] a way to clean up deleted files
 - generate JSON files with
   - [ ] backlinks

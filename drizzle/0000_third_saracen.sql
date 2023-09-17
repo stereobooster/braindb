@@ -6,7 +6,8 @@ CREATE TABLE `documents` (
 	`checksum` text NOT NULL,
 	`slug` text NOT NULL,
 	`url` text NOT NULL,
-	`properties` text NOT NULL
+	`properties` text NOT NULL,
+	`mtime` real NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE `links` (

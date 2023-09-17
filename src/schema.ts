@@ -1,5 +1,17 @@
-import { text, sqliteTable, integer, unique } from "drizzle-orm/sqlite-core";
+import { text, sqliteTable, integer, unique, real } from "drizzle-orm/sqlite-core";
 import { JsonObject } from "./json";
+
+// const timestamp = customType<{
+//   data: Date;
+//   driverData: string;
+// }>({
+//   dataType() {
+//     return "text";
+//   },
+//   fromDriver(value: string): Date {
+//     return new Date(value);
+//   },
+// });
 
 // TODO: better types for JSON columns https://github.com/drizzle-team/drizzle-orm/discussions/386
 export const document = sqliteTable("documents", {
@@ -19,6 +31,8 @@ export const document = sqliteTable("documents", {
   properties: text("properties", { mode: "json" })
     .$type<JsonObject>()
     .notNull(),
+  // file modification time https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_stat.h.html
+  mtime: real("mtime").notNull(),
 });
 
 export const link = sqliteTable(
