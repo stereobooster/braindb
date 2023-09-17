@@ -107,17 +107,19 @@ const result = files.map(async (file) => {
       }
       const start = node.position.start.offset as number;
       const label = node.children[0].value as string;
+      const properties = { label, from_id: id };
       // TODO: to_link (either URL (URLEncode?) or relative path), to_anchor
       db.insert(link)
-        .values({ from: path, from_id: id, ast: node, start, label })
+        .values({ from: path, ast: node, start, properties })
         .run();
     }
     if (node.type === "wikiLink") {
       const start = node.position.start.offset as number;
       const label = node.data.alias as string;
+      const properties = { label, from_id: id };
       // TODO: to_slug, to_anchor
       db.insert(link)
-        .values({ from: path, from_id: id, ast: node, start, label })
+        .values({ from: path, ast: node, start, properties })
         .run();
     }
     // if (node.type === "heading") {
@@ -157,11 +159,20 @@ const result = files.map(async (file) => {
       encodeURI(path.replace(/_?index\.md$/, "").replace(/\.md$/, "/")) || "/";
   }
 
-  if (!frontmatter.title) {
-    frontmatter.title = slug;
-  }
+  if (!frontmatter.title) frontmatter.title = slug;
 
-  const data = { id, frontmatter, slug, url, markdown, ast, checksum };
+  const properties = {
+    id,
+  };
+  const data = {
+    frontmatter,
+    slug,
+    url,
+    markdown,
+    ast,
+    checksum,
+    properties,
+  };
   db.insert(document)
     .values({ path, ...data })
     .onConflictDoUpdate({ target: document.path, set: data })
@@ -183,14 +194,20 @@ links.forEach((newLink) => {
     const value = ast.value as string;
     const [slug, anchor] = value.split("#");
     const result = db
-      .select({ path: document.path, id: document.id })
+      .select({
+        path: document.path,
+        id: sql<string>`json_extract(${document.properties}, '$.id')`,
+      })
       .from(document)
       .where(eq(document.slug, slug))
       .all();
 
     if (result.length === 1) {
       db.update(link)
-        .set({ to: result[0].path, to_id: result[0].id })
+        .set({
+          to: result[0].path,
+          properties: { ...newLink.properties, to_id: result[0].id },
+        })
         .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
         .run();
     } else if (result.length === 0) {
@@ -215,7 +232,10 @@ links.forEach((newLink) => {
     }
 
     const result = db
-      .select({ path: document.path, id: document.id })
+      .select({
+        path: document.path,
+        id: sql<string>`json_extract(${document.properties}, '$.id')`,
+      })
       .from(document)
       .where(
         urlWithoutAnchor.endsWith(".md")
@@ -226,7 +246,10 @@ links.forEach((newLink) => {
 
     if (result.length === 1) {
       db.update(link)
-        .set({ to: result[0].path, to_id: result[0].id })
+        .set({
+          to: result[0].path,
+          properties: { ...newLink.properties, to_id: result[0].id },
+        })
         .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
         .run();
     } else if (result.length === 0) {
@@ -241,18 +264,17 @@ links.forEach((newLink) => {
 
 const edges = db
   .select({
-    from_id: link.from_id,
-    to_id: link.to_id,
-    label: link.label,
+    from_id: sql<string>`json_extract(${link.properties}, '$.from_id')`,
+    to_id: sql<string>`json_extract(${link.properties}, '$.to_id')`,
   })
   .from(link)
   // need to show broken links on the graph
-  .where(isNotNull(link.to_id))
+  .where(isNotNull(link.to))
   .all();
 
 const nodes = db
   .select({
-    id: document.id,
+    id: sql<string>`json_extract(${document.properties}, '$.id')`,
     url: document.url,
     title: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
   })

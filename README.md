@@ -22,6 +22,11 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
+- move all non-esential columns to json or maybe not?
+  - pro: don't need to run migrations all the time
+  - con: need to use `json_extract` to query data
+    - https://github.com/drizzle-team/drizzle-orm/discussions/386
+  - leave only unique identifiers od indexable columns
 - [ ] store all required data in the database instead of calculating it on the fly
   - do I need to store AST for the link?
 - [ ] optimize resolution algorithm with SQL `join`
