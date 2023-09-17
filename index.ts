@@ -64,6 +64,7 @@ const result = files.map(async (file) => {
     .where(eq(document.path, path))
     .all();
 
+  // maybe use date instead of checksum?
   const checksum = getCheksum(markdown);
   if (existingFile.length > 0) {
     if (existingFile[0].checksum === checksum) return;
@@ -206,52 +207,23 @@ const result = files.map(async (file) => {
 
 await Promise.all(result);
 
-/**
- * Primitive way to resolve links
- * Better way would be to use JOIN to find all matches and separately report unmatched links
- */
-const links = db.select().from(link).where(isNull(link.to)).all();
-links.forEach((newLink) => {
-  let where: SQL;
+// TODO: mayby use separate columns with indexes?
+// TODO: check for abiguous links
+// Maybe update would be better than replace?
+db.run(
+  sql`
+  REPLACE INTO links
+  SELECT "from", path as "to", "start", 
+      json_set(links.properties, '$.to_id', json_extract(documents.properties, '$.id')) as properties,
+      links.ast as "ast"
+  FROM links INNER JOIN documents ON
+      json_extract(links.properties, '$.to_slug') = documents.slug OR
+      json_extract(links.properties, '$.to_url') = documents.url OR
+      json_extract(links.properties, '$.to_url') = documents.path
+  WHERE links."to" IS NULL;`
+);
 
-  if (newLink.properties.type === "wikiLink") {
-    const slug = newLink.properties.to_slug as string;
-    where = eq(document.slug, slug);
-  } else {
-    const url = newLink.properties.to_url as string;
-    where = url.endsWith(".md")
-      ? eq(document.path, url)
-      : eq(document.url, url);
-  }
-
-  const matchedDcouments = db
-    .select({
-      path: document.path,
-      id: sql<string>`json_extract(${document.properties}, '$.id')`,
-    })
-    .from(document)
-    .where(where)
-    .all();
-
-  if (matchedDcouments.length === 1) {
-    // resolution: ok
-    db.update(link)
-      .set({
-        to: matchedDcouments[0].path,
-        properties: { ...newLink.properties, to_id: matchedDcouments[0].id },
-      })
-      .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
-      .run();
-  } else if (matchedDcouments.length === 0) {
-    // resolution: broken
-    // TODO: test
-    console.log(`${newLink.properties.type}: broken`);
-  } else {
-    // resolution: ambiguous
-    // TODO: test
-    console.log(`${newLink.properties.type}: ambiguous`);
-  }
-});
+// TODO: report unresolved links
 
 const svgPath = new URL("tmp/graph.svg", import.meta.url);
 await writeFile(svgPath, toSvg(db), { encoding: "utf8" });

@@ -22,7 +22,6 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
-- [ ] optimize resolution algorithm with SQL `join`
 - [ ] mark broken and ambigious links
 - [ ] mark broken anchors (assuming they all link to headings)
 - [ ] generate markdown files with resolved links
