@@ -13,7 +13,7 @@ import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { createHash } from "node:crypto";
-import { and, eq, isNotNull, isNull, sql } from "drizzle-orm";
+import { SQL, and, eq, isNotNull, isNull, sql } from "drizzle-orm";
 
 import { document, link } from "./src/schema";
 import { db } from "./src/db";
@@ -86,42 +86,69 @@ const result = files.map(async (file) => {
        */
       frontmatter = parseYaml(node.value);
     }
-    /**
-     * Options for id for link:
-     * - autoincrement
-     * - uuid-like (random)
-     * - path + start.offset
-     * - path + start.column + start.line
-     */
-    if (node.type === "link") {
-      const url = encodeURI(node.url);
-      if (externalLinkRegexp.test(url)) {
-        /**
-         * not interested in external links for now
-         * in future may be used
-         * - to check if it returns <= 400
-         * - to fetch icon
-         * - to generate screenshot
-         */
-        return;
+
+    if (node.type === "link" || node.type === "wikiLink") {
+      if (node.type === "link") {
+        if (externalLinkRegexp.test(node.url)) {
+          /**
+           * not interested in external links for now
+           * in future may be used
+           * - to check if it returns <= 400
+           * - to fetch icon
+           * - to generate screenshot
+           */
+          return;
+        }
       }
+
+      let properties: JsonObject = {
+        // for visualization
+        from_id: id,
+        // for link resolution
+        type: node.type,
+      };
+
+      if (node.type === "link") {
+        const label = node.children[0].value as string;
+        let [to_url, to_anchor] = node.url.split("#");
+        if (!to_url.startsWith("/")) {
+          // resolve relative path
+          to_url = resolve(dirname(path), to_url);
+        }
+        if (!to_url.endsWith(".md") && !to_url.endsWith("/")) {
+          to_url = to_url + "/";
+        }
+        if (to_url.endsWith(".md")) {
+          to_url = decodeURI(to_url);
+        }
+        // shall I encodeURI web links?
+        properties = {
+          ...properties,
+          // for visualization
+          label,
+          // for link resolution
+          to_url,
+          to_anchor,
+        };
+      } else {
+        const label = node.data.alias as string;
+        const [to_slug, to_anchor] = node.value.split("#");
+        properties = {
+          ...properties,
+          // for visualization
+          label,
+          // for link resolution
+          to_slug,
+          to_anchor,
+        };
+      }
+
       const start = node.position.start.offset as number;
-      const label = node.children[0].value as string;
-      const properties = { label, from_id: id };
-      // TODO: to_link (either URL (URLEncode?) or relative path), to_anchor
       db.insert(link)
         .values({ from: path, ast: node, start, properties })
         .run();
     }
-    if (node.type === "wikiLink") {
-      const start = node.position.start.offset as number;
-      const label = node.data.alias as string;
-      const properties = { label, from_id: id };
-      // TODO: to_slug, to_anchor
-      db.insert(link)
-        .values({ from: path, ast: node, start, properties })
-        .run();
-    }
+
     // if (node.type === "heading") {
     //   console.log(slugger.slug(node.children[0].value));
     // }
@@ -187,78 +214,44 @@ await Promise.all(result);
  */
 const links = db.select().from(link).where(isNull(link.to)).all();
 links.forEach((newLink) => {
-  const ast = newLink.ast as JsonObject;
+  let where: SQL;
 
-  const from = newLink.from as string;
-  if (ast.type === "wikiLink") {
-    const value = ast.value as string;
-    const [slug, anchor] = value.split("#");
-    const result = db
-      .select({
-        path: document.path,
-        id: sql<string>`json_extract(${document.properties}, '$.id')`,
-      })
-      .from(document)
-      .where(eq(document.slug, slug))
-      .all();
-
-    if (result.length === 1) {
-      db.update(link)
-        .set({
-          to: result[0].path,
-          properties: { ...newLink.properties, to_id: result[0].id },
-        })
-        .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
-        .run();
-    } else if (result.length === 0) {
-      // TODO: test
-      console.log("wikiLink: broken");
-    } else {
-      // TODO: test
-      console.log("wikiLink: ambiguous");
-    }
+  if (newLink.properties.type === "wikiLink") {
+    const slug = newLink.properties.to_slug as string;
+    where = eq(document.slug, slug);
+  } else {
+    const url = newLink.properties.to_url as string;
+    where = url.endsWith(".md")
+      ? eq(document.path, url)
+      : eq(document.url, url);
   }
-  if (ast.type === "link") {
-    const url = ast.url as string;
 
-    let [urlWithoutAnchor, anchor] = decodeURI(url).split("#");
-    if (!urlWithoutAnchor.startsWith("/")) {
-      // resolve relative path
-      urlWithoutAnchor = resolve(dirname(from), urlWithoutAnchor);
-    }
+  const matchedDcouments = db
+    .select({
+      path: document.path,
+      id: sql<string>`json_extract(${document.properties}, '$.id')`,
+    })
+    .from(document)
+    .where(where)
+    .all();
 
-    if (!urlWithoutAnchor.endsWith(".md") && !urlWithoutAnchor.endsWith("/")) {
-      urlWithoutAnchor = urlWithoutAnchor + "/";
-    }
-
-    const result = db
-      .select({
-        path: document.path,
-        id: sql<string>`json_extract(${document.properties}, '$.id')`,
+  if (matchedDcouments.length === 1) {
+    // resolution: ok
+    db.update(link)
+      .set({
+        to: matchedDcouments[0].path,
+        properties: { ...newLink.properties, to_id: matchedDcouments[0].id },
       })
-      .from(document)
-      .where(
-        urlWithoutAnchor.endsWith(".md")
-          ? eq(document.path, urlWithoutAnchor)
-          : eq(document.url, urlWithoutAnchor)
-      )
-      .all();
-
-    if (result.length === 1) {
-      db.update(link)
-        .set({
-          to: result[0].path,
-          properties: { ...newLink.properties, to_id: result[0].id },
-        })
-        .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
-        .run();
-    } else if (result.length === 0) {
-      // TODO: test
-      console.log("link: broken");
-    } else {
-      // TODO: test
-      console.log("link: ambiguous");
-    }
+      .where(and(eq(link.from, newLink.from), eq(link.start, newLink.start)))
+      .run();
+  } else if (matchedDcouments.length === 0) {
+    // resolution: broken
+    // TODO: test
+    console.log(`${newLink.properties.type}: broken`);
+  } else {
+    // resolution: ambiguous
+    // TODO: test
+    console.log(`${newLink.properties.type}: ambiguous`);
   }
 });
 
@@ -275,8 +268,8 @@ const edges = db
 const nodes = db
   .select({
     id: sql<string>`json_extract(${document.properties}, '$.id')`,
-    url: document.url,
     title: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
+    url: document.url,
   })
   .from(document)
   .all();
