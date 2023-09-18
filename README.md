@@ -23,8 +23,13 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 ## TODO
 
 - [ ] generate markdown files with resolved links
-  - resuse stored AST
   - find away to effectively update AST
+  - https://github.com/orgs/syntax-tree/repositories?page=2&type=all
+  - https://github.com/syntax-tree/unist-util-lsp#topointlspposition
+  - https://github.com/syntax-tree/unist#point
+  - https://github.com/GenerousLabs/unist-util-reduce
+  - https://github.com/syntax-tree/unist-util-index
+  - https://github.com/unicorn-utterances/unist-util-replace-all-between
 - [ ] mark broken and ambigious links
 - [ ] mark broken anchors (assuming they all link to headings)
 - [ ] a way to clean up deleted files
@@ -43,6 +48,14 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
   - vizualiztion for hypergraph?
 - [ ] better layout for the graph
   - maybe add colors, clustering, etc.
+- test with
+  - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
+  - https://github.com/obsidianmd/obsidian-help (Obsidian)
+  - https://github.com/mdn/content/tree/main/files/en-us (Custom)
+  - https://github.com/github/docs/tree/main/content (Next.js)
+  - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
+  - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
+  - https://github.com/reactjs/react.dev/blob/main/src/content/
 
 ### Other ideas
 

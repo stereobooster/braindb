@@ -2,18 +2,19 @@ import { fdir } from "fdir";
 import { readFile, writeFile, stat } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 import remarkFrontmatter from "remark-frontmatter";
-// https://github.com/remarkjs/remark-gfm#when-should-i-use-this
-import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
-import remarkRehype from "remark-rehype";
 import wikiLinkPlugin from "remark-wiki-link";
-import rehypeSlug from "rehype-slug";
+import remarkStringify from "remark-stringify";
+// https://github.com/remarkjs/remark-gfm#when-should-i-use-this
+// import remarkGfm from "remark-gfm";
+// import remarkRehype from "remark-rehype";
+// import rehypeSlug from "rehype-slug";
 // import GithubSlugger from "github-slugger";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { createHash, randomBytes } from "node:crypto";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 import { document, link } from "./src/schema";
 import { db } from "./src/db";
@@ -27,7 +28,7 @@ const pathToCrawl = "example";
 const mdParser = unified()
   .use(remarkParse)
   .use(remarkFrontmatter)
-  .use(remarkGfm)
+  // .use(remarkGfm)
   .use(wikiLinkPlugin, {
     hrefTemplate: (permalink) => permalink,
     pageResolver: (name) => [name.replace(/ /g, "%20").toLowerCase()],
@@ -35,8 +36,9 @@ const mdParser = unified()
     wikiLinkClassName: " ",
     newClassName: " ",
   })
-  .use(remarkRehype, { allowDangerousHtml: true, fragment: true })
-  .use(rehypeSlug);
+  // .use(remarkRehype, { allowDangerousHtml: true, fragment: true })
+  // .use(rehypeSlug)
+  .use(remarkStringify, { resourceLink: false });
 
 // const slugger = new GithubSlugger();
 
@@ -52,9 +54,13 @@ const externalLinkRegexp = RegExp(`^[a-z]+://`);
 const getCheksum = (str: string) =>
   createHash("md5").update(str, "utf8").digest("base64url");
 
+// https://github.com/juanelas/bigint-crypto-utils/blob/main/src/ts/randBetween.ts
+// it should be of length 26
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
 const getUid = () =>
-  randomBytes(128).readBigInt64BE().toString(36).replace("-", "");
+  "n" + randomBytes(128).readBigInt64BE().toString(36).replace("-", "");
 
+const cacheEnabled = false;
 let changedFiles = 0;
 const result = files.map(async (file) => {
   const filePath = new URL(file, import.meta.url);
@@ -73,11 +79,21 @@ const result = files.map(async (file) => {
   // https://nodejs.org/api/fs.html#class-fsstats
   const mtime = (await stat(filePath)).mtimeMs;
   // comparing dates is cheaper than checksum, but not as reliable
-  if (existingFile.length > 0 && existingFile[0].mtime === mtime) return;
+  if (
+    cacheEnabled &&
+    existingFile.length > 0 &&
+    existingFile[0].mtime === mtime
+  )
+    return;
 
   const markdown = await readFile(filePath, { encoding: "utf8" });
   const checksum = getCheksum(markdown);
-  if (existingFile.length > 0 && existingFile[0].checksum === checksum) return;
+  if (
+    cacheEnabled &&
+    existingFile.length > 0 &&
+    existingFile[0].checksum === checksum
+  )
+    return;
 
   changedFiles++;
 
@@ -244,3 +260,57 @@ if (changedFiles > 0) {
 
 const svgPath = new URL("tmp/graph.svg", import.meta.url);
 await writeFile(svgPath, toSvg(db), { encoding: "utf8" });
+
+import { map } from "unist-util-map";
+
+db.select()
+  .from(document)
+  .all()
+  .forEach((d) => {
+    const modified = map(d.ast as any, (node) => {
+      if (node.type == "wikiLink") {
+        // console.log(node);
+        const [resolvedLink] = db
+          .select()
+          .from(link)
+          .where(
+            and(
+              eq(link.from, d.path),
+              eq(link.start, node.position.start.offset)
+            )
+          )
+          .all();
+
+        if (!resolvedLink) {
+          // TODO: handle not resolved links
+          return node;
+        }
+
+        let url = "";
+        if (resolvedLink.to) {
+          url = resolvedLink.to;
+          if (resolvedLink.properties.to_anchor) {
+            url = url + "#" + resolvedLink.properties.to_anchor;
+          }
+          url= encodeURI(url);
+        }
+
+        const newNode = {
+          type: "link",
+          title: null,
+          url,
+          children: [
+            {
+              type: "text",
+              value: node.data.alias,
+            },
+          ],
+        };
+        return newNode;
+      }
+      return node;
+    });
+    // TODO: insert or update frontmatter
+    console.log(d.path);
+    console.log(mdParser.stringify(modified));
+  });

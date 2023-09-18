@@ -5,7 +5,9 @@ import { isNotNull, sql } from "drizzle-orm";
 
 const graphviz = await Graphviz.load();
 
-export function toSvg(db: BunSQLiteDatabase) {
+export function toSvg<T extends Record<string, unknown>>(
+  db: BunSQLiteDatabase<T>
+) {
   const edges = db
     .select({
       from_id: sql<string>`json_extract(${link.properties}, '$.from_id')`,
