@@ -22,14 +22,9 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## TODO
 
-- [ ] generate markdown files with resolved links
-  - find away to effectively update AST
-  - https://github.com/orgs/syntax-tree/repositories?page=2&type=all
-  - https://github.com/syntax-tree/unist-util-lsp#topointlspposition
-  - https://github.com/syntax-tree/unist#point
-  - https://github.com/GenerousLabs/unist-util-reduce
-  - https://github.com/syntax-tree/unist-util-index
-  - https://github.com/unicorn-utterances/unist-util-replace-all-between
+- [ ] use portable markdown links
+  - use root of the project or resolve to relative links
+  - or use two sepparate params: one for root, one for source
 - [ ] mark broken and ambigious links
 - [ ] mark broken anchors (assuming they all link to headings)
 - [ ] a way to clean up deleted files
@@ -41,6 +36,7 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
   - [ ] ability to pass options: source, destination, db_path, watch mode etc.
 - watch mode
   - [ ] watch files with chokidar
+  - [ ] make it abstract, so it can be reused for VSCode extension
   - [ ] on file deletion remove all links to it
   - [ ] on file update regenerate all links to it and file itself
   - [ ] on file insert

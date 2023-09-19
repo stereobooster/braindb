@@ -1,5 +1,7 @@
 import { fdir } from "fdir";
-import { readFile, writeFile, stat } from "node:fs/promises";
+import { readFile, stat } from "node:fs/promises";
+import { writeFileSync } from "node:fs";
+import { mkdirp } from "mkdirp";
 import { basename, dirname, resolve } from "node:path";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkParse from "remark-parse";
@@ -12,7 +14,7 @@ import remarkStringify from "remark-stringify";
 // import GithubSlugger from "github-slugger";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
-import { parse as parseYaml } from "yaml";
+import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 import { createHash, randomBytes } from "node:crypto";
 import { and, eq, sql } from "drizzle-orm";
 
@@ -259,17 +261,26 @@ if (changedFiles > 0) {
 // TODO: report unresolved links
 
 const svgPath = new URL("tmp/graph.svg", import.meta.url);
-await writeFile(svgPath, toSvg(db), { encoding: "utf8" });
+writeFileSync(svgPath, toSvg(db), { encoding: "utf8" });
 
 import { map } from "unist-util-map";
 
+const destination = "tmp";
+// TODO: cache this operation
 db.select()
   .from(document)
   .all()
   .forEach((d) => {
+    let frontmatterDetected = false;
     const modified = map(d.ast as any, (node) => {
+      if (node.type == "yaml") {
+        frontmatterDetected = true;
+        return {
+          type: "yaml",
+          value: stringifyYaml(d.frontmatter).trim(),
+        };
+      }
       if (node.type == "wikiLink") {
-        // console.log(node);
         const [resolvedLink] = db
           .select()
           .from(link)
@@ -289,10 +300,13 @@ db.select()
         let url = "";
         if (resolvedLink.to) {
           url = resolvedLink.to;
+          if (url.startsWith("/")) {
+            url = "/" + destination + url;
+          }
           if (resolvedLink.properties.to_anchor) {
             url = url + "#" + resolvedLink.properties.to_anchor;
           }
-          url= encodeURI(url);
+          url = encodeURI(url);
         }
 
         const newNode = {
@@ -310,7 +324,13 @@ db.select()
       }
       return node;
     });
-    // TODO: insert or update frontmatter
-    console.log(d.path);
-    console.log(mdParser.stringify(modified));
+    if (!frontmatterDetected) {
+      modified.children.unshift({
+        type: "yaml",
+        value: stringifyYaml(d.frontmatter).trim(),
+      });
+    }
+    const mdPath = new URL(destination + d.path, import.meta.url);
+    mkdirp.sync(dirname(destination + d.path));
+    writeFileSync(mdPath, mdParser.stringify(modified), { encoding: "utf8" });
   });
