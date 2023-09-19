@@ -20,26 +20,38 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 - Second Brain DB?
 - Knowldge Database
 
+## concept
+
+Input:
+
+- portable markdown links
+- wikilinks
+- web links
+
+Output:
+
+- portable markdown links (maybe relative)
+- maybe option to output web links
+
 ## TODO
 
-- [ ] use portable markdown links
-  - use root of the project or resolve to relative links
-  - or use two sepparate params: one for root, one for source
-- [ ] mark broken and ambigious links
-- [ ] mark broken anchors (assuming they all link to headings)
-- [ ] a way to clean up deleted files
-- generate JSON files with
-  - [ ] backlinks
-  - [ ] local graph
-  - [ ] global graph
-- CLI
-  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
 - watch mode
   - [ ] watch files with chokidar
   - [ ] make it abstract, so it can be reused for VSCode extension
   - [ ] on file deletion remove all links to it
   - [ ] on file update regenerate all links to it and file itself
   - [ ] on file insert
+- left weblinks for later
+- [ ] mark broken and ambigious links
+- [ ] mark broken anchors (assuming they all link to headings)
+- generate JSON files with
+  - [ ] backlinks
+  - [ ] local graph
+  - [ ] global graph
+- CLI
+  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
+- [ ] a way to clean up deleted files
+- [ ] one file can have more than one link (`aliases`)
 - [ ] tag graph
   - vizualiztion for hypergraph?
 - [ ] better layout for the graph
