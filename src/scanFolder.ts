@@ -4,11 +4,12 @@ import { JsonObject } from "./json";
 import { mdParser } from "./parser";
 import { getCheksum, getFiles, getUid, isExternalLink } from "./utils";
 import { basename, dirname, resolve } from "node:path";
-import { visit } from "unist-util-visit";
+import { visit, SKIP, EXIT } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
 import { readFile, stat } from "node:fs/promises";
 
+// TODO: `generateUrl` - function to resolve url path based on frontmatter
 export function scanFolder<T extends Record<string, unknown>>(
   db: BunSQLiteDatabase<T>,
   pathToCrawl: string,
@@ -63,8 +64,31 @@ export function scanFolder<T extends Record<string, unknown>>(
          * if yes, than this is a bug
          */
         frontmatter = parseYaml(node.value);
+        return EXIT;
       }
+    });
 
+    // this should be done in `generateUrl`
+    let url: string;
+    let slug: string;
+    if (frontmatter.slug) {
+      // no validation - trusting source
+      slug = String(frontmatter.slug);
+      url = path + "/" + slug + "/";
+      // } else if (frontmatter.url) {
+      //   slug = basename(String(frontmatter.url));
+      //   url = String(frontmatter.url);
+      //   if (!url.startsWith("/")) url = "/" + url;
+      //   if (!url.endsWith("/")) url = url + "/";
+    } else {
+      slug = basename(path.replace(/_?index\.md$/, ""), ".md") || "/";
+      url = path.replace(/_?index\.md$/, "").replace(/\.md$/, "") || "/";
+      if (!url.endsWith("/")) url = url + "/";
+    }
+    
+    if (!frontmatter.title) frontmatter.title = slug;
+
+    visit(ast as any, (node) => {
       if (node.type === "link" || node.type === "wikiLink") {
         if (node.type === "link") {
           if (isExternalLink(node.url)) {
@@ -75,7 +99,7 @@ export function scanFolder<T extends Record<string, unknown>>(
              * - to fetch icon
              * - to generate screenshot
              */
-            return;
+            return SKIP;
           }
         }
 
@@ -91,7 +115,11 @@ export function scanFolder<T extends Record<string, unknown>>(
           let [to_url, to_anchor] = decodeURI(node.url).split("#");
           // resolve local link
           if (!to_url.startsWith("/")) {
-            to_url = resolve(dirname(path), to_url);
+            if (to_url.endsWith(".md")) {
+              to_url = resolve(dirname(path), to_url);
+            } else {
+              to_url = resolve(url, to_url);
+            }
           }
           // normalize url
           if (!to_url.endsWith("/") && !to_url.endsWith(".md")) {
@@ -122,32 +150,14 @@ export function scanFolder<T extends Record<string, unknown>>(
         db.insert(link)
           .values({ from: path, ast: node, start, properties })
           .run();
+
+        return SKIP;
       }
 
       // if (node.type === "heading") {
       //   console.log(slugger.slug(node.children[0].value));
       // }
     });
-
-    // TODO: url generation function should come as config - takes frontmatter + path
-    let url: string;
-    let slug: string;
-    if (frontmatter.slug) {
-      // no validation - trusting source
-      slug = String(frontmatter.slug);
-      url = path + "/" + slug + "/";
-      // } else if (frontmatter.url) {
-      //   slug = basename(String(frontmatter.url));
-      //   url = String(frontmatter.url);
-      //   if (!url.startsWith("/")) url = "/" + url;
-      //   if (!url.endsWith("/")) url = url + "/";
-    } else {
-      slug = basename(path.replace(/_?index\.md$/, ""), ".md") || "/";
-      url = path.replace(/_?index\.md$/, "").replace(/\.md$/, "") || "/";
-      if (!url.endsWith("/")) url = url + "/";
-    }
-
-    if (!frontmatter.title) frontmatter.title = slug;
 
     const properties = {
       id,

@@ -1,5 +1,6 @@
-import { sql } from "drizzle-orm";
+import { isNull, sql } from "drizzle-orm";
 import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
+import { link } from "./schema";
 
 export function resolveLinks<T extends Record<string, unknown>>(
   db: BunSQLiteDatabase<T>
@@ -21,13 +22,16 @@ export function resolveLinks<T extends Record<string, unknown>>(
   );
 }
 
+export function unresolvedLinks<T extends Record<string, unknown>>(
+  db: BunSQLiteDatabase<T>
+) {
+  return db
+    .select({ from: link.from, propperties: link.properties, ast: link.ast })
+    .from(link)
+    .where(isNull(link.to))
+    .all();
+}
+
 // console.log(
 //   db.select({ path: document.path, url: document.url }).from(document).all()
 // );
-
-// const unresolvedLinks = db
-//   .select({ from: link.from, propperties: link.properties, ast: link.ast })
-//   .from(link)
-//   .where(isNull(link.to))
-//   .all();
-// console.log(unresolvedLinks);
