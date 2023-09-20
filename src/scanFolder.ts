@@ -1,11 +1,11 @@
-import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { getFiles } from "./utils";
 import { addFile } from "./addFile";
-import type { queue } from "fastq";
+import { Queue } from "./queue";
+import { Db } from "./db";
 
-export function scanFolder<T extends Record<string, unknown>>(
-  db: BunSQLiteDatabase<T>,
-  q: queue,
+export function scanFolder(
+  db: Db,
+  q: Queue,
   pathToCrawl: string,
   cacheEnabled = true
 ) {

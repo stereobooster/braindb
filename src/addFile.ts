@@ -1,5 +1,3 @@
-import type { queue } from "fastq";
-import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { readFile, stat } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 import { visit, SKIP, EXIT } from "unist-util-visit";
@@ -11,12 +9,14 @@ import { document, link } from "./schema";
 import { JsonObject } from "./json";
 import { mdParser } from "./parser";
 import { getCheksum, getUid, isExternalLink } from "./utils";
-import { removeFile } from "./removeFile";
+import { deleteFile } from "./deleteFile";
+import { Queue } from "./queue";
+import { Db } from "./db";
 
 // TODO: `generateUrl` - function to resolve url path based on frontmatter
-export async function addFile<T extends Record<string, unknown>>(
-  db: BunSQLiteDatabase<T>,
-  q: queue,
+export async function addFile(
+  db: Db,
+  q: Queue,
   file: string,
   cacheEnabled = true
 ) {
@@ -52,7 +52,7 @@ export async function addFile<T extends Record<string, unknown>>(
     return;
 
   if (existingFile.length > 0) {
-    removeFile(db, file);
+    deleteFile(db, file);
   }
 
   const id = getUid();

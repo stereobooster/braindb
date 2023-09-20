@@ -54,6 +54,8 @@ In order to re-generate files we need queue:
 ## TODO
 
 - watch mode
+  - separate cases for delete and update
+  - add to queue all touched files
   - [ ] more sophisticated watch mode
   - [ ] make it abstract, so it can be reused for VSCode extension
 - left weblinks for later

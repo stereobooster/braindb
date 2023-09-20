@@ -1,14 +1,14 @@
-import type { queue } from "fastq";
 import chokidar from "chokidar";
-import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { addFile } from "./addFile";
 import { resolveLinks, unresolvedLinks } from "./resolveLinks";
-import { removeFile } from "./removeFile";
+import { deleteFile } from "./deleteFile";
+import { Queue } from "./queue";
+import { Db } from "./db";
 
 // TODO: add to queue for file regeneration
-export function watchFolder<T extends Record<string, unknown>>(
-  db: BunSQLiteDatabase<T>,
-  q: queue,
+export function watchFolder(
+  db: Db,
+  q: Queue,
   pathToCrawl: string,
   cacheEnabled = true
 ) {
@@ -29,7 +29,7 @@ export function watchFolder<T extends Record<string, unknown>>(
       resolveLinks(db);
     })
     .on("unlink", (path) => {
-      removeFile(db, path);
+      deleteFile(db, path);
       q.push({ path, action: "delete" });
     })
     .on("ready", () => console.log(`Watching files`));

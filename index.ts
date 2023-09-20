@@ -9,11 +9,13 @@ import { generateFile } from "./src/generateFile";
 import { resolveLinks } from "./src/resolveLinks";
 import { scanFolder } from "./src/scanFolder";
 import { watchFolder } from "./src/watchFolder";
+import { Queue } from "./src/queue";
 
 const pathToCrawl = "example";
 const destination = "tmp";
 
-const q = fastq((arg, cb) => {
+// queue should be optional in case we don't generate files
+const q: Queue = fastq((arg, cb) => {
   // const svgPath = `${destination}/graph.svg`;
   // writeFileSync(svgPath, toSvg(db), { encoding: "utf8" });
 
@@ -26,6 +28,8 @@ const q = fastq((arg, cb) => {
   cb(null);
 }, 1);
 
+// instead of pausing queue I can use tmp array, 
+// so that files without outgoing links can be generated faster
 q.pause();
 await scanFolder(db, q, pathToCrawl, false);
 resolveLinks(db);

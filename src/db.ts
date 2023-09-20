@@ -9,4 +9,6 @@ const db = drizzle(sqlite, { schema });
 
 migrate(db, { migrationsFolder: "drizzle" });
 
+export type Db = typeof db;
+
 export { db };

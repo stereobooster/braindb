@@ -1,12 +1,12 @@
-import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { document, link } from "./schema";
 import { Graphviz } from "@hpcc-js/wasm/graphviz";
 import { isNotNull, sql } from "drizzle-orm";
+import { Db } from "./db";
 
 const graphviz = await Graphviz.load();
 
-export function toSvg<T extends Record<string, unknown>>(
-  db: BunSQLiteDatabase<T>
+export function toSvg(
+  db: Db
 ) {
   const edges = db
     .select({

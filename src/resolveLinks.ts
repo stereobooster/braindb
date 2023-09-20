@@ -1,10 +1,8 @@
 import { isNull, sql } from "drizzle-orm";
-import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { link } from "./schema";
+import { Db } from "./db";
 
-export function resolveLinks<T extends Record<string, unknown>>(
-  db: BunSQLiteDatabase<T>
-) {
+export function resolveLinks(db: Db) {
   // TODO: mayby use separate columns with indexes instead of JSON?
   // TODO: check for abiguous links
   // Maybe update would be better than replace?
@@ -22,9 +20,7 @@ export function resolveLinks<T extends Record<string, unknown>>(
   );
 }
 
-export function unresolvedLinks<T extends Record<string, unknown>>(
-  db: BunSQLiteDatabase<T>
-) {
+export function unresolvedLinks(db: Db) {
   return db
     .select({ from: link.from, propperties: link.properties })
     .from(link)

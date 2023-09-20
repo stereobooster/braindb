@@ -1,4 +1,3 @@
-import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { map } from "unist-util-map";
 import { document, link } from "./schema";
 import { stringify as stringifyYaml } from "yaml";
@@ -7,9 +6,10 @@ import { writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { mdParser } from "./parser";
 import { and, eq } from "drizzle-orm";
+import { Db } from "./db";
 
-export function generateFile<T extends Record<string, unknown>>(
-  db: BunSQLiteDatabase<T>,
+export function generateFile(
+  db: Db,
   destination: string,
   pathToCrawl: string,
   path: string
