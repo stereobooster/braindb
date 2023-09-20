@@ -36,11 +36,10 @@ Output:
 ## TODO
 
 - watch mode
-  - [ ] watch files with chokidar
-  - [ ] make it abstract, so it can be reused for VSCode extension
+  - [x] on file insert
   - [ ] on file deletion remove all links to it
   - [ ] on file update regenerate all links to it and file itself
-  - [ ] on file insert
+  - [ ] make it abstract, so it can be reused for VSCode extension
 - left weblinks for later
 - [ ] mark broken and ambigious links
 - [ ] mark broken anchors (assuming they all link to headings)

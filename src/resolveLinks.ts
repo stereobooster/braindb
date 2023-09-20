@@ -26,7 +26,7 @@ export function unresolvedLinks<T extends Record<string, unknown>>(
   db: BunSQLiteDatabase<T>
 ) {
   return db
-    .select({ from: link.from, propperties: link.properties, ast: link.ast })
+    .select({ from: link.from, propperties: link.properties })
     .from(link)
     .where(isNull(link.to))
     .all();
