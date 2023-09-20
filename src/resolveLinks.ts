@@ -17,7 +17,7 @@ export function resolveLinks<T extends Record<string, unknown>>(
   FROM links INNER JOIN documents ON
       json_extract(links.properties, '$.to_slug') = documents.slug OR
       json_extract(links.properties, '$.to_url') = documents.url OR
-      json_extract(links.properties, '$.to_url') = documents.path
+      json_extract(links.properties, '$.to_path') = documents.path
   WHERE links."to" IS NULL;`
   );
 }

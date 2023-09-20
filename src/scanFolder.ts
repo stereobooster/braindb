@@ -8,6 +8,7 @@ import { visit, SKIP, EXIT } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
 import { readFile, stat } from "node:fs/promises";
+// import GithubSlugger from "github-slugger";
 
 // TODO: `generateUrl` - function to resolve url path based on frontmatter
 export function scanFolder<T extends Record<string, unknown>>(
@@ -85,7 +86,7 @@ export function scanFolder<T extends Record<string, unknown>>(
       url = path.replace(/_?index\.md$/, "").replace(/\.md$/, "") || "/";
       if (!url.endsWith("/")) url = url + "/";
     }
-    
+
     if (!frontmatter.title) frontmatter.title = slug;
 
     visit(ast as any, (node) => {
@@ -113,17 +114,18 @@ export function scanFolder<T extends Record<string, unknown>>(
         if (node.type === "link") {
           const label = node.children[0].value as string;
           let [to_url, to_anchor] = decodeURI(node.url).split("#");
+          let to_path = to_url;
           // resolve local link
           if (!to_url.startsWith("/")) {
-            if (to_url.endsWith(".md")) {
-              to_url = resolve(dirname(path), to_url);
-            } else {
-              to_url = resolve(url, to_url);
-            }
+            to_url = resolve(url, to_url);
           }
           // normalize url
-          if (!to_url.endsWith("/") && !to_url.endsWith(".md")) {
+          if (!to_url.endsWith("/")) {
             to_url = to_url + "/";
+          }
+          // resolve local path
+          if (!to_path.startsWith("/")) {
+            to_path = resolve(dirname(path), to_path);
           }
           properties = {
             ...properties,
@@ -131,6 +133,7 @@ export function scanFolder<T extends Record<string, unknown>>(
             label,
             // for link resolution
             to_url,
+            to_path,
             to_anchor,
           };
         } else {

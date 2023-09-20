@@ -6,7 +6,6 @@ import remarkStringify from "remark-stringify";
 // import remarkGfm from "remark-gfm";
 // import remarkRehype from "remark-rehype";
 // import rehypeSlug from "rehype-slug";
-// import GithubSlugger from "github-slugger";
 import { unified } from "unified";
 
 // import type {Processor} from 'unified'
