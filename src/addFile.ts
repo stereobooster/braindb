@@ -1,3 +1,4 @@
+import type { queue } from "fastq";
 import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
 import { readFile, stat } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
@@ -15,6 +16,7 @@ import { removeFile } from "./removeFile";
 // TODO: `generateUrl` - function to resolve url path based on frontmatter
 export async function addFile<T extends Record<string, unknown>>(
   db: BunSQLiteDatabase<T>,
+  q: queue,
   file: string,
   cacheEnabled = true
 ) {
@@ -179,4 +181,6 @@ export async function addFile<T extends Record<string, unknown>>(
     .values({ path, ...data })
     .onConflictDoUpdate({ target: document.path, set: data })
     .run();
+
+  q.push({ path, action: "add" });
 }

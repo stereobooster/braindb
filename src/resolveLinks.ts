@@ -31,7 +31,3 @@ export function unresolvedLinks<T extends Record<string, unknown>>(
     .where(isNull(link.to))
     .all();
 }
-
-// console.log(
-//   db.select({ path: document.path, url: document.url }).from(document).all()
-// );

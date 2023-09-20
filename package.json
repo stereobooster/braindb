@@ -16,6 +16,7 @@
     "@hpcc-js/wasm": "^2.14.0",
     "chokidar": "^3.5.3",
     "drizzle-orm": "^0.28.6",
+    "fastq": "^1.15.0",
     "fdir": "^6.1.0",
     "mkdirp": "^3.0.1",
     "rehype-slug": "^6.0.0",
