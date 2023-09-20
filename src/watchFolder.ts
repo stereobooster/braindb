@@ -29,8 +29,9 @@ export function watchFolder(
       resolveLinks(db);
     })
     .on("unlink", (path) => {
-      deleteFile(db, path);
+      const filesToUpdate = deleteFile(db, path);
       q.push({ path, action: "delete" });
+      filesToUpdate.map((x) => q.push({ path: x, action: "update" }));
     })
     .on("ready", () => console.log(`Watching files`));
 }

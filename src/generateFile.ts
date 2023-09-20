@@ -35,24 +35,18 @@ export function generateFile(
         )
         .all();
 
-      if (!resolvedLink) {
+      if (!resolvedLink || !resolvedLink.to) {
         // TODO: handle not resolved links
         return node;
       }
 
-      let url = "";
-      if (resolvedLink.to) {
-        url = resolvedLink.to;
-        if (url.startsWith("/")) {
-          url = "/" + destination + url;
-        }
-        if (resolvedLink.properties.to_anchor) {
-          url = url + "#" + resolvedLink.properties.to_anchor;
-        }
-        url = encodeURI(url);
+      let url = "/" + destination + resolvedLink.to.replace(basePathRegexp, "");
+      if (resolvedLink.properties.to_anchor) {
+        url = url + "#" + resolvedLink.properties.to_anchor;
       }
+      url = encodeURI(url);
 
-      const newNode = {
+      return {
         type: "link",
         title: null,
         url,
@@ -63,7 +57,6 @@ export function generateFile(
           },
         ],
       };
-      return newNode;
     }
     return node;
   });

@@ -19,16 +19,16 @@ const q: Queue = fastq((arg, cb) => {
   // const svgPath = `${destination}/graph.svg`;
   // writeFileSync(svgPath, toSvg(db), { encoding: "utf8" });
 
-  if (arg.action === "add") {
+  if (arg.action === "add" || arg.action === "update") {
     generateFile(db, destination, pathToCrawl, arg.path);
   } else if (arg.action === "delete") {
     const basePathRegexp = RegExp(`^/${pathToCrawl}`);
-    unlinkSync(destination + arg.path.replace(basePathRegexp, ""));
+    unlinkSync(destination + ("/" + arg.path).replace(basePathRegexp, ""));
   }
   cb(null);
 }, 1);
 
-// instead of pausing queue I can use tmp array, 
+// instead of pausing queue I can use tmp array,
 // so that files without outgoing links can be generated faster
 q.pause();
 await scanFolder(db, q, pathToCrawl, false);
