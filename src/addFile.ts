@@ -1,14 +1,16 @@
 import { BunSQLiteDatabase } from "drizzle-orm/bun-sqlite";
-import { document, link } from "./schema";
-import { JsonObject } from "./json";
-import { mdParser } from "./parser";
-import { getCheksum, getUid, isExternalLink } from "./utils";
+import { readFile, stat } from "node:fs/promises";
 import { basename, dirname, resolve } from "node:path";
 import { visit, SKIP, EXIT } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
-import { readFile, stat } from "node:fs/promises";
 // import GithubSlugger from "github-slugger";
+
+import { document, link } from "./schema";
+import { JsonObject } from "./json";
+import { mdParser } from "./parser";
+import { getCheksum, getUid, isExternalLink } from "./utils";
+import { removeFile } from "./removeFile";
 
 // TODO: `generateUrl` - function to resolve url path based on frontmatter
 export async function addFile<T extends Record<string, unknown>>(
@@ -48,9 +50,7 @@ export async function addFile<T extends Record<string, unknown>>(
     return;
 
   if (existingFile.length > 0) {
-    // this needs to be more sophisticated
-    db.delete(document).where(eq(document.path, path)).run();
-    db.delete(link).where(eq(link.from, path)).run();
+    removeFile(db, file);
   }
 
   const id = getUid();

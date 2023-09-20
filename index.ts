@@ -8,15 +8,14 @@ import { scanFolder } from "./src/scanFolder";
 import { watchFolder } from "./src/watchFolder";
 
 const pathToCrawl = "example";
+const destination = "tmp";
 
 await scanFolder(db, pathToCrawl, false);
-
 resolveLinks(db);
 
-const svgPath = new URL("tmp/graph.svg", import.meta.url);
+watchFolder(db, pathToCrawl, false);
+
+const svgPath = `${destination}/graph.svg`;
 writeFileSync(svgPath, toSvg(db), { encoding: "utf8" });
 
-const destination = "tmp";
 generateFiles(db, destination, pathToCrawl);
-
-watchFolder(db, pathToCrawl, false);

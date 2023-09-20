@@ -22,23 +22,39 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## concept
 
+### Links
+
 Input:
 
 - portable markdown links
 - wikilinks
 - web links
 
+Internally:
+
+- uses file paths e.g. portable markdown links
+
 Output:
 
 - portable markdown links (maybe relative)
 - maybe option to output web links
 
+### Queue
+
+In order to re-generate files we need queue:
+
+- as soon as file changed, added add event to queue
+  - to regenerate file itself
+  - to regenerate files that have been linking to it
+  - to regenerate files that started linking to it
+- as soon as file deleted add event to queue
+  - to delete file
+  - to regenerate files that have been linking to it
+
 ## TODO
 
 - watch mode
-  - [x] on file insert
-  - [ ] on file deletion remove all links to it
-  - [ ] on file update regenerate all links to it and file itself
+  - [ ] more sophisticated watch mode
   - [ ] make it abstract, so it can be reused for VSCode extension
 - left weblinks for later
 - [ ] mark broken and ambigious links
