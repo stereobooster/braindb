@@ -1,6 +1,7 @@
 import { fdir } from "fdir";
 import { createHash, randomBytes } from "node:crypto";
 
+// can use streaming instead of reading whole file
 // https://github.com/Cyan4973/xxHash
 export const getCheksum = (str: string) =>
   createHash("md5").update(str, "utf8").digest("base64url");

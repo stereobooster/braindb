@@ -4,91 +4,64 @@ import { visit, SKIP, EXIT } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
 // import GithubSlugger from "github-slugger";
+import { type Node } from "unist";
 
 import { document, link } from "./schema";
 import { JsonObject } from "./json";
 import { mdParser } from "./parser";
 import { getCheksum, getUid, isExternalLink } from "./utils";
 import { deleteFile } from "./deleteFile";
-import { Queue } from "./queue";
 import { Db } from "./db";
 
 // TODO: `generateUrl` - function to resolve url path based on frontmatter
-export async function addFile(
-  db: Db,
-  q: Queue,
-  file: string,
-  cacheEnabled = true
-) {
-  const path = "/" + file;
+export async function addFile(db: Db, path: string, cacheEnabled = true) {
   // maybe use prepared statement?
-  const existingFile = db
+  const [existingDocument] = db
     .select({
       path: document.path,
       checksum: document.checksum,
       mtime: document.mtime,
+      url: document.url,
+      slug: document.slug,
     })
     .from(document)
     .where(eq(document.path, path))
     .all();
 
+  const file = path.slice(1);
   // https://nodejs.org/api/fs.html#class-fsstats
   const mtime = (await stat(file)).mtimeMs;
   // comparing dates is cheaper than checksum, but not as reliable
-  if (
-    cacheEnabled &&
-    existingFile.length > 0 &&
-    existingFile[0].mtime === mtime
-  )
+  if (cacheEnabled && existingDocument && existingDocument.mtime === mtime)
     return;
 
   const markdown = await readFile(file, { encoding: "utf8" });
   const checksum = getCheksum(markdown);
   if (
     cacheEnabled &&
-    existingFile.length > 0 &&
-    existingFile[0].checksum === checksum
+    existingDocument &&
+    existingDocument.checksum === checksum
   )
     return;
 
-  if (existingFile.length > 0) {
-    deleteFile(db, file);
-  }
-
-  const id = getUid();
   const ast = await mdParser.parse(markdown);
 
-  let frontmatter: JsonObject = {};
-  visit(ast as any, (node) => {
-    if (node.type === "yaml") {
-      /**
-       * can yaml handle none-JSON types?
-       * if yes, than this is a bug
-       */
-      frontmatter = parseYaml(node.value);
-      return EXIT;
-    }
-  });
+  // typeof document.$inferInsert
+  const newDocument = {
+    ...processFile(ast, path),
+    path,
+    ast,
+    markdown,
+    checksum,
+    mtime,
+  };
 
-  // this should be done in `generateUrl`
-  let url: string;
-  let slug: string;
-  if (frontmatter.slug) {
-    // no validation - trusting source
-    slug = String(frontmatter.slug);
-    url = path + "/" + slug + "/";
-    // } else if (frontmatter.url) {
-    //   slug = basename(String(frontmatter.url));
-    //   url = String(frontmatter.url);
-    //   if (!url.startsWith("/")) url = "/" + url;
-    //   if (!url.endsWith("/")) url = url + "/";
-  } else {
-    slug = basename(path.replace(/_?index\.md$/, ""), ".md") || "/";
-    url = path.replace(/_?index\.md$/, "").replace(/\.md$/, "") || "/";
-    if (!url.endsWith("/")) url = url + "/";
-  }
+  if (existingDocument) deleteFile(db, path);
 
-  if (!frontmatter.title) frontmatter.title = slug;
+  db.insert(document)
+    .values(newDocument)
+    .onConflictDoUpdate({ target: document.path, set: newDocument })
+    .run();
 
   visit(ast as any, (node) => {
     if (node.type === "link" || node.type === "wikiLink") {
@@ -107,7 +80,7 @@ export async function addFile(
 
       let properties: JsonObject = {
         // for visualization
-        from_id: id,
+        from_id: newDocument.properties.id,
         // for link resolution
         type: node.type,
       };
@@ -118,7 +91,7 @@ export async function addFile(
         let to_path = to_url;
         // resolve local link
         if (!to_url.startsWith("/")) {
-          to_url = resolve(url, to_url);
+          to_url = resolve(newDocument.url, to_url);
         }
         // normalize url
         if (!to_url.endsWith("/")) {
@@ -151,6 +124,7 @@ export async function addFile(
       }
 
       const start = node.position.start.offset as number;
+
       db.insert(link)
         .values({ from: path, ast: node, start, properties })
         .run();
@@ -163,24 +137,50 @@ export async function addFile(
     //   return SKIP;
     // }
   });
+}
 
-  const properties = {
-    id,
-  };
-  const data = {
+/**
+ * Extracts frontmatter, slug, url
+ */
+export function processFile(ast: Node, path: string) {
+  let frontmatter: JsonObject = {};
+  visit(ast as any, (node) => {
+    if (node.type === "yaml") {
+      /**
+       * can yaml handle none-JSON types?
+       * if yes, than this is a bug
+       */
+      frontmatter = parseYaml(node.value);
+      return EXIT;
+    }
+  });
+
+  // this should be done in `generateUrl`
+  let url: string;
+  let slug: string;
+  if (frontmatter.slug) {
+    // no validation - trusting source
+    slug = String(frontmatter.slug);
+    url = path + "/" + slug + "/";
+    // } else if (frontmatter.url) {
+    //   slug = basename(String(frontmatter.url));
+    //   url = String(frontmatter.url);
+    //   if (!url.startsWith("/")) url = "/" + url;
+    //   if (!url.endsWith("/")) url = url + "/";
+  } else {
+    slug = basename(path.replace(/_?index\.md$/, ""), ".md") || "/";
+    url = path.replace(/_?index\.md$/, "").replace(/\.md$/, "") || "/";
+    if (!url.endsWith("/")) url = url + "/";
+  }
+
+  if (!frontmatter.title) frontmatter.title = slug;
+
+  return {
     frontmatter,
     slug,
     url,
-    markdown,
-    ast,
-    checksum,
-    properties,
-    mtime,
+    properties: {
+      id: getUid(),
+    },
   };
-  db.insert(document)
-    .values({ path, ...data })
-    .onConflictDoUpdate({ target: document.path, set: data })
-    .run();
-
-  q.push({ path, action: "add" });
 }

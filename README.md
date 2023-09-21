@@ -54,10 +54,15 @@ In order to re-generate files we need queue:
 ## TODO
 
 - watch mode
-  - separate cases for delete and update
-  - add to queue all touched files
-  - [ ] more sophisticated watch mode
+  - factor out function for url generation
   - [ ] make it abstract, so it can be reused for VSCode extension
+- [ ] add config
+- [ ] a way to clean up deleted files
+- [ ] tag graph
+  - vizualiztion for hypergraph?
+- [ ] better layout for the graph
+- CLI
+  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
 - left weblinks for later
 - [ ] mark broken and ambigious links
 - [ ] mark broken anchors (assuming they all link to headings)
@@ -65,13 +70,7 @@ In order to re-generate files we need queue:
   - [ ] backlinks
   - [ ] local graph
   - [ ] global graph
-- CLI
-  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
-- [ ] a way to clean up deleted files
 - [ ] one file can have more than one link (`aliases`)
-- [ ] tag graph
-  - vizualiztion for hypergraph?
-- [ ] better layout for the graph
   - maybe add colors, clustering, etc.
 - test with
   - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)

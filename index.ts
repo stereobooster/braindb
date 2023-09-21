@@ -23,7 +23,7 @@ const q: Queue = fastq((arg, cb) => {
     generateFile(db, destination, pathToCrawl, arg.path);
   } else if (arg.action === "delete") {
     const basePathRegexp = RegExp(`^/${pathToCrawl}`);
-    unlinkSync(destination + ("/" + arg.path).replace(basePathRegexp, ""));
+    unlinkSync(destination + arg.path.replace(basePathRegexp, ""));
   }
   cb(null);
 }, 1);

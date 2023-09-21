@@ -10,6 +10,11 @@ export function scanFolder(
   cacheEnabled = true
 ) {
   return Promise.all(
-    getFiles(pathToCrawl).map((file) => addFile(db, q, file, cacheEnabled))
+    getFiles(pathToCrawl).map(async (file) => {
+      const path = "/" + file;
+      await addFile(db, path, cacheEnabled)
+      q.push({ path, action: "add" });
+    })
+
   );
 }
