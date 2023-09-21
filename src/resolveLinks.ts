@@ -1,4 +1,4 @@
-import { isNull, sql } from "drizzle-orm";
+import { eq, isNull, sql } from "drizzle-orm";
 import { link } from "./schema";
 import { Db } from "./db";
 
@@ -26,4 +26,13 @@ export function unresolvedLinks(db: Db) {
     .from(link)
     .where(isNull(link.to))
     .all();
+}
+
+export function getLinksTo(db: Db, path: string) {
+  return db
+    .selectDistinct({ from: link.from })
+    .from(link)
+    .where(eq(link.to, path))
+    .all()
+    .map((x) => x.from);
 }

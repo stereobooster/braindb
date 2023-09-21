@@ -53,10 +53,19 @@ In order to re-generate files we need queue:
 
 ## TODO
 
+- [ ] add config
+  - https://github.com/codex-/cosmiconfig-typescript-loader
+  - https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L126
+  - parseLinks
+  - generateLinks
+  - spurce folder (pwd)
+  - desitantaiton folder
+    - output: md, json, svg
+  - persist db?
+  - respect .gitignore and output folder
 - watch mode
   - factor out function for url generation
   - [ ] make it abstract, so it can be reused for VSCode extension
-- [ ] add config
 - [ ] a way to clean up deleted files
 - [ ] tag graph
   - vizualiztion for hypergraph?
@@ -64,7 +73,7 @@ In order to re-generate files we need queue:
 - CLI
   - [ ] ability to pass options: source, destination, db_path, watch mode etc.
 - left weblinks for later
-- [ ] mark broken and ambigious links
+- [ ] mark broken and ambigous links
 - [ ] mark broken anchors (assuming they all link to headings)
 - generate JSON files with
   - [ ] backlinks

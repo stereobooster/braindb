@@ -35,11 +35,9 @@ export function generateFile(
         )
         .all();
 
-      if (!resolvedLink || !resolvedLink.to) {
-        // TODO: handle not resolved links
-        return node;
-      }
+      if (!resolvedLink || !resolvedLink.to) return node;
 
+      // I can output relative links instead
       let url = "/" + destination + resolvedLink.to.replace(basePathRegexp, "");
       if (resolvedLink.properties.to_anchor) {
         url = url + "#" + resolvedLink.properties.to_anchor;
@@ -67,7 +65,6 @@ export function generateFile(
     });
   }
   const mdPath = destination + d.path.replace(basePathRegexp, "");
-  //   const mdUrl = new URL(mdPath);
   mkdirp.sync(dirname(mdPath));
   writeFileSync(mdPath, mdParser.stringify(modified), { encoding: "utf8" });
 }

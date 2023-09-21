@@ -1,11 +1,9 @@
 import chokidar from "chokidar";
 import { addFile } from "./addFile";
-import { resolveLinks, unresolvedLinks } from "./resolveLinks";
+import { getLinksTo, resolveLinks } from "./resolveLinks";
 import { deleteFile } from "./deleteFile";
 import { Queue } from "./queue";
 import { Db } from "./db";
-import { link } from "./schema";
-import { eq } from "drizzle-orm";
 
 export function watchFolder(
   db: Db,
@@ -29,7 +27,7 @@ export function watchFolder(
 
       resolveLinks(db);
       const linksAfter = getLinksTo(db, path);
-      symmetricDifference(linksBefore, linksAfter).map((x) =>
+      symmetricDifference(linksBefore, linksAfter).forEach((x) =>
         q.push({ path: x, action: "update" })
       );
     })
@@ -40,7 +38,7 @@ export function watchFolder(
       deleteFile(db, path);
       q.push({ path, action: "delete" });
 
-      symmetricDifference(linksBefore, []).map((x) =>
+      symmetricDifference(linksBefore, []).forEach((x) =>
         q.push({ path: x, action: "update" })
       );
     })
@@ -54,19 +52,11 @@ export function watchFolder(
       resolveLinks(db);
       const linksAfter = getLinksTo(db, path);
 
-      symmetricDifference(linksBefore, linksAfter).map((x) =>
+      symmetricDifference(linksBefore, linksAfter).forEach((x) =>
         q.push({ path: x, action: "update" })
       );
     });
 }
-
-const getLinksTo = (db: Db, path: string) =>
-  db
-    .selectDistinct({ from: link.from })
-    .from(link)
-    .where(eq(link.to, path))
-    .all()
-    .map((x) => x.from);
 
 const symmetricDifference = <T>(arrayA: T[], arrayB: T[]) => {
   if (arrayA.length === 0) return arrayB;
