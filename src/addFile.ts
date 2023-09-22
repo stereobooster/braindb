@@ -12,9 +12,15 @@ import { mdParser } from "./parser";
 import { getCheksum, getUid, isExternalLink } from "./utils";
 import { deleteFile } from "./deleteFile";
 import { Db } from "./db";
+import { Config } from "./config";
 
 // TODO: `generateUrl` - function to resolve url path based on frontmatter
-export async function addFile(db: Db, path: string, cacheEnabled = true) {
+export async function addFile(
+  db: Db,
+  path: string,
+  cacheEnabled = true,
+  generateUrl: Config["generateUrl"]
+) {
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
@@ -54,7 +60,12 @@ export async function addFile(db: Db, path: string, cacheEnabled = true) {
     markdown,
     checksum,
     mtime,
+    url: "",
   };
+
+  if (generateUrl) {
+    newDocument.url = generateUrl(path, newDocument.frontmatter);
+  }
 
   if (existingDocument) deleteFile(db, path);
 
@@ -156,21 +167,12 @@ export function processFile(ast: Node, path: string) {
   });
 
   // this should be done in `generateUrl`
-  let url: string;
   let slug: string;
   if (frontmatter.slug) {
     // no validation - trusting source
     slug = String(frontmatter.slug);
-    url = path + "/" + slug + "/";
-    // } else if (frontmatter.url) {
-    //   slug = basename(String(frontmatter.url));
-    //   url = String(frontmatter.url);
-    //   if (!url.startsWith("/")) url = "/" + url;
-    //   if (!url.endsWith("/")) url = url + "/";
   } else {
     slug = basename(path.replace(/_?index\.md$/, ""), ".md") || "/";
-    url = path.replace(/_?index\.md$/, "").replace(/\.md$/, "") || "/";
-    if (!url.endsWith("/")) url = url + "/";
   }
 
   if (!frontmatter.title) frontmatter.title = slug;
@@ -178,9 +180,6 @@ export function processFile(ast: Node, path: string) {
   return {
     frontmatter,
     slug,
-    url,
-    properties: {
-      id: getUid(),
-    },
+    properties: { id: getUid() },
   };
 }

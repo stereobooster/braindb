@@ -39,32 +39,16 @@ Output:
 - portable markdown links (maybe relative)
 - maybe option to output web links
 
-### Queue
-
-In order to re-generate files we need queue:
-
-- as soon as file changed, added add event to queue
-  - to regenerate file itself
-  - to regenerate files that have been linking to it
-  - to regenerate files that started linking to it
-- as soon as file deleted add event to queue
-  - to delete file
-  - to regenerate files that have been linking to it
-
 ## TODO
 
 - [ ] add config
-  - https://github.com/codex-/cosmiconfig-typescript-loader
-  - https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L126
-  - parseLinks
-  - generateLinks
-  - spurce folder (pwd)
-  - desitantaiton folder
-    - output: md, json, svg
   - persist db?
-  - respect .gitignore and output folder
+  - respect `.gitignore` and output folder
+    - https://www.npmjs.com/package/parse-gitignore
+    - https://git-scm.com/docs/gitignore#_pattern_format
+    - https://github.com/thecodrr/fdir/blob/master/documentation.md#excludefunction
+    - https://github.com/paulmillr/chokidar#path-filtering
 - watch mode
-  - factor out function for url generation
   - [ ] make it abstract, so it can be reused for VSCode extension
 - [ ] a way to clean up deleted files
 - [ ] tag graph
@@ -76,6 +60,15 @@ In order to re-generate files we need queue:
 - [ ] mark broken and ambigous links
 - [ ] mark broken anchors (assuming they all link to headings)
 - generate JSON files with
+  - https://gephi.org/users/supported-graph-formats/
+  - https://networkx.org/documentation/stable/reference/readwrite/index.html
+  - https://graphia.app/guide/section3/1_load_graph_data.html
+  - https://tulip.labri.fr/site/?q=tlp-file-format
+  - https://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html
+  - https://js.cytoscape.org/#notation/elements-json
+  - https://apps.cytoscape.org/apps/cyrest
+  - https://neo4j.com/docs/bolt/current/bolt/
+  - https://neo4j.com/docs/bolt/current/packstream/
   - [ ] backlinks
   - [ ] local graph
   - [ ] global graph
@@ -89,6 +82,7 @@ In order to re-generate files we need queue:
   - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
   - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
   - https://github.com/reactjs/react.dev/blob/main/src/content/
+- https://github.com/cytoscape/cytosnap
 
 ### Other ideas
 

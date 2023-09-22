@@ -4,12 +4,14 @@ import { getLinksTo, resolveLinks } from "./resolveLinks";
 import { deleteFile } from "./deleteFile";
 import { Queue } from "./queue";
 import { Db } from "./db";
+import { Config } from "./config";
 
 export function watchFolder(
   db: Db,
   q: Queue,
   pathToCrawl: string,
-  cacheEnabled = true
+  cacheEnabled = true,
+  generateUrl: Config["generateUrl"]
 ) {
   return chokidar
     .watch(`${pathToCrawl}/**/*.md`, {
@@ -22,7 +24,7 @@ export function watchFolder(
       const path = "/" + file;
       const linksBefore = getLinksTo(db, path);
 
-      await addFile(db, path, cacheEnabled);
+      await addFile(db, path, cacheEnabled, generateUrl);
       q.push({ path, action: "add" });
 
       resolveLinks(db);
@@ -46,7 +48,7 @@ export function watchFolder(
       const path = "/" + file;
       const linksBefore = getLinksTo(db, path);
 
-      await addFile(db, path, cacheEnabled);
+      await addFile(db, path, cacheEnabled, generateUrl);
       q.push({ path, action: "update" });
 
       resolveLinks(db);
