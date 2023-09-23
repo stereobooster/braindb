@@ -7,7 +7,7 @@ import { eq } from "drizzle-orm";
 import { type Node } from "unist";
 
 import { document, link } from "./schema";
-import { JsonObject } from "./json";
+import { JsonObject } from "./types";
 import { mdParser } from "./parser";
 import { getCheksum, getUid, isExternalLink } from "./utils";
 import { deleteFile } from "./deleteFile";

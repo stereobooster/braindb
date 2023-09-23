@@ -1,5 +1,5 @@
 import { text, sqliteTable, integer, unique, real } from "drizzle-orm/sqlite-core";
-import { JsonObject } from "./json";
+import { JsonObject } from "./types";
 
 // const timestamp = customType<{
 //   data: Date;

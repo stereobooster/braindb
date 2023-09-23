@@ -6,7 +6,7 @@ import { toSvg } from "./src/graphVisualization";
 import { db } from "./src/db";
 import { generateFile } from "./src/generateFile";
 import { watchFolder } from "./src/watchFolder";
-import { Queue } from "./src/queue";
+import { Queue } from "./src/types";
 import { getConfig } from "./src/config";
 
 const cfg = await getConfig();

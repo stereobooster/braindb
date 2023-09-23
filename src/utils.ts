@@ -1,4 +1,3 @@
-import { fdir } from "fdir";
 import { createHash, randomBytes } from "node:crypto";
 
 // can use streaming instead of reading whole file
@@ -12,14 +11,6 @@ export const getCheksum = (str: string) =>
 export const getUid = () =>
   "n" + randomBytes(128).readBigInt64BE().toString(36).replace("-", "");
 
-export const getFiles = (pathToCrawl: string) => {
-  // TODO: is there way to skip scanning folders if mtime didn't change?
-  const crawler = new fdir()
-    .withBasePath()
-    .filter((path, _isDirectory) => path.endsWith(".md"));
-
-  return crawler.crawl(pathToCrawl).sync();
-};
 
 const externalLinkRegexp = RegExp(`^[a-z]+://`);
 

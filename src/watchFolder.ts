@@ -2,7 +2,7 @@ import chokidar from "chokidar";
 import { addFile } from "./addFile";
 import { getLinksTo, resolveLinks } from "./resolveLinks";
 import { deleteFile } from "./deleteFile";
-import { Queue } from "./queue";
+import { Queue } from "./types";
 import { Db } from "./db";
 import { Config } from "./config";
 

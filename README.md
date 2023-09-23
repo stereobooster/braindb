@@ -43,22 +43,21 @@ Output:
 
 - refactor
   - split types
-  - 
-- [ ] add config
-  - persist db?
+  - internal config / extrnal config
+  - persist db config
   - respect `.gitignore` and output folder
     - https://www.npmjs.com/package/parse-gitignore
     - https://git-scm.com/docs/gitignore#_pattern_format
     - https://github.com/thecodrr/fdir/blob/master/documentation.md#excludefunction
     - https://github.com/paulmillr/chokidar#path-filtering
-- watch mode
-  - [ ] make it abstract, so it can be reused for VSCode extension
+- CLI
+  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
 - [ ] a way to clean up deleted files
 - [ ] tag graph
   - vizualiztion for hypergraph?
 - [ ] better layout for the graph
-- CLI
-  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
+- watch mode
+  - [ ] make it abstract, so it can be reused for VSCode extension
 - left weblinks for later
 - [ ] mark broken and ambigous links
 - [ ] mark broken anchors (assuming they all link to headings)
