@@ -8,6 +8,7 @@ export type Config = {
   source: string;
   destination?: string;
   generateUrl?: (path: string, frontmatter: Frontmatter) => string;
+  cache?: boolean
 };
 
 const moduleName = "braindb";
@@ -46,6 +47,7 @@ export async function getConfig() {
   const defaultCfg: Config = {
     source: cwd(),
     generateUrl,
+    cache: true
   };
 
   let cfg: Partial<Config> = {};

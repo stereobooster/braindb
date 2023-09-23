@@ -6,25 +6,39 @@ import { Queue } from "./queue";
 import { Db } from "./db";
 import { Config } from "./config";
 
-export function watchFolder(
-  db: Db,
-  q: Queue,
-  pathToCrawl: string,
-  cacheEnabled = true,
-  generateUrl: Config["generateUrl"]
-) {
+export function watchFolder(db: Db, q: Queue, cfg: Config) {
+  let initializing = true;
+  let initQueue: Promise<void>[] = [];
+  q.pause();
+
   return chokidar
-    .watch(`${pathToCrawl}/**/*.md`, {
+    .watch(`${cfg.source}/**/*.md`, {
       ignored: /(^|[\/\\])\../, // ignore dotfiles
       persistent: true,
-      ignoreInitial: true,
+      // ignoreInitial: true,
     })
-    .on("ready", () => console.log(`Watching files`))
+    .on("ready", async () => {
+      await Promise.all(initQueue);
+      initQueue = [];
+      resolveLinks(db);
+      initializing = false;
+      q.resume();
+
+      console.log(`Watching files`);
+    })
     .on("add", async (file) => {
       const path = "/" + file;
+      if (initializing) {
+        const p = addFile(db, path, cfg);
+        initQueue.push(p);
+        await p;
+        q.push({ path, action: "add" });
+        return;
+      }
+
       const linksBefore = getLinksTo(db, path);
 
-      await addFile(db, path, cacheEnabled, generateUrl);
+      await addFile(db, path, cfg);
       q.push({ path, action: "add" });
 
       resolveLinks(db);
@@ -48,7 +62,7 @@ export function watchFolder(
       const path = "/" + file;
       const linksBefore = getLinksTo(db, path);
 
-      await addFile(db, path, cacheEnabled, generateUrl);
+      await addFile(db, path, cfg);
       q.push({ path, action: "update" });
 
       resolveLinks(db);

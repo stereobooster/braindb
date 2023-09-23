@@ -41,6 +41,9 @@ Output:
 
 ## TODO
 
+- refactor
+  - split types
+  - 
 - [ ] add config
   - persist db?
   - respect `.gitignore` and output folder

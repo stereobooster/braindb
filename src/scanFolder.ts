@@ -4,19 +4,12 @@ import { Queue } from "./queue";
 import { Db } from "./db";
 import { Config } from "./config";
 
-export function scanFolder(
-  db: Db,
-  q: Queue,
-  pathToCrawl: string,
-  cacheEnabled = true,
-  generateUrl: Config["generateUrl"]
-) {
+export function scanFolder(db: Db, q: Queue, cfg: Config) {
   return Promise.all(
-    getFiles(pathToCrawl).map(async (file) => {
+    getFiles(cfg.source).map(async (file) => {
       const path = "/" + file;
-      await addFile(db, path, cacheEnabled, generateUrl)
+      await addFile(db, path, cfg);
       q.push({ path, action: "add" });
     })
-
   );
 }

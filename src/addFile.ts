@@ -15,12 +15,7 @@ import { Db } from "./db";
 import { Config } from "./config";
 
 // TODO: `generateUrl` - function to resolve url path based on frontmatter
-export async function addFile(
-  db: Db,
-  path: string,
-  cacheEnabled = true,
-  generateUrl: Config["generateUrl"]
-) {
+export async function addFile(db: Db, path: string, cfg: Config) {
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
@@ -38,16 +33,11 @@ export async function addFile(
   // https://nodejs.org/api/fs.html#class-fsstats
   const mtime = (await stat(file)).mtimeMs;
   // comparing dates is cheaper than checksum, but not as reliable
-  if (cacheEnabled && existingDocument && existingDocument.mtime === mtime)
-    return;
+  if (cfg.cache && existingDocument && existingDocument.mtime === mtime) return;
 
   const markdown = await readFile(file, { encoding: "utf8" });
   const checksum = getCheksum(markdown);
-  if (
-    cacheEnabled &&
-    existingDocument &&
-    existingDocument.checksum === checksum
-  )
+  if (cfg.cache && existingDocument && existingDocument.checksum === checksum)
     return;
 
   const ast = await mdParser.parse(markdown);
@@ -63,8 +53,8 @@ export async function addFile(
     url: "",
   };
 
-  if (generateUrl) {
-    newDocument.url = generateUrl(path, newDocument.frontmatter);
+  if (cfg.generateUrl) {
+    newDocument.url = cfg.generateUrl(path, newDocument.frontmatter);
   }
 
   if (existingDocument) deleteFile(db, path);
