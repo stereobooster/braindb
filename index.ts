@@ -9,6 +9,24 @@ import { watchFolder } from "./src/watchFolder";
 import { Queue } from "./src/types";
 import { getConfig } from "./src/config";
 
+import { version } from "./package.json";
+
+import { Command } from "commander";
+const program = new Command();
+
+program
+  .name("BrainDB")
+  .version(version)
+  // .command("start", "start", { isDefault: true, })
+  .description("Treat your markdown files as database")
+  .option("--source <path>", "where are markdown files")
+  .option("--destination <path>", "where to output markdown files")
+  .option("--cache", "use cache");
+
+program.parse();
+
+// console.log(program.opts());
+
 const cfg = await getConfig();
 
 // queue should be optional in case we don't generate files

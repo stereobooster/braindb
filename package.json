@@ -2,6 +2,7 @@
   "name": "mddb",
   "module": "index.ts",
   "type": "module",
+  "version": "0.0.1",
   "devDependencies": {
     "bun-types": "latest",
     "drizzle-kit": "^0.19.13"

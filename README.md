@@ -16,11 +16,52 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## Names for the project
 
-- BrainDB - database for your second brain
-- Second Brain DB?
-- Knowldge Database
+- BrainDB - database for your [second brain](https://www.ssp.sh/brain/), [digital garden](https://github.com/MaggieAppleton/digital-gardeners), [zettelkasten](https://zettelkasten.de/posts/overview/)
 
 ## concept
+
+### Core
+
+db instance with API:
+- `start`
+- `stop`
+- `on`
+- other
+  - `get` (by path)
+  - `getOutgoingLinks`
+  - `getIncomingLinks`
+- `toGraph` (format = cytoscape, dot)
+- `query` ?
+  - reactive
+    - https://rxdb.info/quickstart.html
+    - https://rethinkdb.com/docs/sql-to-reql/javascript/
+  - specify or discover metadata (frontmatter)
+    - https://docs.astro.build/en/guides/content-collections/#defining-a-collection-schema
+  - sql transformation [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview)
+    - `from "path"`
+    - `select`/`where`/`order` metdata fields
+    - alternatives to `select` - `table`, `plot`, `graph`
+    - path queries
+      - [datalog](https://docs.cozodb.org/en/latest/tips.html)
+      - [cypher](https://kuzudb.com/docusaurus/cypher/query-clauses/match)
+
+### CLI
+
+- monorepo (bun or pnpm)
+- test with real life example
+- maybe [oclif](https://github.com/oclif/oclif#-getting-started-tutorial)
+
+### GUI
+
+- maybe https://tauri.app/
+  - https://github.com/tauri-apps/tauri-plugin-fs-watch
+  - docker
+  - https://moonrepo.dev/proto
+
+### LSP
+
+- https://github.com/microsoft/vscode-languageserver-node/tree/main/server
+- https://github.com/ImperiumMaximus/ts-lsp-client
 
 ### Links
 
@@ -41,6 +82,13 @@ Output:
 
 ## TODO
 
+- [ ] a way to clean up deleted files
+  - mark all new files (`created_at`) than delete from DB and emit events
+- generate JSON files with
+  - https://js.cytoscape.org/#notation/elements-json or [other format](https://graph.stereobooster.com/notes/File-formats)
+  - [ ] backlinks
+  - [ ] local graph
+  - [ ] global graph
 - refactor
   - split types
   - internal config / extrnal config
@@ -50,30 +98,11 @@ Output:
     - https://git-scm.com/docs/gitignore#_pattern_format
     - https://github.com/thecodrr/fdir/blob/master/documentation.md#excludefunction
     - https://github.com/paulmillr/chokidar#path-filtering
-- CLI
-  - [ ] ability to pass options: source, destination, db_path, watch mode etc.
-- [ ] a way to clean up deleted files
 - [ ] tag graph
   - vizualiztion for hypergraph?
 - [ ] better layout for the graph
-- watch mode
-  - [ ] make it abstract, so it can be reused for VSCode extension
-- left weblinks for later
 - [ ] mark broken and ambigous links
 - [ ] mark broken anchors (assuming they all link to headings)
-- generate JSON files with
-  - https://gephi.org/users/supported-graph-formats/
-  - https://networkx.org/documentation/stable/reference/readwrite/index.html
-  - https://graphia.app/guide/section3/1_load_graph_data.html
-  - https://tulip.labri.fr/site/?q=tlp-file-format
-  - https://manual.cytoscape.org/en/stable/Supported_Network_File_Formats.html
-  - https://js.cytoscape.org/#notation/elements-json
-  - https://apps.cytoscape.org/apps/cyrest
-  - https://neo4j.com/docs/bolt/current/bolt/
-  - https://neo4j.com/docs/bolt/current/packstream/
-  - [ ] backlinks
-  - [ ] local graph
-  - [ ] global graph
 - [ ] one file can have more than one link (`aliases`)
   - maybe add colors, clustering, etc.
 - test with
@@ -108,15 +137,34 @@ tui to run SQL in watch mode
 
 TUI/CLI:
 
-- https://www.clack.cc/
-- https://github.com/helloIAmPau/node-spinner
+- https://github.com/lirantal/nodejs-cli-apps-best-practices/
+- https://clig.dev/
 - https://github.com/tj/commander.js
+- https://www.npmjs.com/package/@commander-js/extra-typings
+- https://github.com/oclif/oclif#-getting-started-tutorial
+
+related
+
+- https://www.clack.cc/
 - https://github.com/vadimdemedes/ink
 - https://github.com/vadimdemedes/ink-ui
 - https://github.com/SBoudrias/Inquirer.js
 - https://blog.logrocket.com/building-typescript-cli-node-js-commander/#why-commander-js
 - https://github.com/patorjk/figlet.js
 - https://dev.to/wesen/14-great-tips-to-make-amazing-cli-applications-3gp3
+- https://github.com/sindresorhus/open
+- https://www.npmjs.com/package/kleur
+- https://www.npmjs.com/package/chalk
+- https://github.com/chalk/chalk#related
+- https://github.com/sindresorhus/is-unicode-supported
+- https://github.com/sindresorhus/is-interactive
+- https://github.com/bokub/chalk-animation
+- https://github.com/bokub/gradient-string
+- https://github.com/sindresorhus/terminal-link
+- https://github.com/sindresorhus/cli-cursor
+- https://www.npmjs.com/package/cli-spinners
+- https://github.com/SamVerschueren/listr
+- https://github.com/sindresorhus/ora
 
 TUI/CLI for inspiration:
 
@@ -134,11 +182,6 @@ sql parsers (to implement [obsidian-dataview](https://github.com/blacksmithgu/ob
 - https://github.com/forward/sql-parser
 - https://alasql.org/
 
-LSP:
-
-- https://github.com/microsoft/vscode-languageserver-node/tree/main/server
-- https://github.com/ImperiumMaximus/ts-lsp-client
-
 Incremental parsing:
 
 - https://stereobooster.com/posts/markdown-parsers/#tree-sitter
@@ -147,3 +190,15 @@ Multithreading:
 
 - https://github.com/piscinajs/piscina
 - https://github.com/poolifier/poolifier
+
+Monorepo:
+
+- https://bun.sh/guides/install/workspaces
+- https://bestofjs.org/projects?tags=monorepo
+- https://dev.to/0xahmad/running-both-nodejs-and-bun-apps-in-turborepo-33id
+- https://earthly.dev/blog/building-js-monorepo/
+- https://lerna.js.org/docs/lerna-and-nx
+- https://bit.dev/docs/quick-start/hello-world
+- https://themeselection.com/javascript-monorepo-tools/
+- https://moonrepo.dev/
+- https://2022.stateofjs.com/en-US/libraries/monorepo-tools/
