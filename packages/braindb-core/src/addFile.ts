@@ -12,10 +12,9 @@ import { mdParser } from "./parser";
 import { getCheksum, getUid, isExternalLink } from "./utils";
 import { deleteFile } from "./deleteFile";
 import { Db } from "./db";
-import { Config } from "./config";
+import { BrainDBOptions } from "../index";
 
-// TODO: `generateUrl` - function to resolve url path based on frontmatter
-export async function addFile(db: Db, path: string, cfg: Config) {
+export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
@@ -156,7 +155,6 @@ export function processFile(ast: Node, path: string) {
     }
   });
 
-  // this should be done in `generateUrl`
   let slug: string;
   if (frontmatter.slug) {
     // no validation - trusting source

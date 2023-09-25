@@ -1,14 +1,14 @@
 import { cosmiconfig } from "cosmiconfig";
 import { cwd } from "node:process";
 import { dirname } from "node:path";
-import { Frontmatter } from "./types";
+import { Frontmatter } from "braindb-core";
 
 // For inspiration https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L126
 export type Config = {
   source: string;
   destination?: string;
   generateUrl?: (path: string, frontmatter: Frontmatter) => string;
-  cache?: boolean
+  cache?: boolean;
 };
 
 const moduleName = "braindb";
@@ -47,7 +47,7 @@ export async function getConfig() {
   const defaultCfg: Config = {
     source: cwd(),
     generateUrl,
-    cache: true
+    cache: true,
   };
 
   let cfg: Partial<Config> = {};

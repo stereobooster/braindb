@@ -1,0 +1,19 @@
+{
+  "name": "braindb-cli",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "version": "0.0.1",
+  "devDependencies": {
+    "bun-types": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@hpcc-js/wasm": "^2.14.0",
+    "cosmiconfig": "^8.3.6",
+    "mkdirp": "^3.0.1",
+    "braindb-core": "workspace:*"
+  }
+}

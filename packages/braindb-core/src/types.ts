@@ -1,13 +1,3 @@
-export type Frontmatter = {
-    slug?: string;
-    url?: string;
-}
-
-import type { queue } from "fastq";
-
-export type Event = { action: "add" | "delete" | "update"; path: string };
-export type Queue = queue<Event>;
-
 // https://github.com/sindresorhus/type-fest/blob/main/source/basic.d.ts
 
 /**

@@ -1,13 +1,12 @@
-import { document, link } from "./schema";
 import { Graphviz } from "@hpcc-js/wasm/graphviz";
 import { isNotNull, sql } from "drizzle-orm";
-import { Db } from "./db";
+// TODO refactor to remove dependency
+import { document, link } from "../../braindb-core/src/schema";
+import { Db } from "../../braindb-core/src/db";
 
 const graphviz = await Graphviz.load();
 
-export function toSvg(
-  db: Db
-) {
+export function toSvg(db: Db) {
   const edges = db
     .select({
       from_id: sql<string>`json_extract(${link.properties}, '$.from_id')`,

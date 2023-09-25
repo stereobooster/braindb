@@ -23,9 +23,10 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 ### Core
 
 db instance with API:
-- `start`
-- `stop`
-- `on`
+
+- [x] `start`
+- [x] `stop`
+- [x] `on`
 - other
   - `get` (by path)
   - `getOutgoingLinks`

@@ -1,12 +1,13 @@
 import { map } from "unist-util-map";
-import { document, link } from "./schema";
 import { stringify as stringifyYaml } from "yaml";
 import { mkdirp } from "mkdirp";
 import { writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { mdParser } from "./parser";
 import { and, eq } from "drizzle-orm";
-import { Db } from "./db";
+// TODO refactor to remove dependency
+import { document, link } from "../../braindb-core/src/schema";
+import { mdParser } from "../../braindb-core/src/parser";
+import { Db } from "../../braindb-core/src/db";
 
 export function generateFile(
   db: Db,
