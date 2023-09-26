@@ -65,8 +65,6 @@ export function generateFile(
     });
   }
   const mdPath = destination + d.path.replace(basePathRegexp, "");
-  // TODO: return string | Buffer instead
-  // but I need to use relative paths for this?
   mkdirp.sync(dirname(mdPath));
   writeFileSync(mdPath, mdParser.stringify(modified), { encoding: "utf8" });
 }

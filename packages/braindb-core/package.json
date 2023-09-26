@@ -20,6 +20,7 @@
   "dependencies": {
     "chokidar": "^3.5.3",
     "drizzle-orm": "^0.28.6",
+    "mkdirp": "^3.0.1",
     "mitt": "^3.0.1",
     "rehype-slug": "^6.0.0",
     "remark-frontmatter": "^4.0.1",

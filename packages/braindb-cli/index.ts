@@ -32,7 +32,8 @@ bdb
       if (action === "ready") {
         const svgPath = `${destination}/graph.svg`;
         writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
-        console.log("Watching files");
+        bdb.stop()
+        // console.log("Watching files");
       }
 
       if (action === "create" || action === "update") {

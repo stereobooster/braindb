@@ -1,14 +1,11 @@
 import { cosmiconfig } from "cosmiconfig";
 import { cwd } from "node:process";
 import { dirname } from "node:path";
-import { Frontmatter } from "braindb-core";
+import { BrainDBOptions } from "braindb-core";
 
 // For inspiration https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L126
-export type Config = {
-  source: string;
+export type Config = BrainDBOptions & {
   destination?: string;
-  generateUrl?: (path: string, frontmatter: Frontmatter) => string;
-  cache?: boolean;
 };
 
 const moduleName = "braindb";
@@ -25,28 +22,33 @@ const explorer = cosmiconfig(moduleName, {
 // shall it use URIEncode or URIDecode?
 // just an example, depends on configuation of static site generator
 // For example, https://gohugo.io/content-management/urls/#tokens
-const generateUrl: Config["generateUrl"] = (path, frontmatter) => {
-  let url = "";
-  path = path.replace(/_?index\.md$/, "").replace(/\.md$/, "") || "/";
+const generateUrl: (source: string) => BrainDBOptions["generateUrl"] =
+  (source) => (path, frontmatter) => {
+    let url = "";
+    path =
+      path
+        .replace(dirname(source), "")
+        .replace(/^\/\//, "/")
+        .replace(/_?index\.md$/, "")
+        .replace(/\.md$/, "") || "/";
 
-  if (frontmatter.slug) {
-    url = `${dirname(path)}/${frontmatter.slug}/`;
-  } else if (frontmatter.url) {
-    url = String(frontmatter.url);
-  } else {
-    url = path;
-  }
+    if (frontmatter.slug) {
+      url = `${dirname(path)}/${frontmatter.slug}/`;
+    } else if (frontmatter.url) {
+      url = String(frontmatter.url);
+    } else {
+      url = path;
+    }
 
-  if (!url.startsWith("/")) url = "/" + url;
-  if (!url.endsWith("/")) url = url + "/";
+    if (!url.startsWith("/")) url = "/" + url;
+    if (!url.endsWith("/")) url = url + "/";
 
-  return url;
-};
+    return url;
+  };
 
 export async function getConfig() {
   const defaultCfg: Config = {
     source: cwd(),
-    generateUrl,
     cache: true,
   };
 
@@ -56,5 +58,7 @@ export async function getConfig() {
     cfg = res?.config;
   } catch (e) {}
 
-  return { ...defaultCfg, ...cfg };
+  const res = { ...defaultCfg, ...cfg };
+  res.generateUrl = generateUrl(res.source);
+  return res;
 }

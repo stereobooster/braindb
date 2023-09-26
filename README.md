@@ -24,14 +24,24 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 db instance with API:
 
-- [x] `start`
-- [x] `stop`
-- [x] `on`
+- [ ] `toGraph` (format = cytoscape, dot)
+  - [cytoscape](https://js.cytoscape.org/#notation/elements-json)
+    - https://github.com/cytoscape/cytosnap
+  - [other format](https://graph.stereobooster.com/notes/File-formats)
+- generate JSON for Quartz graphs
+  - [ ] backlinks
+  - [ ] local graph
+  - [ ] global graph
+- [ ] a way to clean up deleted files
+  - mark all new files (`created_at`) than delete from DB and emit events
+- [ ] respect `.gitignore` and output folder
+  - https://www.npmjs.com/package/parse-gitignore
+  - https://git-scm.com/docs/gitignore#_pattern_format
+  - https://github.com/paulmillr/chokidar#path-filtering
 - other
   - `get` (by path)
   - `getOutgoingLinks`
   - `getIncomingLinks`
-- `toGraph` (format = cytoscape, dot)
 - `query` ?
   - reactive
     - https://rxdb.info/quickstart.html
@@ -48,8 +58,15 @@ db instance with API:
 
 ### CLI
 
-- monorepo (bun or pnpm)
 - test with real life example
+  - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
+  - https://github.com/obsidianmd/obsidian-help (Obsidian)
+  - https://github.com/mdn/content/tree/main/files/en-us (Custom)
+  - https://github.com/github/docs/tree/main/content (Next.js)
+  - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
+  - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
+  - https://github.com/reactjs/react.dev/blob/main/src/content/
+- [ ] test with node + pnpm
 - maybe [oclif](https://github.com/oclif/oclif#-getting-started-tutorial)
 
 ### GUI
@@ -83,38 +100,13 @@ Output:
 
 ## TODO
 
-- [ ] a way to clean up deleted files
-  - mark all new files (`created_at`) than delete from DB and emit events
-- generate JSON files with
-  - https://js.cytoscape.org/#notation/elements-json or [other format](https://graph.stereobooster.com/notes/File-formats)
-  - [ ] backlinks
-  - [ ] local graph
-  - [ ] global graph
-- refactor
-  - split types
-  - internal config / extrnal config
-  - persist db config
-  - respect `.gitignore` and output folder
-    - https://www.npmjs.com/package/parse-gitignore
-    - https://git-scm.com/docs/gitignore#_pattern_format
-    - https://github.com/thecodrr/fdir/blob/master/documentation.md#excludefunction
-    - https://github.com/paulmillr/chokidar#path-filtering
 - [ ] tag graph
   - vizualiztion for hypergraph?
 - [ ] better layout for the graph
 - [ ] mark broken and ambigous links
 - [ ] mark broken anchors (assuming they all link to headings)
 - [ ] one file can have more than one link (`aliases`)
-  - maybe add colors, clustering, etc.
-- test with
-  - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
-  - https://github.com/obsidianmd/obsidian-help (Obsidian)
-  - https://github.com/mdn/content/tree/main/files/en-us (Custom)
-  - https://github.com/github/docs/tree/main/content (Next.js)
-  - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
-  - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
-  - https://github.com/reactjs/react.dev/blob/main/src/content/
-- https://github.com/cytoscape/cytosnap
+- maybe add colors, clustering, etc.
 
 ### Other ideas
 
@@ -194,7 +186,8 @@ Multithreading:
 
 Monorepo:
 
-- https://bun.sh/guides/install/workspaces
+- https://github.com/changesets/changesets
+- https://rushjs.io/
 - https://bestofjs.org/projects?tags=monorepo
 - https://dev.to/0xahmad/running-both-nodejs-and-bun-apps-in-turborepo-33id
 - https://earthly.dev/blog/building-js-monorepo/

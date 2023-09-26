@@ -8,7 +8,9 @@ import { symmetricDifference } from "./src/utils";
 import { deleteFile } from "./src/deleteFile";
 import { generateFile } from "./src/generateFile";
 import { toDot } from "./src/graphVisualization";
+// import { document, link } from "./src/schema";
 
+// TODO: action in the event itself, so it would be easier to match on it
 type Events = {
   update: { path: string };
   delete: { path: string };
@@ -24,12 +26,12 @@ export type Frontmatter = {
 export type BrainDBOptions = {
   source: string;
   generateUrl?: (path: string, frontmatter: Frontmatter) => string;
-  cache?: boolean;
   // path for db
+  // if there is a pass then use cache
+  cache?: boolean;
   // TODO: pass ignore from config
 };
 
-// https://nodejs.org/api/events.html#eventtarget-and-event-api
 export class BrainDB {
   private cfg: BrainDBOptions;
   private emitter: Emitter<Events>;
@@ -40,6 +42,7 @@ export class BrainDB {
 
   constructor(cfg: BrainDBOptions) {
     this.cfg = cfg;
+    // https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
     this.db = getDb(":memory:");
   }
@@ -130,11 +133,27 @@ export class BrainDB {
     return this;
   }
 
+  toDot() {
+    return toDot(this.db);
+  }
+
+  // experimental
+
+  /**
+   * @deprecated
+   * TODO: return string or stream instead
+   * but I need to use relative paths for this?
+   * getMarkdown() and destination should be optional
+   */
   writeFile(path: string, destination: string) {
     return generateFile(this.db, this.cfg.source, path, destination);
   }
 
-  toDot() {
-    return toDot(this.db)
-  }
+  // documents() {
+  //   return this.db.select().from(document);
+  // }
+
+  // links() {
+  //   return this.db.select().from(link);
+  // }
 }
