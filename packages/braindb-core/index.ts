@@ -6,6 +6,8 @@ import { getLinksTo, resolveLinks } from "./src/resolveLinks";
 import { addFile } from "./src/addFile";
 import { symmetricDifference } from "./src/utils";
 import { deleteFile } from "./src/deleteFile";
+import { generateFile } from "./src/generateFile";
+import { toDot } from "./src/graphVisualization";
 
 type Events = {
   update: { path: string };
@@ -17,7 +19,7 @@ type Events = {
 export type Frontmatter = {
   slug?: string;
   url?: string;
-}
+};
 
 export type BrainDBOptions = {
   source: string;
@@ -116,15 +118,23 @@ export class BrainDB {
     return this;
   }
 
-  on(type: '*', handler: WildcardHandler<Events>): this;
+  on(type: "*", handler: WildcardHandler<Events>): this;
   on<Key extends keyof Events>(type: Key, handler: Handler<Events[Key]>) {
     this.emitter.on(type, handler);
     return this;
   }
 
-  off(type: '*', handler: WildcardHandler<Events>): this;
+  off(type: "*", handler: WildcardHandler<Events>): this;
   off<Key extends keyof Events>(type: Key, handler?: Handler<Events[Key]>) {
     this.emitter.off(type, handler);
     return this;
+  }
+
+  writeFile(path: string, destination: string) {
+    return generateFile(this.db, this.cfg.source, path, destination);
+  }
+
+  toDot() {
+    return toDot(this.db)
   }
 }

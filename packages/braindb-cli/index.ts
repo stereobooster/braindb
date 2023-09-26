@@ -1,7 +1,7 @@
-// import { unlinkSync } from "node:fs";
-// import { writeFileSync } from "node:fs";
-// import { toSvg } from "./src/graphVisualization";
-// import { generateFile } from "./src/generateFile";
+import { unlinkSync } from "node:fs";
+import { writeFileSync } from "node:fs";
+import { toSvg } from "./src/graphVisualization";
+
 import { getConfig } from "./src/config";
 // import { version } from "./package.json";
 
@@ -29,16 +29,17 @@ bdb
   .on("*", (action, option) => {
     const destination = cfg.destination;
     if (destination) {
-      // const svgPath = `${destination}/graph.svg`;
-      // writeFileSync(svgPath, toSvg(db), { encoding: "utf8" });
+      if (action === "ready") {
+        const svgPath = `${destination}/graph.svg`;
+        writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
+        console.log("Watching files");
+      }
 
       if (action === "create" || action === "update") {
-        console.log(action, option);
-        // generateFile(db, destination, cfg.source, arg.path);
+        bdb.writeFile(option?.path!, destination);
       } else if (action === "delete") {
-        console.log(action, option);
-        // const basePathRegexp = RegExp(`^/${cfg.source}`);
-        // unlinkSync(destination + arg.path.replace(basePathRegexp, ""));
+        const basePathRegexp = RegExp(`^/${cfg.source}`);
+        unlinkSync(destination + option?.path?.replace(basePathRegexp, ""));
       }
     }
   })

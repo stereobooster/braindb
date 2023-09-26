@@ -4,16 +4,15 @@ import { mkdirp } from "mkdirp";
 import { writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { and, eq } from "drizzle-orm";
-// TODO refactor to remove dependency
-import { document, link } from "../../braindb-core/src/schema";
-import { mdParser } from "../../braindb-core/src/parser";
-import { Db } from "../../braindb-core/src/db";
+import { document, link } from "./schema";
+import { mdParser } from "./parser";
+import { Db } from "./db";
 
 export function generateFile(
   db: Db,
-  destination: string,
   pathToCrawl: string,
-  path: string
+  path: string,
+  destination: string,
 ) {
   const basePathRegexp = RegExp(`^/${pathToCrawl}`);
   const [d] = db.select().from(document).where(eq(document.path, path)).all();
@@ -66,6 +65,8 @@ export function generateFile(
     });
   }
   const mdPath = destination + d.path.replace(basePathRegexp, "");
+  // TODO: return string | Buffer instead
+  // but I need to use relative paths for this?
   mkdirp.sync(dirname(mdPath));
   writeFileSync(mdPath, mdParser.stringify(modified), { encoding: "utf8" });
 }
