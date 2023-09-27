@@ -59,6 +59,6 @@ export async function getConfig() {
   } catch (e) {}
 
   const res = { ...defaultCfg, ...cfg };
-  res.generateUrl = generateUrl(res.source);
+  if (!res.generateUrl) res.generateUrl = generateUrl(res.source);
   return res;
 }

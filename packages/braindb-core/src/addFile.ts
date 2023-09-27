@@ -28,13 +28,12 @@ export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
     .where(eq(document.path, path))
     .all();
 
-  const file = path.slice(1);
   // https://nodejs.org/api/fs.html#class-fsstats
-  const mtime = (await stat(file)).mtimeMs;
+  const mtime = (await stat(path)).mtimeMs;
   // comparing dates is cheaper than checksum, but not as reliable
   if (cfg.cache && existingDocument && existingDocument.mtime === mtime) return;
 
-  const markdown = await readFile(file, { encoding: "utf8" });
+  const markdown = await readFile(path, { encoding: "utf8" });
   const checksum = getCheksum(markdown);
   if (cfg.cache && existingDocument && existingDocument.checksum === checksum)
     return;

@@ -17,6 +17,11 @@ Read more here: https://gohugo.io/content-management/urls/
 [internal link](/example/hugo/posts/post)
 [internal link with anchor](/example/hugo/posts/post#2)
 
+#### Unsupported
+
+[page variables][pagevars]
+[pagevars]: /example/hugo/posts/post
+
 ### Portable link
 
 [internal link](./posts/post.md)

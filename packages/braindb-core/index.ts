@@ -68,7 +68,7 @@ export class BrainDB {
         this.emitter.emit("ready");
       })
       .on("add", async (file) => {
-        const path = "/" + file;
+        const path = !file.startsWith("/") ? "/" + file : file;
         if (this.initializing) {
           const p = addFile(this.db, path, this.cfg).then(() => path);
           this.initQueue.push(p);
@@ -88,7 +88,7 @@ export class BrainDB {
         );
       })
       .on("unlink", (file) => {
-        const path = "/" + file;
+        const path = !file.startsWith("/") ? "/" + file : file;
         const linksBefore = getLinksTo(this.db, path);
 
         deleteFile(this.db, path);
@@ -99,7 +99,7 @@ export class BrainDB {
         );
       })
       .on("change", async (file) => {
-        const path = "/" + file;
+        const path = !file.startsWith("/") ? "/" + file : file;
         const linksBefore = getLinksTo(this.db, path);
 
         await addFile(this.db, path, this.cfg);

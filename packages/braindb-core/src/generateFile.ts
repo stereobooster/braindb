@@ -12,9 +12,12 @@ export function generateFile(
   db: Db,
   pathToCrawl: string,
   path: string,
-  destination: string,
+  destination: string
 ) {
-  const basePathRegexp = RegExp(`^/${pathToCrawl}`);
+  const basePathRegexp = RegExp(
+    `^${pathToCrawl.startsWith("/") ? "" : "/"}${pathToCrawl}`
+  );
+
   const [d] = db.select().from(document).where(eq(document.path, path)).all();
 
   let frontmatterDetected = false;
