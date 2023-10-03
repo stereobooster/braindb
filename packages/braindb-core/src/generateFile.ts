@@ -10,14 +10,10 @@ import { Db } from "./db";
 
 export function generateFile(
   db: Db,
-  pathToCrawl: string,
   path: string,
-  destination: string
+  destination: string,
+  destinationRoot: string
 ) {
-  const basePathRegexp = RegExp(
-    `^${pathToCrawl.startsWith("/") ? "" : "/"}${pathToCrawl}`
-  );
-
   const [d] = db.select().from(document).where(eq(document.path, path)).all();
 
   let frontmatterDetected = false;
@@ -41,7 +37,8 @@ export function generateFile(
       if (!resolvedLink || !resolvedLink.to) return node;
 
       // I can output relative links instead
-      let url = "/" + destination + resolvedLink.to.replace(basePathRegexp, "");
+      let url = destinationRoot + resolvedLink.to;
+      if (!url.startsWith("/")) url = "/" + url;
       if (resolvedLink.properties.to_anchor) {
         url = url + "#" + resolvedLink.properties.to_anchor;
       }
@@ -67,7 +64,7 @@ export function generateFile(
       value: stringifyYaml(d.frontmatter).trim(),
     });
   }
-  const mdPath = destination + d.path.replace(basePathRegexp, "");
+  const mdPath = destination + d.path;
   mkdirp.sync(dirname(mdPath));
   writeFileSync(mdPath, mdParser.stringify(modified), { encoding: "utf8" });
 }

@@ -30,17 +30,20 @@ bdb
     const destination = cfg.destination;
     if (destination) {
       if (action === "ready") {
-        const svgPath = `${destination}/graph.svg`;
-        writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
-        bdb.stop()
+        // const svgPath = `${destination}/graph.svg`;
+        // writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
+        const jsonPath = `${destination}/graph.json`;
+        writeFileSync(jsonPath, JSON.stringify(bdb.toJson(), null, 2), {
+          encoding: "utf8",
+        });
+        bdb.stop();
         // console.log("Watching files");
       }
 
       if (action === "create" || action === "update") {
         bdb.writeFile(option?.path!, destination);
       } else if (action === "delete") {
-        const basePathRegexp = RegExp(`^/${cfg.source}`);
-        unlinkSync(destination + option?.path?.replace(basePathRegexp, ""));
+        unlinkSync(destination + option?.path);
       }
     }
   })

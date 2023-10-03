@@ -9,6 +9,7 @@ bun install
 To run:
 
 ```bash
+cd packages/braindb-cli
 bun run index.ts
 ```
 
@@ -24,10 +25,6 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 db instance with API:
 
-- [ ] `toGraph` (format = cytoscape, dot)
-  - [cytoscape](https://js.cytoscape.org/#notation/elements-json)
-    - https://github.com/cytoscape/cytosnap
-  - [other format](https://graph.stereobooster.com/notes/File-formats)
 - generate JSON for Quartz graphs
   - [ ] backlinks
   - [ ] local graph
@@ -55,6 +52,7 @@ db instance with API:
     - path queries
       - [datalog](https://docs.cozodb.org/en/latest/tips.html)
       - [cypher](https://kuzudb.com/docusaurus/cypher/query-clauses/match)
+  - [other graph formats](https://graph.stereobooster.com/notes/File-formats)
 
 ### CLI
 
@@ -92,11 +90,21 @@ Input:
 Internally:
 
 - uses file paths e.g. portable markdown links
+- always starts with `/`, from the root of the project
 
 Output:
 
 - portable markdown links (maybe relative)
 - maybe option to output web links
+
+Read/Write, Source/Root - I need better naming
+
+- read
+  - `root` (required) - absolute path. **Naming**: `source`
+  - source - folder in root, default `/` e.g. the same as `root`. **Naming**: `files`, `folder`, `path`, `sourcePath`, `markdownFolder`
+- write
+  - `destination`, any
+  - `source` - default the same as read source, but can be changed
 
 ## TODO
 

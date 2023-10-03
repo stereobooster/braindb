@@ -7,7 +7,8 @@ import { addFile } from "./src/addFile";
 import { symmetricDifference } from "./src/utils";
 import { deleteFile } from "./src/deleteFile";
 import { generateFile } from "./src/generateFile";
-import { toDot } from "./src/graphVisualization";
+import { toDot } from "./src/toDot";
+import { toJson } from "./src/toJson";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -25,6 +26,7 @@ export type Frontmatter = {
 
 export type BrainDBOptions = {
   source: string;
+  root?: string;
   generateUrl?: (path: string, frontmatter: Frontmatter) => string;
   // path for db
   // if there is a pass then use cache
@@ -41,7 +43,8 @@ export class BrainDB {
   private initQueue: Promise<string>[] = [];
 
   constructor(cfg: BrainDBOptions) {
-    this.cfg = cfg;
+    this.cfg = { ...cfg, root: cfg.root === undefined ? cfg.source : cfg.root };
+    this.cfg.root = this.cfg.root?.replace(/\/$/, "");
     // https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
     this.db = getDb(":memory:");
@@ -68,7 +71,9 @@ export class BrainDB {
         this.emitter.emit("ready");
       })
       .on("add", async (file) => {
-        const path = !file.startsWith("/") ? "/" + file : file;
+        let path = !file.startsWith("/") ? "/" + file : file;
+        path = path.replace(this.cfg.root!, "");
+
         if (this.initializing) {
           const p = addFile(this.db, path, this.cfg).then(() => path);
           this.initQueue.push(p);
@@ -88,7 +93,9 @@ export class BrainDB {
         );
       })
       .on("unlink", (file) => {
-        const path = !file.startsWith("/") ? "/" + file : file;
+        let path = !file.startsWith("/") ? "/" + file : file;
+        path = path.replace(this.cfg.root!, "");
+
         const linksBefore = getLinksTo(this.db, path);
 
         deleteFile(this.db, path);
@@ -99,7 +106,9 @@ export class BrainDB {
         );
       })
       .on("change", async (file) => {
-        const path = !file.startsWith("/") ? "/" + file : file;
+        let path = !file.startsWith("/") ? "/" + file : file;
+        path = path.replace(this.cfg.root!, "");
+
         const linksBefore = getLinksTo(this.db, path);
 
         await addFile(this.db, path, this.cfg);
@@ -137,6 +146,13 @@ export class BrainDB {
     return toDot(this.db);
   }
 
+  /**
+   * returns [Elements JSON](https://js.cytoscape.org/#notation/elements-json)
+   */
+  toJson() {
+    return toJson(this.db);
+  }
+
   // experimental
 
   /**
@@ -145,8 +161,13 @@ export class BrainDB {
    * but I need to use relative paths for this?
    * getMarkdown() and destination should be optional
    */
-  writeFile(path: string, destination: string) {
-    return generateFile(this.db, this.cfg.source, path, destination);
+  writeFile(path: string, destination: string, destinationRoot?: string) {
+    destination = destination.replace(/\/$/, "");
+    destinationRoot =
+      destinationRoot === undefined
+        ? destination.replace(RegExp(`^${this.cfg.root}`), "")
+        : destinationRoot;
+    return generateFile(this.db, path, destination, destinationRoot);
   }
 
   // documents() {
