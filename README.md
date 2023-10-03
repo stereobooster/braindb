@@ -25,6 +25,9 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 db instance with API:
 
+- [ ] `Read/Write, Source/Root`
+- [ ] test with real life example
+- [ ] generate beautiful graph
 - generate JSON for Quartz graphs
   - [ ] backlinks
   - [ ] local graph
@@ -35,6 +38,7 @@ db instance with API:
   - https://www.npmjs.com/package/parse-gitignore
   - https://git-scm.com/docs/gitignore#_pattern_format
   - https://github.com/paulmillr/chokidar#path-filtering
+- events for adding/deleting edges
 - other
   - `get` (by path)
   - `getOutgoingLinks`
@@ -65,14 +69,11 @@ db instance with API:
   - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
   - https://github.com/reactjs/react.dev/blob/main/src/content/
 - [ ] test with node + pnpm
-- maybe [oclif](https://github.com/oclif/oclif#-getting-started-tutorial)
 
 ### GUI
 
 - maybe https://tauri.app/
   - https://github.com/tauri-apps/tauri-plugin-fs-watch
-  - docker
-  - https://moonrepo.dev/proto
 
 ### LSP
 
@@ -135,45 +136,6 @@ frontend
 tui to run SQL in watch mode
 
 ## Links
-
-TUI/CLI:
-
-- https://github.com/lirantal/nodejs-cli-apps-best-practices/
-- https://clig.dev/
-- https://github.com/tj/commander.js
-- https://www.npmjs.com/package/@commander-js/extra-typings
-- https://github.com/oclif/oclif#-getting-started-tutorial
-
-related
-
-- https://www.clack.cc/
-- https://github.com/vadimdemedes/ink
-- https://github.com/vadimdemedes/ink-ui
-- https://github.com/SBoudrias/Inquirer.js
-- https://blog.logrocket.com/building-typescript-cli-node-js-commander/#why-commander-js
-- https://github.com/patorjk/figlet.js
-- https://dev.to/wesen/14-great-tips-to-make-amazing-cli-applications-3gp3
-- https://github.com/sindresorhus/open
-- https://www.npmjs.com/package/kleur
-- https://www.npmjs.com/package/chalk
-- https://github.com/chalk/chalk#related
-- https://github.com/sindresorhus/is-unicode-supported
-- https://github.com/sindresorhus/is-interactive
-- https://github.com/bokub/chalk-animation
-- https://github.com/bokub/gradient-string
-- https://github.com/sindresorhus/terminal-link
-- https://github.com/sindresorhus/cli-cursor
-- https://www.npmjs.com/package/cli-spinners
-- https://github.com/SamVerschueren/listr
-- https://github.com/sindresorhus/ora
-
-TUI/CLI for inspiration:
-
-- https://github.com/charmbracelet/bubbles
-- https://github.com/charmbracelet/bubbletea
-- https://github.com/ratatui-org/ratatui
-- https://github.com/Textualize/textual
-- https://github.com/Textualize/frogmouth
 
 sql parsers (to implement [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview)):
 
