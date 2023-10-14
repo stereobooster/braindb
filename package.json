@@ -4,5 +4,12 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "@stereobooster/cyto-nodejs": "^0.0.1",
+    "cytoscape-cola": "^2.5.1"
+  },
+  "scripts": {
+    "graph": "cyto-nodejs -s tmp/graph.json -d tmp/graph.svg"
+  }
 }
