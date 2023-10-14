@@ -26,7 +26,8 @@ export type Frontmatter = {
 
 export type BrainDBOptions = {
   source: string;
-  root?: string;
+  // TODO: maybe array?
+  files?: string;
   generateUrl?: (path: string, frontmatter: Frontmatter) => string;
   // path for db
   // if there is a pass then use cache
@@ -43,8 +44,8 @@ export class BrainDB {
   private initQueue: Promise<string>[] = [];
 
   constructor(cfg: BrainDBOptions) {
-    this.cfg = { ...cfg, root: cfg.root === undefined ? cfg.source : cfg.root };
-    this.cfg.root = this.cfg.root?.replace(/\/$/, "");
+    this.cfg = { ...cfg, source: cfg.source.replace(/\/$/, "") };
+    this.cfg.files = `${this.cfg.source}${this.cfg.files || "/**/*.md"}`;
     // https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
     this.db = getDb(":memory:");
@@ -57,7 +58,7 @@ export class BrainDB {
     this.initQueue = [];
 
     this.watcher = chokidar
-      .watch(`${this.cfg.source}/**/*.md`, {
+      .watch(this.cfg.files!, {
         ignored: /(^|[\/\\])\../, // ignore dotfiles
         persistent: true,
       })
@@ -72,7 +73,7 @@ export class BrainDB {
       })
       .on("add", async (file) => {
         let path = !file.startsWith("/") ? "/" + file : file;
-        path = path.replace(this.cfg.root!, "");
+        path = path.replace(this.cfg.source, "");
 
         if (this.initializing) {
           const p = addFile(this.db, path, this.cfg).then(() => path);
@@ -94,7 +95,7 @@ export class BrainDB {
       })
       .on("unlink", (file) => {
         let path = !file.startsWith("/") ? "/" + file : file;
-        path = path.replace(this.cfg.root!, "");
+        path = path.replace(this.cfg.source, "");
 
         const linksBefore = getLinksTo(this.db, path);
 
@@ -107,7 +108,7 @@ export class BrainDB {
       })
       .on("change", async (file) => {
         let path = !file.startsWith("/") ? "/" + file : file;
-        path = path.replace(this.cfg.root!, "");
+        path = path.replace(this.cfg.source, "");
 
         const linksBefore = getLinksTo(this.db, path);
 
@@ -161,13 +162,12 @@ export class BrainDB {
    * but I need to use relative paths for this?
    * getMarkdown() and destination should be optional
    */
-  writeFile(path: string, destination: string, destinationRoot?: string) {
-    destination = destination.replace(/\/$/, "");
-    destinationRoot =
-      destinationRoot === undefined
-        ? destination.replace(RegExp(`^${this.cfg.root}`), "")
-        : destinationRoot;
-    return generateFile(this.db, path, destination, destinationRoot);
+  writeFile(
+    path: string,
+    destination: string,
+    destinationPath?: (path: string) => string
+  ) {
+    return generateFile(this.db, path, destination, destinationPath);
   }
 
   // documents() {

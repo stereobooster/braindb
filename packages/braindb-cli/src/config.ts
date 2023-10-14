@@ -6,6 +6,7 @@ import { BrainDBOptions } from "braindb-core";
 // For inspiration https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L126
 export type Config = BrainDBOptions & {
   destination?: string;
+  destinationPath?: (path: string) => string;
 };
 
 const moduleName = "braindb";

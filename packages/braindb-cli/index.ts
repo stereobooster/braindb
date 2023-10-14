@@ -28,11 +28,14 @@ const bdb = new BrainDB(cfg);
 bdb
   .on("*", (action, option) => {
     const destination = cfg.destination;
+    const destinationPath = cfg.destinationPath;
     if (destination) {
       if (action === "ready") {
         // const svgPath = `${destination}/graph.svg`;
         // writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
-        const jsonPath = `${destination}/graph.json`;
+        const jsonPath =
+          destination +
+          (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");
         writeFileSync(jsonPath, JSON.stringify(bdb.toJson(), null, 2), {
           encoding: "utf8",
         });
@@ -41,9 +44,9 @@ bdb
       }
 
       if (action === "create" || action === "update") {
-        bdb.writeFile(option?.path!, destination);
+        bdb.writeFile(option?.path!, destination, destinationPath);
       } else if (action === "delete") {
-        unlinkSync(destination + option?.path);
+        unlinkSync(destination + option?.path!);
       }
     }
   })

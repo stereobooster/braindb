@@ -172,3 +172,5 @@ dist
 
 # IntelliJ based IDEs
 .idea
+
+.DS_Store

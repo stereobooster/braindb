@@ -12,7 +12,7 @@ export function generateFile(
   db: Db,
   path: string,
   destination: string,
-  destinationRoot: string
+  destinationPath?: (path: string) => string
 ) {
   const [d] = db.select().from(document).where(eq(document.path, path)).all();
 
@@ -25,7 +25,12 @@ export function generateFile(
         value: stringifyYaml(d.frontmatter).trim(),
       };
     }
-    if (node.type == "wikiLink") {
+    if (node.type === "wikiLink" || node.type === "link") {
+      const label =
+        node.type === "link"
+          ? (node.children[0].value as string)
+          : node.data.alias;
+
       const [resolvedLink] = db
         .select()
         .from(link)
@@ -37,7 +42,10 @@ export function generateFile(
       if (!resolvedLink || !resolvedLink.to) return node;
 
       // I can output relative links instead
-      let url = destinationRoot + resolvedLink.to;
+      let url = destinationPath
+        ? destinationPath(resolvedLink.to)
+        : resolvedLink.to;
+
       if (!url.startsWith("/")) url = "/" + url;
       if (resolvedLink.properties.to_anchor) {
         url = url + "#" + resolvedLink.properties.to_anchor;
@@ -46,12 +54,12 @@ export function generateFile(
 
       return {
         type: "link",
-        title: null,
+        title: node.title,
         url,
         children: [
           {
             type: "text",
-            value: node.data.alias,
+            value: label,
           },
         ],
       };
@@ -64,7 +72,8 @@ export function generateFile(
       value: stringifyYaml(d.frontmatter).trim(),
     });
   }
-  const mdPath = destination + d.path;
+  const mdPath =
+    destination + (destinationPath ? destinationPath(d.path) : d.path);
   mkdirp.sync(dirname(mdPath));
   writeFileSync(mdPath, mdParser.stringify(modified), { encoding: "utf8" });
 }

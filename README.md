@@ -25,9 +25,9 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 db instance with API:
 
-- [ ] `Read/Write, Source/Root`
 - [ ] test with real life example
 - [ ] generate beautiful graph
+- [ ] move out `generateFile` from core?
 - generate JSON for Quartz graphs
   - [ ] backlinks
   - [ ] local graph
@@ -70,6 +70,10 @@ db instance with API:
   - https://github.com/reactjs/react.dev/blob/main/src/content/
 - [ ] test with node + pnpm
 
+### Other
+
+- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
+
 ### GUI
 
 - maybe https://tauri.app/
@@ -90,22 +94,12 @@ Input:
 
 Internally:
 
-- uses file paths e.g. portable markdown links
-- always starts with `/`, from the root of the project
+- portable markdown links
 
 Output:
 
-- portable markdown links (maybe relative)
+- portable markdown links
 - maybe option to output web links
-
-Read/Write, Source/Root - I need better naming
-
-- read
-  - `root` (required) - absolute path. **Naming**: `source`
-  - source - folder in root, default `/` e.g. the same as `root`. **Naming**: `files`, `folder`, `path`, `sourcePath`, `markdownFolder`
-- write
-  - `destination`, any
-  - `source` - default the same as read source, but can be changed
 
 ## TODO
 
