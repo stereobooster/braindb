@@ -18,6 +18,7 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 ## Names for the project
 
 - BrainDB - database for your [second brain](https://www.ssp.sh/brain/), [digital garden](https://github.com/MaggieAppleton/digital-gardeners), [zettelkasten](https://zettelkasten.de/posts/overview/)
+- DBrain?
 
 ## concept
 
@@ -25,7 +26,25 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 db instance with API:
 
+- [ ] faster resolve
+  - separate columns and indexes
+- [ ] on ready use DB to re-emit added?
+- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
+- [ ] threads (but sqlite single threaded)
+  - https://github.com/piscinajs/piscina
+  - https://github.com/poolifier/poolifier
+  - https://github.com/Vincit/tarn.js
+  - https://github.com/SUCHMOKUO/node-worker-threads-pool
+  - https://github.com/andywer/threads.js
+  - https://github.com/tim-hub/pambdajs
 - [ ] test with real life example
+  - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
+  - https://github.com/obsidianmd/obsidian-help (Obsidian)
+  - https://github.com/mdn/content/tree/main/files/en-us (Custom)
+  - https://github.com/github/docs/tree/main/content (Next.js)
+  - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
+  - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
+  - https://github.com/reactjs/react.dev/blob/main/src/content/
 - [ ] generate beautiful graph
 - [ ] move out `generateFile` from core?
 - generate JSON for Quartz graphs
@@ -60,19 +79,7 @@ db instance with API:
 
 ### CLI
 
-- test with real life example
-  - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
-  - https://github.com/obsidianmd/obsidian-help (Obsidian)
-  - https://github.com/mdn/content/tree/main/files/en-us (Custom)
-  - https://github.com/github/docs/tree/main/content (Next.js)
-  - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
-  - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
-  - https://github.com/reactjs/react.dev/blob/main/src/content/
 - [ ] test with node + pnpm
-
-### Other
-
-- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 
 ### GUI
 
@@ -142,11 +149,6 @@ sql parsers (to implement [obsidian-dataview](https://github.com/blacksmithgu/ob
 Incremental parsing:
 
 - https://stereobooster.com/posts/markdown-parsers/#tree-sitter
-
-Multithreading:
-
-- https://github.com/piscinajs/piscina
-- https://github.com/poolifier/poolifier
 
 Monorepo:
 

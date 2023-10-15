@@ -3,8 +3,8 @@ import { link } from "./schema";
 import { Db } from "./db";
 
 export function resolveLinks(db: Db) {
-  // TODO: mayby use separate columns with indexes instead of JSON?
-  // TODO: check for abiguous links
+  // TODO: maybe use separate columns with indexes instead of JSON?
+  // TODO: check for ambiguous links
   // Maybe update would be better than replace?
   db.run(
     sql`

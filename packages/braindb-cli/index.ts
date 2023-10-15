@@ -23,12 +23,16 @@ program.parse();
 
 const cfg = await getConfig();
 
-const bdb = new BrainDB(cfg);
+const destination = cfg.destination;
+const destinationPath = cfg.destinationPath;
+const dbPath =
+  destination +
+  (destinationPath ? destinationPath(`/braindb.sqlite`) : "/braindb.sqlite");
+
+const bdb = new BrainDB({ ...cfg, dbPath });
 
 bdb
   .on("*", (action, option) => {
-    const destination = cfg.destination;
-    const destinationPath = cfg.destinationPath;
     if (destination) {
       if (action === "ready") {
         // const svgPath = `${destination}/graph.svg`;

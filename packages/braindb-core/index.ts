@@ -31,6 +31,7 @@ export type BrainDBOptions = {
   generateUrl?: (path: string, frontmatter: Frontmatter) => string;
   // path for db
   // if there is a pass then use cache
+  dbPath?: string;
   cache?: boolean;
   // TODO: pass ignore from config
 };
@@ -48,13 +49,15 @@ export class BrainDB {
     this.cfg.files = `${this.cfg.source}${this.cfg.files || "/**/*.md"}`;
     // https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
-    this.db = getDb(":memory:");
+    this.db = getDb(this.cfg.dbPath || ":memory:");
   }
 
   start() {
     if (this.watcher) throw new Error("Already started");
 
     this.initializing = true;
+    // this will acumulate all files, which can be problematic
+    // what if instead of array - fetch files from DB in the end
     this.initQueue = [];
 
     this.watcher = chokidar
@@ -62,23 +65,25 @@ export class BrainDB {
         ignored: /(^|[\/\\])\../, // ignore dotfiles
         persistent: true,
       })
+      .on("error", (error) => console.log(`Watcher error: ${error}`))
       .on("ready", async () => {
-        const res = await Promise.all(this.initQueue);
+        console.log('ready')
+        // const res = await Promise.all(this.initQueue);
         this.initQueue = [];
         resolveLinks(this.db);
         this.initializing = false;
 
-        res.forEach((path) => this.emitter.emit("create", { path }));
+        // res.forEach((path) => this.emitter.emit("create", { path }));
         this.emitter.emit("ready");
       })
       .on("add", async (file) => {
         let path = !file.startsWith("/") ? "/" + file : file;
         path = path.replace(this.cfg.source, "");
-
         if (this.initializing) {
-          const p = addFile(this.db, path, this.cfg).then(() => path);
-          this.initQueue.push(p);
-          await p;
+          addFile(this.db, path, this.cfg);
+          // const p = addFile(this.db, path, this.cfg).then(() => path);
+          // this.initQueue.push(p);
+          // await p;
           return;
         }
 
