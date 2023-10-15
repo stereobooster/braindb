@@ -5,8 +5,8 @@ import { Db } from "./db";
 export function toDot(db: Db) {
   const edges = db
     .select({
-      from_id: sql<string>`json_extract(${link.properties}, '$.from_id')`,
-      to_id: sql<string>`json_extract(${link.properties}, '$.to_id')`,
+      from_id: link.from_id,
+      to_id: link.to_id,
     })
     .from(link)
     // need to show broken links on the graph

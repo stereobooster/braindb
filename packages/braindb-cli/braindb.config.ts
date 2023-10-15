@@ -7,7 +7,7 @@ export default {
   // files: "/webassembly/**/*.md",
   destination: resolve("../../tmp/"),
   generateUrl: (_path, frontmatter) => `/en-US/docs/${frontmatter.slug}/`,
-  destinationPath: (path) => path.replace(/^\/content\/files\/en-us/, "/"),
+  destinationPath: (path) => path.replace(/^\/content\/files\/en-us/, "/tmp"),
   cache: true,
 } satisfies Config;
 

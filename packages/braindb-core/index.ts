@@ -8,7 +8,7 @@ import { symmetricDifference } from "./src/utils";
 import { deleteFile } from "./src/deleteFile";
 import { generateFile } from "./src/generateFile";
 import { toDot } from "./src/toDot";
-import { toJson } from "./src/toJson";
+import { toCyjs } from "./src/toJson";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -67,23 +67,21 @@ export class BrainDB {
       })
       .on("error", (error) => console.log(`Watcher error: ${error}`))
       .on("ready", async () => {
-        console.log('ready')
-        // const res = await Promise.all(this.initQueue);
+        const res = await Promise.all(this.initQueue);
         this.initQueue = [];
         resolveLinks(this.db);
         this.initializing = false;
 
-        // res.forEach((path) => this.emitter.emit("create", { path }));
+        res.forEach((path) => this.emitter.emit("create", { path }));
         this.emitter.emit("ready");
       })
       .on("add", async (file) => {
         let path = !file.startsWith("/") ? "/" + file : file;
         path = path.replace(this.cfg.source, "");
         if (this.initializing) {
-          addFile(this.db, path, this.cfg);
-          // const p = addFile(this.db, path, this.cfg).then(() => path);
-          // this.initQueue.push(p);
-          // await p;
+          const p = addFile(this.db, path, this.cfg).then(() => path);
+          this.initQueue.push(p);
+          await p;
           return;
         }
 
@@ -156,7 +154,7 @@ export class BrainDB {
    * returns [Elements JSON](https://js.cytoscape.org/#notation/elements-json)
    */
   toJson() {
-    return toJson(this.db);
+    return toCyjs(this.db);
   }
 
   // experimental

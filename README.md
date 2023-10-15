@@ -26,17 +26,10 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 db instance with API:
 
-- [ ] faster resolve
-  - separate columns and indexes
-- [ ] on ready use DB to re-emit added?
-- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
-- [ ] threads (but sqlite single threaded)
-  - https://github.com/piscinajs/piscina
-  - https://github.com/poolifier/poolifier
-  - https://github.com/Vincit/tarn.js
-  - https://github.com/SUCHMOKUO/node-worker-threads-pool
-  - https://github.com/andywer/threads.js
-  - https://github.com/tim-hub/pambdajs
+- [ ] generate beautiful graph
+  - https://github.com/vasturiano/3d-force-graph
+  - https://stardustjs.github.io/examples/graph/
+  - https://graph.stereobooster.com/notes/Visualisation
 - [ ] test with real life example
   - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
   - https://github.com/obsidianmd/obsidian-help (Obsidian)
@@ -45,7 +38,8 @@ db instance with API:
   - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
   - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
   - https://github.com/reactjs/react.dev/blob/main/src/content/
-- [ ] generate beautiful graph
+- [ ] on ready use DB to re-emit added?
+- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 - [ ] move out `generateFile` from core?
 - generate JSON for Quartz graphs
   - [ ] backlinks
@@ -119,6 +113,14 @@ Output:
 - maybe add colors, clustering, etc.
 
 ### Other ideas
+
+- [ ] threads (but sqlite single threaded)
+  - https://github.com/piscinajs/piscina
+  - https://github.com/poolifier/poolifier
+  - https://github.com/Vincit/tarn.js
+  - https://github.com/SUCHMOKUO/node-worker-threads-pool
+  - https://github.com/andywer/threads.js
+  - https://github.com/tim-hub/pambdajs
 
 API
 

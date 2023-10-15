@@ -1,7 +1,7 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "6e6959e3-1280-467a-9960-c670ce89849d",
+  "id": "6e05a885-8d18-44ab-b589-1c32499e4733",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "documents": {
@@ -71,7 +71,22 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "slug": {
+          "name": "slug",
+          "columns": [
+            "slug"
+          ],
+          "isUnique": false
+        },
+        "url": {
+          "name": "url",
+          "columns": [
+            "url"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
@@ -107,15 +122,78 @@
           "notNull": true,
           "autoincrement": false
         },
-        "ast": {
-          "name": "ast",
+        "from_id": {
+          "name": "from_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "to_id": {
+          "name": "to_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "to_slug": {
+          "name": "to_slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "to_url": {
+          "name": "to_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "to_path": {
+          "name": "to_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "to_anchor": {
+          "name": "to_anchor",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         }
       },
       "indexes": {
+        "to_slug": {
+          "name": "to_slug",
+          "columns": [
+            "to_slug"
+          ],
+          "isUnique": false
+        },
+        "to_url": {
+          "name": "to_url",
+          "columns": [
+            "to_url"
+          ],
+          "isUnique": false
+        },
+        "to_path": {
+          "name": "to_path",
+          "columns": [
+            "to_path"
+          ],
+          "isUnique": false
+        },
         "from_start": {
           "name": "from_start",
           "columns": [

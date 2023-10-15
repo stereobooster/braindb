@@ -26,12 +26,11 @@ const defaults = {
   background: "white",
 };
 
-export function toJson(db: Db) {
+export function toCyjs(db: Db) {
   const edges = db
     .select({
-      from_id: sql<string>`json_extract(${link.properties}, '$.from_id')`,
-      to_id: sql<string>`json_extract(${link.properties}, '$.to_id')`,
-      start: link.start,
+      from_id: link.from_id,
+      to_id: link.to_id,
     })
     .from(link)
     // need to show broken links on the graph
@@ -39,7 +38,6 @@ export function toJson(db: Db) {
     .all()
     .map((edge) => ({
       data: {
-        // id: `${edge.from_id}_${edge.to_id}_${edge.start}`,
         source: edge.from_id,
         target: edge.to_id,
       },
@@ -49,7 +47,6 @@ export function toJson(db: Db) {
     .select({
       id: sql<string>`json_extract(${document.properties}, '$.id')`,
       title: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
-      url: document.url,
     })
     .from(document)
     .all()
@@ -60,5 +57,49 @@ export function toJson(db: Db) {
       },
     }));
 
-  return { elements: [...nodes, ...edges], ...defaults };
+  return { elements: { nodes, edges }, ...defaults };
 }
+
+// https://jsongraphformat.info/
+// export function toJsonGraph(db: Db) {
+//   const edges = db
+//     .select({
+//       from_id: link.from_id,
+//       to_id: link.to_id,
+//     })
+//     .from(link)
+//     // need to show broken links on the graph
+//     .where(isNotNull(link.to))
+//     .all()
+//     .map((edge) => ({
+//       source: edge.from_id,
+//       target: edge.to_id,
+//       // relation: "linksTo"
+//     }));
+
+//   const nodes = db
+//     .select({
+//       id: sql<string>`json_extract(${document.properties}, '$.id')`,
+//       title: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
+//     })
+//     .from(document)
+//     .all()
+//     .reduce((acc, node) => {
+//       acc[node.id] = {
+//         id: node.id,
+//         label: node.title,
+//       };
+//       return acc;
+//     }, {} as Record<string, Record<string, string>>);
+
+//   return {
+//     graph: {
+//       id: "g",
+//       type: "g",
+//       label: "g",
+//       metadata: {},
+//       nodes,
+//       edges,
+//     },
+//   };
+// }

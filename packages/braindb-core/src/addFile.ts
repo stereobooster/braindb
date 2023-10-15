@@ -68,7 +68,7 @@ export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
         if (isExternalLink(node.url)) {
           /**
            * not interested in external links for now
-           * in future may be used
+           * in future may be used:
            * - to check if it returns <= 400
            * - to fetch icon
            * - to generate screenshot
@@ -77,17 +77,12 @@ export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
         }
       }
 
-      let properties: JsonObject = {
-        // for visualization
-        from_id: newDocument.properties.id,
-        // for link resolution
-        type: node.type,
-      };
+      let to_url, to_path, to_slug, to_anchor, label;
 
       if (node.type === "link") {
-        const label = node.children[0].value as string;
-        let [to_url, to_anchor] = decodeURI(node.url).split("#");
-        let to_path = to_url;
+        label = node.children[0].value as string;
+        [to_url, to_anchor] = decodeURI(node.url).split("#");
+        to_path = to_url;
         // resolve local link
         if (!to_url.startsWith("/")) {
           to_url = resolve(newDocument.url, to_url);
@@ -100,32 +95,26 @@ export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
         if (!to_path.startsWith("/")) {
           to_path = resolve(dirname(path), to_path);
         }
-        properties = {
-          ...properties,
-          // for visualization
-          label,
-          // for link resolution
-          to_url,
-          to_path,
-          to_anchor,
-        };
       } else {
-        const label = node.data.alias as string;
-        const [to_slug, to_anchor] = node.value.split("#");
-        properties = {
-          ...properties,
-          // for visualization
-          label,
-          // for link resolution
-          to_slug,
-          to_anchor,
-        };
+        label = node.data.alias as string;
+        [to_slug, to_anchor] = node.value.split("#");
       }
 
       const start = node.position.start.offset as number;
+      const from_id = newDocument.properties.id;
 
       db.insert(link)
-        .values({ from: path, ast: node, start, properties })
+        .values({
+          from: path,
+          start,
+          properties: {},
+          from_id,
+          to_url,
+          to_path,
+          to_slug,
+          to_anchor,
+          label,
+        })
         .run();
 
       return SKIP;

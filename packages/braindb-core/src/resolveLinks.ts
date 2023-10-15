@@ -10,12 +10,18 @@ export function resolveLinks(db: Db) {
     sql`
   REPLACE INTO links
   SELECT "from", "path" as "to", "start", 
-      json_set(links.properties, '$.to_id', json_extract(documents.properties, '$.id')) as properties,
-      links.ast as "ast"
+    links.properties as "properties",
+    links.from_id as "from_id",
+    json_extract(documents.properties, '$.id') as to_id,
+    links.to_slug as to_slug,
+    links.to_url as to_url,
+    links.to_path as to_path,
+    links.to_anchor as to_anchor,
+    links.label as label
   FROM links INNER JOIN documents ON
-      json_extract(links.properties, '$.to_slug') = documents.slug OR
-      json_extract(links.properties, '$.to_url') = documents.url OR
-      json_extract(links.properties, '$.to_path') = documents.path
+      links.to_slug = documents.slug OR
+      links.to_url = documents.url OR
+      links.to_path = documents.path
   WHERE links."to" IS NULL;`
   );
 }
