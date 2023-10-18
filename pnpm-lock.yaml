@@ -25,7 +25,7 @@ importers:
         version: link:../braindb-core
       cosmiconfig:
         specifier: ^8.3.6
-        version: 8.3.6(typescript@5.0.2)
+        version: 8.3.6
       mkdirp:
         specifier: ^3.0.1
         version: 3.0.1
@@ -721,7 +721,7 @@ packages:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
     dev: false
 
-  /cosmiconfig@8.3.6(typescript@5.0.2):
+  /cosmiconfig@8.3.6:
     resolution: {integrity: sha512-kcZ6+W5QzcJ3P1Mt+83OUv/oHFqZHIx8DuxG6eZ5RGMERoLqp4BuGjhHLYGK+Kf5XVkQvqBSmAy/nGWN3qDgEA==}
     engines: {node: '>=14'}
     peerDependencies:
@@ -734,7 +734,6 @@ packages:
       js-yaml: 4.1.0
       parse-json: 5.2.0
       path-type: 4.0.0
-      typescript: 5.0.2
     dev: false
 
   /cssstyle@3.0.0:

@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@hpcc-js/wasm": "^2.14.0",
+    "braindb-core": "workspace:*",
     "cosmiconfig": "^8.3.6",
-    "mkdirp": "^3.0.1",
-    "braindb-core": "workspace:*"
+    "mkdirp": "^3.0.1"
   }
 }

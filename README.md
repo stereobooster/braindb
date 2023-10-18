@@ -30,6 +30,19 @@ db instance with API:
   - https://github.com/vasturiano/3d-force-graph
   - https://stardustjs.github.io/examples/graph/
   - https://graph.stereobooster.com/notes/Visualisation
+  - UI
+    - table/list: name, path...
+      - sorting, filtering, sql where
+    - whole graph
+      - select node, highlight edjes
+    - detailed view: text with links
+    - subgraph
+      - filter nodes, like in list view
+        - but also show all transitive points
+        - depth of adjecent nodes (0 only filtered)
+        - toggle: outgoing, incoming, all
+      - split view list/graph/detail
+- [ ] broken links - show on the graph
 - [ ] test with real life example
   - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
   - https://github.com/obsidianmd/obsidian-help (Obsidian)

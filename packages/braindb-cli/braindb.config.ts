@@ -4,10 +4,9 @@ import { Config } from "./src/config";
 
 export default {
   source: resolve("../../../content/files/en-us/"),
-  // files: "/webassembly/**/*.md",
-  destination: resolve("../../tmp/"),
+  destination: resolve("../../"),
   generateUrl: (_path, frontmatter) => `/en-US/docs/${frontmatter.slug}/`,
-  destinationPath: (path) => path.replace(/^\/content\/files\/en-us/, "/tmp"),
+  destinationPath: (path) => "/tmp" + path,
   cache: true,
 } satisfies Config;
 

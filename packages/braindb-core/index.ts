@@ -8,7 +8,7 @@ import { symmetricDifference } from "./src/utils";
 import { deleteFile } from "./src/deleteFile";
 import { generateFile } from "./src/generateFile";
 import { toDot } from "./src/toDot";
-import { toCyjs } from "./src/toJson";
+import { toCyjs, toGraphology } from "./src/toJson";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -154,7 +154,7 @@ export class BrainDB {
    * returns [Elements JSON](https://js.cytoscape.org/#notation/elements-json)
    */
   toJson() {
-    return toCyjs(this.db);
+    return toGraphology(this.db);
   }
 
   // experimental
