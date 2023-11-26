@@ -19,26 +19,13 @@ This project was created using `bun init` in bun v1.0.1. [Bun](https://bun.sh) i
 
 ## concept
 
-- short vs long slug (configuration)
-  - `/a/b/unique` vs `unique`
-  - page type can be part of slug, like `tag:unique` vs `page:unique`
-    - unique inside type, default type
-- schema
-  - inheritance - subfolders different schema or type of page
-  - typescript
-- metadata
-  - frontmatter
-  - gitinfo
-  - incoming links
 - as content provider for Astro 
 	- https://github.com/withastro/astro/blob/481c13a08c2d6a5bc1b4a8fe4259714d868eb514/packages/astro/src/content/server-listeners.ts#L49-L76
 	- https://docs.astro.build/en/guides/content-collections/
 	- https://contentlayer.dev/docs/getting-started-cddd76b7
-- Reactive interface
-  - like [signals](https://preactjs.com/guide/v10/signals/)
 - faceted search interface
 - graph interface
-  - graph maetrices
+  - graph metrices
 
 ### Core
 
@@ -70,7 +57,6 @@ db instance with API:
   - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
   - https://github.com/reactjs/react.dev/blob/main/src/content/
 - [ ] on ready use DB to re-emit added?
-- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 - [ ] move out `generateFile` from core?
 - generate JSON for Quartz graphs
   - [ ] backlinks

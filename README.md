@@ -155,3 +155,30 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 - Language Server ([LSP](https://microsoft.github.io/language-server-protocol/))
 - CLI to transfor markdown files, for example from Obsidian vault to Hugo format
 - second-brain-note-taking app, like Obsidian or Foam
+
+## TODO
+
+- monorepo (turbo + pnpm)
+- example integration with Astro
+  - wikilinks, PML
+  - backlinks
+    - separate JSON file or frontmatter
+  - short vs long slug (configuration)
+    - `/a/b/unique` vs `unique`
+    - page type can be part of slug, like `tag:unique` vs `page:unique`
+      - unique inside type, default type
+  - maybe global graph
+  - maybe faceted search
+- CLI
+  - store cache in `.braindb` folder (or file)
+- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
+- [ ] reactivity
+  - [signals](https://preactjs.com/guide/v10/signals/)
+  - maybe [rxdb](https://rxdb.info) Observable
+- schema
+  - inheritance - subfolders different schema or type of page
+  - typescript
+- metadata
+  - frontmatter
+  - gitinfo
+  - incoming links
