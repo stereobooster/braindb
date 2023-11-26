@@ -1,9 +1,17 @@
 # mddb
 
-## Names for the project
+## Name for the project
 
 - BrainDB - database for your [second brain](https://www.ssp.sh/brain/), [digital garden](https://github.com/MaggieAppleton/digital-gardeners), [zettelkasten](https://zettelkasten.de/posts/overview/)
 - DBrain?
+
+How to name subpackages?
+
+- would be nice to use namespace, like `@braindb/core`
+
+## Icon for the project
+
+- [brain](https://thenounproject.com/search/icons/?q=brain)
 
 ## Vision
 
@@ -144,6 +152,6 @@ Other options would be to use some kind of [faceted search interface](https://st
 Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) is that they are built in another applications and not reusable. I think it would be beneficial to implement **core** library which later could be reused for:
 
 - content layer for Astro (or Next.js, Nuxt etc.)
-- Language Server (LSP)
+- Language Server ([LSP](https://microsoft.github.io/language-server-protocol/))
 - CLI to transfor markdown files, for example from Obsidian vault to Hugo format
-- for second-brain-note-taking app, like Obsidian or Foam
+- second-brain-note-taking app, like Obsidian or Foam
