@@ -1,18 +1,38 @@
 {
-  "name": "braindb-cli",
-  "module": "index.ts",
-  "type": "module",
+  "name": "@braindb/cli",
   "private": true,
   "version": "0.0.1",
+  "type": "module",
+  "source": "index.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
+  "files": [
+    "./dist/*"
+  ],
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "vitest",
+    "prepublishOnly": "npm run build",
+    "build": "rm -rf dist && microbundle",
+    "dev": "microbundle watch",
+    "clean": "rm -rf dist",
+    "tsc": "tsc"
+  },
   "devDependencies": {
-    "bun-types": "latest"
+    "microbundle": "^0.15.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
   "dependencies": {
     "@hpcc-js/wasm": "^2.14.0",
-    "braindb-core": "workspace:*",
+    "@braindb/core": "workspace:*",
     "cosmiconfig": "^8.3.6",
     "mkdirp": "^3.0.1"
   }

@@ -158,7 +158,7 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 
 ## TODO
 
-- monorepo (turbo + pnpm)
+- [x] monorepo (turbo + pnpm)
 - example integration with Astro
   - wikilinks, PML
   - backlinks
@@ -182,3 +182,4 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
   - frontmatter
   - gitinfo
   - incoming links
+- [great.db](https://www.npmjs.com/package/great.db) instead of better-sqlite3?

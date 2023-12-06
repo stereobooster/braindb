@@ -1,11 +1,10 @@
 import { unlinkSync } from "node:fs";
 import { writeFileSync } from "node:fs";
-import { toSvg } from "./src/graphVisualization";
 
 import { getConfig } from "./src/config";
 // import { version } from "./package.json";
 
-import { BrainDB } from "braindb-core";
+import { BrainDB } from "@braindb/core";
 
 import { Command } from "commander";
 const program = new Command();
@@ -21,37 +20,37 @@ program
 
 program.parse();
 
-const cfg = await getConfig();
+getConfig().then((cfg) => {
+  const destination = cfg.destination;
+  const destinationPath = cfg.destinationPath;
+  const dbPath =
+    destination +
+    (destinationPath ? destinationPath(`/braindb.sqlite`) : "/braindb.sqlite");
 
-const destination = cfg.destination;
-const destinationPath = cfg.destinationPath;
-const dbPath =
-  destination +
-  (destinationPath ? destinationPath(`/braindb.sqlite`) : "/braindb.sqlite");
+  const bdb = new BrainDB({ ...cfg, dbPath });
 
-const bdb = new BrainDB({ ...cfg, dbPath });
+  bdb
+    .on("*", (action, option) => {
+      if (destination) {
+        if (action === "ready") {
+          // const svgPath = `${destination}/graph.svg`;
+          // writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
+          const jsonPath =
+            destination +
+            (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");
+          writeFileSync(jsonPath, JSON.stringify(bdb.toJson(), null, 2), {
+            encoding: "utf8",
+          });
+          bdb.stop();
+          // console.log("Watching files");
+        }
 
-bdb
-  .on("*", (action, option) => {
-    if (destination) {
-      if (action === "ready") {
-        // const svgPath = `${destination}/graph.svg`;
-        // writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
-        const jsonPath =
-          destination +
-          (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");
-        writeFileSync(jsonPath, JSON.stringify(bdb.toJson(), null, 2), {
-          encoding: "utf8",
-        });
-        bdb.stop();
-        // console.log("Watching files");
+        if (action === "create" || action === "update") {
+          bdb.writeFile(option?.path!, destination, destinationPath);
+        } else if (action === "delete") {
+          unlinkSync(destination + option?.path!);
+        }
       }
-
-      if (action === "create" || action === "update") {
-        bdb.writeFile(option?.path!, destination, destinationPath);
-      } else if (action === "delete") {
-        unlinkSync(destination + option?.path!);
-      }
-    }
-  })
-  .start();
+    })
+    .start();
+});

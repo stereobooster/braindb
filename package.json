@@ -7,9 +7,17 @@
   ],
   "dependencies": {
     "@stereobooster/cyto-nodejs": "^0.0.1",
-    "cytoscape-cola": "^2.5.1"
+    "cytoscape-cola": "^2.5.1",
+    "turbo": "^1.10.16",
+    "typescript": "^5.2.2",
+    "bun-types": "latest"
   },
   "scripts": {
+    "test": "turbo run test",
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "clean": "turbo run clean",
+    "tsc": "turbo run tsc",
     "graph": "cyto-nodejs -s tmp/graph.json -d tmp/graph.svg"
   }
 }

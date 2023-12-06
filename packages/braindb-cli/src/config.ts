@@ -1,7 +1,7 @@
 import { cosmiconfig } from "cosmiconfig";
 import { cwd } from "node:process";
 import { dirname } from "node:path";
-import { BrainDBOptions } from "braindb-core";
+import { BrainDBOptions } from "@braindb/core";
 
 // For inspiration https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L126
 export type Config = BrainDBOptions & {

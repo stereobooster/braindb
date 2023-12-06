@@ -1,4 +1,5 @@
 import mitt, { Emitter, Handler, WildcardHandler } from "mitt";
+// @ts-ignore
 import chokidar, { FSWatcher } from "chokidar";
 
 import { Db, getDb } from "./src/db";
@@ -8,7 +9,7 @@ import { symmetricDifference } from "./src/utils";
 import { deleteFile } from "./src/deleteFile";
 import { generateFile } from "./src/generateFile";
 import { toDot } from "./src/toDot";
-import { toCyjs, toGraphology } from "./src/toJson";
+import {  toGraphology } from "./src/toJson";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -65,7 +66,7 @@ export class BrainDB {
         ignored: /(^|[\/\\])\../, // ignore dotfiles
         persistent: true,
       })
-      .on("error", (error) => console.log(`Watcher error: ${error}`))
+      .on("error", (error: any) => console.log(`Watcher error: ${error}`))
       .on("ready", async () => {
         const res = await Promise.all(this.initQueue);
         this.initQueue = [];
@@ -75,7 +76,7 @@ export class BrainDB {
         res.forEach((path) => this.emitter.emit("create", { path }));
         this.emitter.emit("ready");
       })
-      .on("add", async (file) => {
+      .on("add", async (file: any) => {
         let path = !file.startsWith("/") ? "/" + file : file;
         path = path.replace(this.cfg.source, "");
         if (this.initializing) {
@@ -96,7 +97,7 @@ export class BrainDB {
           this.emitter.emit("update", { path })
         );
       })
-      .on("unlink", (file) => {
+      .on("unlink", (file: any) => {
         let path = !file.startsWith("/") ? "/" + file : file;
         path = path.replace(this.cfg.source, "");
 
@@ -109,7 +110,7 @@ export class BrainDB {
           this.emitter.emit("update", { path })
         );
       })
-      .on("change", async (file) => {
+      .on("change", async (file: any) => {
         let path = !file.startsWith("/") ? "/" + file : file;
         path = path.replace(this.cfg.source, "");
 

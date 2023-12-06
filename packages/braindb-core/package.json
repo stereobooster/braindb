@@ -1,17 +1,35 @@
 {
-  "name": "braindb-core",
-  "module": "index.ts",
-  "type": "module",
+  "name": "@braindb/core",
   "private": true,
   "version": "0.0.1",
+  "type": "module",
+  "source": "index.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.modern.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.module.js",
+  "unpkg": "./dist/index.umd.js",
+  "files": [
+    "./dist/*"
+  ],
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "test": "vitest",
+    "prepublishOnly": "npm run build",
+    "build": "rm -rf dist && microbundle",
+    "dev": "microbundle watch",
+    "clean": "rm -rf dist",
+    "tsc": "tsc",
+    "generate": "drizzle-kit generate:sqlite"
+  },
   "devDependencies": {
-    "bun-types": "latest",
     "drizzle-kit": "^0.19.13",
     "better-sqlite3": "^8.6.0",
-    "@types/better-sqlite3": "^7.6.5"
-  },
-  "scripts": {
-    "generate": "drizzle-kit generate:sqlite"
+    "@types/better-sqlite3": "^7.6.5",
+    "microbundle": "^0.15.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0",
