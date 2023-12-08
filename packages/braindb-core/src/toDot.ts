@@ -1,6 +1,6 @@
 import { isNotNull, sql } from "drizzle-orm";
-import { document, link } from "./schema";
-import { Db } from "./db";
+import { document, link } from "./schema.js";
+import { Db } from "./db.js";
 
 export function toDot(db: Db) {
   const edges = db

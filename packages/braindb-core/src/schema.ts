@@ -6,7 +6,7 @@ import {
   real,
   index,
 } from "drizzle-orm/sqlite-core";
-import { JsonObject } from "./types";
+import { JsonObject } from "./types.js";
 
 // const timestamp = customType<{
 //   data: Date;

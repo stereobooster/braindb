@@ -1,12 +1,16 @@
 import { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 import { ExtractTablesWithRelations } from "drizzle-orm";
-import * as schema from "./schema";
+import * as schema from "./schema.js";
 import { resolve } from "node:path";
 import { RunResult } from "better-sqlite3";
 
-import { drizzle } from "drizzle-orm/bun-sqlite";
-import { migrate } from "drizzle-orm/bun-sqlite/migrator";
-import { Database } from "bun:sqlite";
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
+import Database from "better-sqlite3";
+
+import * as url from 'url';
+const __filename = url.fileURLToPath(import.meta.url);
+
 export const getDb = (connectionString: string) => {
   const sqlite = new Database(connectionString);
   const db = drizzle(sqlite, { schema });

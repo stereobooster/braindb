@@ -1,6 +1,6 @@
 import { eq, isNull, sql } from "drizzle-orm";
-import { link } from "./schema";
-import { Db } from "./db";
+import { link } from "./schema.js";
+import { Db } from "./db.js";
 
 export function resolveLinks(db: Db) {
   // TODO: maybe use separate columns with indexes instead of JSON?

@@ -6,13 +6,13 @@ import { eq } from "drizzle-orm";
 // import GithubSlugger from "github-slugger";
 import { type Node } from "unist";
 
-import { document, link } from "./schema";
-import { JsonObject } from "./types";
-import { mdParser } from "./parser";
-import { getCheksum, getUid, isExternalLink } from "./utils";
-import { deleteFile } from "./deleteFile";
-import { Db } from "./db";
-import { BrainDBOptions } from "../index";
+import { document, link } from "./schema.js";
+import { JsonObject } from "./types.js";
+import { mdParser } from "./parser.js";
+import { getCheksum, getUid, isExternalLink } from "./utils.js";
+import { deleteFile } from "./deleteFile.js";
+import { Db } from "./db.js";
+import { BrainDBOptions } from "./index.js";
 
 export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
   // maybe use prepared statement?

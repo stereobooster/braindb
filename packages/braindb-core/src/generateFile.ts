@@ -4,9 +4,9 @@ import { mkdirp } from "mkdirp";
 import { writeFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { and, eq } from "drizzle-orm";
-import { document, link } from "./schema";
-import { mdParser } from "./parser";
-import { Db } from "./db";
+import { document, link } from "./schema.js";
+import { mdParser } from "./parser.js";
+import { Db } from "./db.js";
 
 export function generateFile(
   db: Db,

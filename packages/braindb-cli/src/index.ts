@@ -1,7 +1,9 @@
+#!/bin/env node
+
 import { unlinkSync } from "node:fs";
 import { writeFileSync } from "node:fs";
 
-import { getConfig } from "./src/config";
+import { getConfig } from "./config.js";
 // import { version } from "./package.json";
 
 import { BrainDB } from "@braindb/core";
@@ -34,7 +36,7 @@ getConfig().then((cfg) => {
       if (destination) {
         if (action === "ready") {
           // const svgPath = `${destination}/graph.svg`;
-          // writeFileSync(svgPath, toSvg(bdb.toDot()), { encoding: "utf8" });
+          
           const jsonPath =
             destination +
             (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");

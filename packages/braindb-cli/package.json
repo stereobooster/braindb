@@ -3,33 +3,26 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "source": "index.ts",
   "exports": {
-    "types": "./dist/index.d.ts",
-    "require": "./dist/index.cjs",
-    "default": "./dist/index.modern.js"
+    "types": "./dist/index.d.js",
+    "default": "./dist/index.js"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.module.js",
-  "unpkg": "./dist/index.umd.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "files": [
     "./dist/*"
   ],
-  "types": "./dist/index.d.ts",
+  "types": "./dist/index.d.js",
+  "bin": "./dist/index.js",
   "scripts": {
     "test": "vitest",
     "prepublishOnly": "npm run build",
-    "build": "rm -rf dist && microbundle",
-    "dev": "microbundle watch",
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "tsc": "tsc"
   },
-  "devDependencies": {
-    "microbundle": "^0.15.1"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
+  "devDependencies": {},
   "dependencies": {
     "@hpcc-js/wasm": "^2.14.0",
     "@braindb/core": "workspace:*",

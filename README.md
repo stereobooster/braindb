@@ -159,6 +159,9 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 ## TODO
 
 - [x] monorepo (turbo + pnpm)
+- [x] microbundle is not a good approach for CLI packages
+  - tried `tsup`. Didn't work either.
+  - tried `tsc` directly, but with `Node16` modules, rather than ES Modules
 - example integration with Astro
   - wikilinks, PML
   - backlinks

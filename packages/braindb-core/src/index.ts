@@ -2,14 +2,14 @@ import mitt, { Emitter, Handler, WildcardHandler } from "mitt";
 // @ts-ignore
 import chokidar, { FSWatcher } from "chokidar";
 
-import { Db, getDb } from "./src/db";
-import { getLinksTo, resolveLinks } from "./src/resolveLinks";
-import { addFile } from "./src/addFile";
-import { symmetricDifference } from "./src/utils";
-import { deleteFile } from "./src/deleteFile";
-import { generateFile } from "./src/generateFile";
-import { toDot } from "./src/toDot";
-import {  toGraphology } from "./src/toJson";
+import { Db, getDb } from "./db.js";
+import { getLinksTo, resolveLinks } from "./resolveLinks.js";
+import { addFile } from "./addFile.js";
+import { symmetricDifference } from "./utils.js";
+import { deleteFile } from "./deleteFile.js";
+import { generateFile } from "./generateFile.js";
+import { toDot } from "./toDot.js";
+import {  toGraphology } from "./toJson.js";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -48,7 +48,7 @@ export class BrainDB {
   constructor(cfg: BrainDBOptions) {
     this.cfg = { ...cfg, source: cfg.source.replace(/\/$/, "") };
     this.cfg.files = `${this.cfg.source}${this.cfg.files || "/**/*.md"}`;
-    // https://nodejs.org/api/events.html#eventtarget-and-event-api
+    // @ts-expect-error https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
     this.db = getDb(this.cfg.dbPath || ":memory:");
   }
@@ -76,8 +76,8 @@ export class BrainDB {
         res.forEach((path) => this.emitter.emit("create", { path }));
         this.emitter.emit("ready");
       })
-      .on("add", async (file: any) => {
-        let path = !file.startsWith("/") ? "/" + file : file;
+      .on("add", async (file: string) => {
+        let path:string = !file.startsWith("/") ? "/" + file : file;
         path = path.replace(this.cfg.source, "");
         if (this.initializing) {
           const p = addFile(this.db, path, this.cfg).then(() => path);
@@ -94,7 +94,7 @@ export class BrainDB {
         resolveLinks(this.db);
         const linksAfter = getLinksTo(this.db, path);
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
-          this.emitter.emit("update", { path })
+          this.emitter.emit("update", { path } as any)
         );
       })
       .on("unlink", (file: any) => {

@@ -1,6 +1,6 @@
-import { document, link } from "./schema";
+import { document, link } from "./schema.js";
 import { eq } from "drizzle-orm";
-import { Db } from "./db";
+import { Db } from "./db.js";
 
 export function deleteFile(db: Db, path: string) {
   db.delete(document).where(eq(document.path, path)).run();
