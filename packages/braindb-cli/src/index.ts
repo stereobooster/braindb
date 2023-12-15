@@ -1,9 +1,10 @@
-#!/bin/env node
+#!/usr/bin/env node
 
 import { unlinkSync } from "node:fs";
 import { writeFileSync } from "node:fs";
 
 import { getConfig } from "./config.js";
+export { Config } from "./config.js";
 // import { version } from "./package.json";
 
 import { BrainDB } from "@braindb/core";
@@ -25,10 +26,7 @@ program.parse();
 getConfig().then((cfg) => {
   const destination = cfg.destination;
   const destinationPath = cfg.destinationPath;
-  const dbPath =
-    destination +
-    (destinationPath ? destinationPath(`/braindb.sqlite`) : "/braindb.sqlite");
-
+  const dbPath = process.cwd() + "/.braindb";
   const bdb = new BrainDB({ ...cfg, dbPath });
 
   bdb
@@ -36,7 +34,7 @@ getConfig().then((cfg) => {
       if (destination) {
         if (action === "ready") {
           // const svgPath = `${destination}/graph.svg`;
-          
+
           const jsonPath =
             destination +
             (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");

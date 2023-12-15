@@ -160,10 +160,15 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 
 - [x] monorepo (turbo + pnpm)
 - [x] microbundle is not a good approach for CLI packages
-  - tried `tsup`. Didn't work either.
+  - tried [`tsup`](https://github.com/egoist/tsup). Didn't work either.
   - tried `tsc` directly, but with `Node16` modules, rather than ES Modules
+- CLI
+  - use `.braindb` as folder instead of file?
 - example integration with Astro
   - wikilinks, PML
+    - function to generate URL (path, fronmatter)
+      - `generateUrl`
+    - config to decide what to generate: PML or relative links
   - backlinks
     - separate JSON file or frontmatter
   - short vs long slug (configuration)
@@ -172,8 +177,6 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
       - unique inside type, default type
   - maybe global graph
   - maybe faceted search
-- CLI
-  - store cache in `.braindb` folder (or file)
 - [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 - [ ] reactivity
   - [signals](https://preactjs.com/guide/v10/signals/)

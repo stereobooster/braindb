@@ -14,6 +14,6 @@ export default {
   source: resolve("../.."),
   files: "/example/**/*.md",
   destination: resolve("../astro-demo/src/content/notes"),
-  destinationPath: (path: string) => path.replace(/^\/example/, "/tmp"),
+  destinationPath: (path: string) => path.replace(/^\/example/, ""),
   cache: false,
 } satisfies Config;

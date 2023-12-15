@@ -13,11 +13,13 @@
     "./dist/*"
   ],
   "types": "./dist/index.d.js",
-  "bin": "./dist/index.js",
+  "bin": {
+    "braindb": "./dist/index.js"
+  },
   "scripts": {
     "test": "vitest",
     "prepublishOnly": "npm run build",
-    "build": "rm -rf dist && tsc",
+    "build": "rm -rf dist && tsc && chmod +x dist/index.js",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "tsc": "tsc"
