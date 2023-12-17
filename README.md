@@ -167,7 +167,7 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 - example integration with Astro
   - wikilinks, PML
     - function to generate URL (path, fronmatter)
-      - `generateUrl`
+      - `generateUrl` based on [astro](https://github.com/withastro/astro/blob/017f981304cd22941a441e0f665f66f75ea76a7d/packages/astro/src/content/utils.ts#L213-L237) 
     - config to decide what to generate: PML or relative links
   - backlinks
     - separate JSON file or frontmatter
