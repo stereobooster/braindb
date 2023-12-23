@@ -1,38 +1,59 @@
 # Usecases
 
-Links by type of href:
+## TODO
 
-- web links
-  - internal, like `/something/slug`
-  - external, like `https://domain/something`
-- Portable markdown links (PML)
-  - like `/folder/name.md`
-- Wikilinks, like `[[slug]]`
-  - short slug, like one word or phrase (without slashes). Example, wikipedia, Obsidian
-  - long slug (path with slashes), like `folder/name`. Example, Astro, Foam
+- clear separation between different resolution methods
+  - options per each resolution methods
+  - if options not provided
+    - eaither use built-in (sane) defaults
+    - or print warning or exit with error
+- config
+  - for links output
+- frontmatter
+  - if it needs filter - one needs to use schema
+  - if it needs additional fields - one can use callback
 
-Links by type of markup:
+Example:
 
-- Markdown link `[name](href)` or `[name](<href>)`
-- HTML link `<a href="href">name</a>`
-- Wikilink `[[slug]]` or `[[slug|name]]`
-- Reference links `[name][def]` and later `[def]: https://href`
+```
+in: {
+  PML: {
+    root: string
+  },
+  web: {
+    url: (filePath, frontmatter_1) => webPath,
+  },
+  wiki: {
+    slug: filePath, frontmatter_1) => slug
+  }
+},
+out: {
+  links: PML | web
+  links: {
+    type: PML,
+    transform: (filePath) => filePath
+  },
+  frontmatter: (filePath, frontmatter_1) => frontmatter_2
+}
+```
 
-|           | web | PML | wiki |
-| --------- | --- | --- | ---- |
-| markdown  | +   | +   |      |
-| HTML      | +   |     |      |
-| wiki      |     |     | +    |
-| Reference | +   | +   |      |
+## Astro integration
 
-## Obvious
+There are two ways:
 
-|                  | Output    | find broken links | build backlinks | build graph | convert wiki-links |
-| ---------------- | --------- | ----------------- | --------------- | ----------- | ------------------ |
-| Hugo → Hugo      | PML       | +                 | +               | +           | -                  |
-| Obsidian → Hugo  | PML       | +                 | +               | +           | +                  |
-| Astro → Astro    | web-links | +                 | +               | +           | -                  |
-| Obsidian → Astro | web-links | +                 | +               | +           | +                  |
+- use CLI: watch files in some folder and output to `src/content` and then use `astro:content` for generated markdown files
+  - currently trying this option
+- use BraindDB directly, similar how one can integrate Contentful or any other 3rd-party content provider
+  - will try next
+
+## Obvious cases
+
+|                  | Output    | convert wiki-links | find broken links | build backlinks | build graph |
+| ---------------- | --------- | ------------------ | ----------------- | --------------- | ----------- |
+| Hugo → Hugo      | PML       | -                  | +                 | +               | +           |
+| Obsidian → Hugo  | PML       | +                  | +                 | +               | +           |
+| Astro → Astro    | web-links | -                  | +                 | +               | +           |
+| Obsidian → Astro | web-links | +                  | +                 | +               | +           |
 
 - PML is the easiest option, because Hugo can figure out links itself
 - Web-links is the only supported option by Astro
@@ -48,7 +69,7 @@ Links by type of markup:
 - additionaly BrainDb can be used to typecheck frontmatter (like in Astro)
   - adding scheme support would also allow to do faceted search
 
-## Out of scope
+## Out of scope (for now)
 
 - conversion from one web-links to another web-links
   - as a workaround one can convert from one web-link to PML, and then PML to another web-links
