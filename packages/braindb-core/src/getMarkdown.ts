@@ -1,20 +1,23 @@
 import { map } from "unist-util-map";
 import { stringify as stringifyYaml } from "yaml";
-import { mkdirp } from "mkdirp";
-import { writeFileSync } from "node:fs";
-import { dirname } from "node:path";
 import { and, eq } from "drizzle-orm";
 import { document, link } from "./schema.js";
 import { mdParser } from "./parser.js";
 import { Db } from "./db.js";
+import { BrainDBOptionsOut } from "./index.js";
 
-export function generateFile(
+export function getMarkdown(
   db: Db,
-  path: string,
-  destination: string,
-  destinationPath?: (path: string) => string
-) {
-  const [d] = db.select().from(document).where(eq(document.path, path)).all();
+  idPath: string,
+  options: BrainDBOptionsOut = {}
+): string | Uint8Array {
+  const { transformPath, linkType, transformFrontmatter } = options;
+
+  const [d] = db.select().from(document).where(eq(document.path, idPath)).all();
+
+  const frontmatter = transformFrontmatter
+    ? transformFrontmatter(idPath, d.frontmatter)
+    : d.frontmatter;
 
   let frontmatterDetected = false;
   const modified = map(d.ast as any, (node) => {
@@ -22,7 +25,7 @@ export function generateFile(
       frontmatterDetected = true;
       return {
         type: "yaml",
-        value: stringifyYaml(d.frontmatter).trim(),
+        value: stringifyYaml(frontmatter).trim(),
       };
     }
     if (node.type === "wikiLink" || node.type === "link") {
@@ -41,15 +44,24 @@ export function generateFile(
 
       if (!resolvedLink || !resolvedLink.to) return node;
 
-      // I can output relative links instead
-      let url = destinationPath
-        ? destinationPath(resolvedLink.to)
-        : resolvedLink.to;
+      let url: string;
+
+      if (linkType === "web") {
+        const toDocument = db
+          .select()
+          .from(document)
+          .where(and(eq(document.path, resolvedLink.to)))
+          .get();
+        if (!toDocument) return node;
+        url = toDocument.url;
+      } else {
+        url = resolvedLink.to;
+        if (transformPath) url = transformPath(url);
+      }
 
       if (!url.startsWith("/")) url = "/" + url;
-      if (resolvedLink.properties.to_anchor) {
+      if (resolvedLink.properties.to_anchor)
         url = url + "#" + resolvedLink.properties.to_anchor;
-      }
       url = encodeURI(url);
 
       return {
@@ -69,11 +81,9 @@ export function generateFile(
   if (!frontmatterDetected) {
     modified.children.unshift({
       type: "yaml",
-      value: stringifyYaml(d.frontmatter).trim(),
+      value: stringifyYaml(frontmatter).trim(),
     });
   }
-  const mdPath =
-    destination + (destinationPath ? destinationPath(d.path) : d.path);
-  mkdirp.sync(dirname(mdPath));
-  writeFileSync(mdPath, mdParser.stringify(modified), { encoding: "utf8" });
+
+  return mdParser.stringify(modified);
 }

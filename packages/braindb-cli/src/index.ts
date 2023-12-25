@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 
 import { unlinkSync } from "node:fs";
+import { mkdirp } from "mkdirp";
 import { writeFileSync } from "node:fs";
+import { dirname } from "node:path";
 
 import { getConfig } from "./config.js";
 export { Config } from "./config.js";
@@ -24,8 +26,8 @@ program
 program.parse();
 
 getConfig().then((cfg) => {
-  const destination = cfg.destination;
-  const destinationPath = cfg.destinationPath;
+  const { destination, transformPath, linkType, transformFrontmatter } = cfg;
+
   const dbPath = process.cwd() + "/.braindb";
   const bdb = new BrainDB({ ...cfg, dbPath });
 
@@ -35,18 +37,32 @@ getConfig().then((cfg) => {
         if (action === "ready") {
           // const svgPath = `${destination}/graph.svg`;
 
-          const jsonPath =
-            destination +
-            (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");
-          writeFileSync(jsonPath, JSON.stringify(bdb.toJson(), null, 2), {
-            encoding: "utf8",
-          });
+          // const jsonPath =
+          //   destination +
+          //   (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");
+          // writeFileSync(jsonPath, JSON.stringify(bdb.toJson(), null, 2), {
+          //   encoding: "utf8",
+          // });
           bdb.stop();
           // console.log("Watching files");
         }
 
         if (action === "create" || action === "update") {
-          bdb.writeFile(option?.path!, destination, destinationPath);
+          const mdPath =
+            destination +
+            (transformPath ? transformPath(option?.path!) : option?.path!);
+          mkdirp.sync(dirname(mdPath));
+          writeFileSync(
+            mdPath,
+            bdb.getMarkdown(option?.path!, {
+              transformPath,
+              linkType,
+              transformFrontmatter,
+            }),
+            {
+              encoding: "utf8",
+            }
+          );
         } else if (action === "delete") {
           unlinkSync(destination + option?.path!);
         }

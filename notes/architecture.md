@@ -1,5 +1,23 @@
 # Architecture notes
 
+## Pathes
+
+- `root` - root of the project. 
+  - Used to convert absolute pathes of files to relative, before storing in the DB. So that DB would be protable
+  - Also used as root for PML
+  - Typically would be the same folder where `.git` stored
+  - Probably would be `cwd` from where CLI runs and where `.braindb` stored
+- `source` - folder relative to root
+  - there can be many sources
+  - for each source we can attach schema, the same way as Astro does
+  - Astro limits depth of source folder to 1, which allows to use it as "type"
+- `filepath` 
+  - one that stored in DB and is relative to root
+  - **but what about ones that are passed to functions?** Shall they be relative to `source`?
+
+All pathes starts with `/` and ends with not `/`.
+Web pathes starts with `/` and ends with `/`.
+
 ## Link types
 
 Links by type of href:
@@ -35,16 +53,16 @@ Links by type of markup:
 | PML       | + (3)      | + (4)       |               |
 | Wiki-link | + (5)      |             |               |
 
-- (1) `generateUrl` - `(filePath, frontmatter_1) => webPath`
+- (1) `url` - `(filePath, frontmatter_1) => webPath`
 - (2) nothing for now, unless there is a need in function which would map from one type of web pathes to another
-- (3) `source` - root folder against which to resolve PML
-- (4) `destinationPath` - `(filePath) => filePath`
-- (5) ? - `(filePath, frontmatter_1) => slug`
+- (3) `root` - root folder against which to resolve PML
+- (4) `transformPath` - `(filePath) => filePath`
+- (5) `slug` - `(filePath, frontmatter_1) => slug`
   - `Astro`: file path (without extension)
   - `Obsidian`: file name (without extension)
   - `Foam`: file name or partial file path (without extension)
   - `Hugo`: file name (without extension), also allows to set custom slug in frontmatter
-- (6) ? - `(filePath, frontmatter_1) => frontmatter_2`
+- (6) `transformFrontmatter` - `(filePath, frontmatter_1) => frontmatter_2`
   - conversion happens as the last step before generating markdown, so "generated" fields are not stored in the DB
   - can be used, for example, to store backlinks in frontmatter
   - or any other generated fields, such as `title` (when converted from Obsidian), `url` or `slug`

@@ -34,11 +34,11 @@ export function unresolvedLinks(db: Db) {
     .all();
 }
 
-export function getLinksTo(db: Db, path: string) {
+export function getLinksTo(db: Db, idPath: string) {
   return db
     .selectDistinct({ from: link.from })
     .from(link)
-    .where(eq(link.to, path))
+    .where(eq(link.to, idPath))
     .all()
     .map((x) => x.from);
 }

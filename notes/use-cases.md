@@ -2,40 +2,10 @@
 
 ## TODO
 
-- clear separation between different resolution methods
-  - options per each resolution methods
-  - if options not provided
-    - eaither use built-in (sane) defaults
-    - or print warning or exit with error
-- config
-  - for links output
 - frontmatter
-  - if it needs filter - one needs to use schema
+  - if it needs filter - one needs to use `schema`
   - if it needs additional fields - one can use callback
-
-Example:
-
-```
-in: {
-  PML: {
-    root: string
-  },
-  web: {
-    url: (filePath, frontmatter_1) => webPath,
-  },
-  wiki: {
-    slug: filePath, frontmatter_1) => slug
-  }
-},
-out: {
-  links: PML | web
-  links: {
-    type: PML,
-    transform: (filePath) => filePath
-  },
-  frontmatter: (filePath, frontmatter_1) => frontmatter_2
-}
-```
+    - a way to add backlinks to frontmatter
 
 ## Astro integration
 

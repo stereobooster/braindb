@@ -4,12 +4,12 @@ import chokidar, { FSWatcher } from "chokidar";
 
 import { Db, getDb } from "./db.js";
 import { getLinksTo, resolveLinks } from "./resolveLinks.js";
-import { addFile } from "./addFile.js";
+import { addDocument } from "./addDocument.js";
 import { symmetricDifference } from "./utils.js";
-import { deleteFile } from "./deleteFile.js";
-import { generateFile } from "./generateFile.js";
+import { deleteDocument } from "./deleteDocument.js";
+import { getMarkdown } from "./getMarkdown.js";
 import { toDot } from "./toDot.js";
-import {  toGraphology } from "./toJson.js";
+import { toGraphology } from "./toJson.js";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -20,34 +20,66 @@ type Events = {
   ready: void;
 };
 
-export type Frontmatter = {
-  slug?: string;
-  url?: string;
+export type Frontmatter = Record<string, unknown>;
+
+export type BrainDBOptionsIn = {
+  /**
+   * If `dbPath` is present, than DB would be persited to the disc and used as cache on the next run
+   */
+  dbPath?: string;
+  /**
+   * Even if `dbPath` is absent, and DB stored in memory it can be long runing process and cache can be used
+   */
+  cache?: boolean;
+  /**
+   * function to generate path (URL) a the document
+   */
+  url?: (filePath: string, frontmatter: Frontmatter) => string;
+  /**
+   * function to generate slug for a document
+   */
+  slug?: (filePath: string, frontmatter: Frontmatter) => string;
+  /**
+   * root of the project
+   */
+  root: string;
+  /**
+   * source files
+   */
+  source?: string;
 };
 
-export type BrainDBOptions = {
-  source: string;
-  // TODO: maybe array?
-  files?: string;
-  generateUrl?: (path: string, frontmatter: Frontmatter) => string;
-  // path for db
-  // if there is a pass then use cache
-  dbPath?: string;
-  cache?: boolean;
-  // TODO: pass ignore from config
+export type BrainDBOptionsOut = {
+  linkType?: "PML" | "web";
+  /**
+   * If output use PML, sometimes it may be required to adjust them to the new root
+   */
+  transformPath?: (path: string) => string;
+  /**
+   *
+   */
+  transformFrontmatter?: (path: string, frontmatter: Frontmatter) => Frontmatter;
 };
 
 export class BrainDB {
-  private cfg: BrainDBOptions;
+  private cfg: BrainDBOptionsIn;
   private emitter: Emitter<Events>;
   private db: Db;
   private watcher: FSWatcher | undefined;
   private initializing = true;
   private initQueue: Promise<string>[] = [];
 
-  constructor(cfg: BrainDBOptions) {
-    this.cfg = { ...cfg, source: cfg.source.replace(/\/$/, "") };
-    this.cfg.files = `${this.cfg.source}${this.cfg.files || "/**/*.md"}`;
+  constructor(cfg: BrainDBOptionsIn) {
+    this.cfg = cfg;
+    this.cfg.root = this.cfg.root.replace(/\/$/, "");
+
+    if (this.cfg.source === undefined) this.cfg.source = "";
+    this.cfg.source = this.cfg.source.replace(/\/$/, "");
+    if (this.cfg.source && !this.cfg.source.startsWith("/"))
+      this.cfg.source = "/" + this.cfg.source;
+
+    if (this.cfg.cache === undefined) this.cfg.cache = true;
+
     // @ts-expect-error https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
     this.db = getDb(this.cfg.dbPath || ":memory:");
@@ -61,8 +93,12 @@ export class BrainDB {
     // what if instead of array - fetch files from DB in the end
     this.initQueue = [];
 
+    const fileToPathId = (file: string) =>
+      (file.startsWith("/") ? file : "/" + file).replace(this.cfg.root, "");
+
+    const files = `${this.cfg.root}${this.cfg.source}/**/*.md`;
     this.watcher = chokidar
-      .watch(this.cfg.files!, {
+      .watch(files, {
         ignored: /(^|[\/\\])\../, // ignore dotfiles
         persistent: true,
       })
@@ -77,50 +113,48 @@ export class BrainDB {
         this.emitter.emit("ready");
       })
       .on("add", async (file: string) => {
-        let path:string = !file.startsWith("/") ? "/" + file : file;
-        path = path.replace(this.cfg.source, "");
+        const idPath = fileToPathId(file);
+
         if (this.initializing) {
-          const p = addFile(this.db, path, this.cfg).then(() => path);
+          const p = addDocument(this.db, idPath, this.cfg).then(() => idPath);
           this.initQueue.push(p);
           await p;
           return;
         }
 
-        const linksBefore = getLinksTo(this.db, path);
+        const linksBefore = getLinksTo(this.db, idPath);
 
-        await addFile(this.db, path, this.cfg);
-        this.emitter.emit("create", { path });
+        await addDocument(this.db, idPath, this.cfg);
+        this.emitter.emit("create", { path: idPath });
 
         resolveLinks(this.db);
-        const linksAfter = getLinksTo(this.db, path);
+        const linksAfter = getLinksTo(this.db, idPath);
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
           this.emitter.emit("update", { path } as any)
         );
       })
-      .on("unlink", (file: any) => {
-        let path = !file.startsWith("/") ? "/" + file : file;
-        path = path.replace(this.cfg.source, "");
+      .on("unlink", (file: string) => {
+        const idPath = fileToPathId(file);
 
-        const linksBefore = getLinksTo(this.db, path);
+        const linksBefore = getLinksTo(this.db, idPath);
 
-        deleteFile(this.db, path);
-        this.emitter.emit("delete", { path });
+        deleteDocument(this.db, idPath);
+        this.emitter.emit("delete", { path: idPath });
 
         symmetricDifference(linksBefore, []).forEach((path) =>
           this.emitter.emit("update", { path })
         );
       })
-      .on("change", async (file: any) => {
-        let path = !file.startsWith("/") ? "/" + file : file;
-        path = path.replace(this.cfg.source, "");
+      .on("change", async (file: string) => {
+        const idPath = fileToPathId(file);
 
-        const linksBefore = getLinksTo(this.db, path);
+        const linksBefore = getLinksTo(this.db, idPath);
 
-        await addFile(this.db, path, this.cfg);
-        this.emitter.emit("update", { path });
+        await addDocument(this.db, idPath, this.cfg);
+        this.emitter.emit("update", { path: idPath });
 
         resolveLinks(this.db);
-        const linksAfter = getLinksTo(this.db, path);
+        const linksAfter = getLinksTo(this.db, idPath);
 
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
           this.emitter.emit("update", { path })
@@ -147,12 +181,15 @@ export class BrainDB {
     return this;
   }
 
+  /**
+   * returns graph as DOT
+   */
   toDot() {
     return toDot(this.db);
   }
 
   /**
-   * returns [Elements JSON](https://js.cytoscape.org/#notation/elements-json)
+   * returns graph as JSON
    */
   toJson() {
     return toGraphology(this.db);
@@ -161,17 +198,11 @@ export class BrainDB {
   // experimental
 
   /**
-   * @deprecated
-   * TODO: return string or stream instead
-   * but I need to use relative paths for this?
-   * getMarkdown() and destination should be optional
+   * Alternatively ther can be method to get document from the DB
+   * and instance of the document would have `getMarkdown` method
    */
-  writeFile(
-    path: string,
-    destination: string,
-    destinationPath?: (path: string) => string
-  ) {
-    return generateFile(this.db, path, destination, destinationPath);
+  getMarkdown(idPath: string, options: BrainDBOptionsOut = {}) {
+    return getMarkdown(this.db, idPath, options);
   }
 
   // documents() {

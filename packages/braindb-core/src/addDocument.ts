@@ -1,5 +1,5 @@
 import { readFile, stat } from "node:fs/promises";
-import { basename, dirname, resolve } from "node:path";
+import { dirname, resolve } from "node:path";
 import { visit, SKIP, EXIT } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
@@ -10,52 +10,64 @@ import { document, link } from "./schema.js";
 import { JsonObject } from "./types.js";
 import { mdParser } from "./parser.js";
 import { getCheksum, getUid, isExternalLink } from "./utils.js";
-import { deleteFile } from "./deleteFile.js";
+import { deleteDocument } from "./deleteDocument.js";
 import { Db } from "./db.js";
-import { BrainDBOptions } from "./index.js";
+import { BrainDBOptionsIn } from "./index.js";
+import { getSlug, getUrl } from "./defaults.js";
 
-export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
+export async function addDocument(db: Db, idPath: string, cfg: BrainDBOptionsIn) {
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
       path: document.path,
       checksum: document.checksum,
       mtime: document.mtime,
-      url: document.url,
-      slug: document.slug,
     })
     .from(document)
-    .where(eq(document.path, path))
+    .where(eq(document.path, idPath))
     .all();
 
-  // https://nodejs.org/api/fs.html#class-fsstats
-  const mtime = (await stat(cfg.source + path)).mtimeMs;
-  // comparing dates is cheaper than checksum, but not as reliable
-  if (cfg.cache && existingDocument && existingDocument.mtime === mtime) return;
+  let mtime = 0;
+  let checksum = "";
+  let markdown = "";
+  const absolutePath = cfg.root + idPath;
 
-  const markdown = await readFile(cfg.source + path, { encoding: "utf8" });
-  const checksum = getCheksum(markdown);
-  if (cfg.cache && existingDocument && existingDocument.checksum === checksum)
-    return;
+  if (cfg.cache) {
+    // https://nodejs.org/api/fs.html#class-fsstats
+    mtime = (await stat(absolutePath)).mtimeMs;
+    // comparing dates is cheaper than checksum, but not as reliable
+    if (existingDocument && existingDocument.mtime === mtime) return;
+
+    markdown = await readFile(absolutePath, { encoding: "utf8" });
+    checksum = getCheksum(markdown);
+    if (existingDocument && existingDocument.checksum === checksum) return;
+  } else {
+    markdown = await readFile(absolutePath, { encoding: "utf8" });
+  }
 
   const ast = await mdParser.parse(markdown);
+  const frontmatter = getFrontmatter(ast);
 
   // typeof document.$inferInsert
   const newDocument = {
-    ...processFile(ast, path),
-    path,
+    frontmatter,
+    // TODO: make id autoicnrement and move out of properties
+    properties: { id: getUid() },
+    path: idPath,
     ast,
     markdown,
     checksum,
     mtime,
-    url: "",
+    url: cfg.url ? cfg.url(idPath, frontmatter) : getUrl(idPath, frontmatter),
+    slug: cfg.slug ? cfg.slug(idPath, frontmatter) : getSlug(idPath, frontmatter),
   };
 
-  if (cfg.generateUrl) {
-    newDocument.url = cfg.generateUrl(path, newDocument.frontmatter);
-  }
+  if (existingDocument) deleteDocument(db, idPath);
 
-  if (existingDocument) deleteFile(db, path);
+  // TODO: should not update frontmatter here,
+  // but title may be exception (or not?), because it is required for wikilinks
+  if (!newDocument.frontmatter.title)
+    newDocument.frontmatter.title = newDocument.slug;
 
   db.insert(document)
     .values(newDocument)
@@ -93,7 +105,7 @@ export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
         }
         // resolve local path
         if (!to_path.startsWith("/")) {
-          to_path = resolve(dirname(path), to_path);
+          to_path = resolve(dirname(idPath), to_path);
         }
       } else {
         label = node.data.alias as string;
@@ -105,9 +117,10 @@ export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
 
       db.insert(link)
         .values({
-          from: path,
+          from: idPath,
           start,
           properties: {},
+          // TODO: remove ids from link
           from_id,
           to_url,
           to_path,
@@ -127,35 +140,16 @@ export async function addFile(db: Db, path: string, cfg: BrainDBOptions) {
   });
 }
 
-/**
- * Extracts frontmatter, slug, url
- */
-export function processFile(ast: Node, path: string) {
+export function getFrontmatter(ast: Node) {
   let frontmatter: JsonObject = {};
   visit(ast as any, (node) => {
     if (node.type === "yaml") {
       /**
-       * can yaml handle none-JSON types?
-       * if yes, than this is a bug
+       * can yaml handle none-JSON types? if yes, than this is a bug
        */
       frontmatter = parseYaml(node.value);
       return EXIT;
     }
   });
-
-  let slug: string;
-  if (frontmatter.slug) {
-    // no validation - trusting source
-    slug = String(frontmatter.slug);
-  } else {
-    slug = basename(path.replace(/_?index\.md$/, ""), ".md") || "/";
-  }
-
-  if (!frontmatter.title) frontmatter.title = slug;
-
-  return {
-    frontmatter,
-    slug,
-    properties: { id: getUid() },
-  };
+  return frontmatter;
 }

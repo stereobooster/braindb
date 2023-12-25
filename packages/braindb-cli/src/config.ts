@@ -1,13 +1,13 @@
 import { cosmiconfig } from "cosmiconfig";
 import { cwd } from "node:process";
-import { dirname } from "node:path";
-import { BrainDBOptions } from "@braindb/core";
+import { BrainDBOptionsIn, BrainDBOptionsOut } from "@braindb/core";
 
 // For inspiration https://github.com/vitejs/vite/blob/main/packages/vite/src/node/config.ts#L126
-export type Config = BrainDBOptions & {
-  destination?: string;
-  destinationPath?: (path: string) => string;
-};
+// TODO: root should be optional
+export type Config = BrainDBOptionsIn &
+  BrainDBOptionsOut & {
+    destination?: string;
+  };
 
 const moduleName = "braindb";
 const explorer = cosmiconfig(moduleName, {
@@ -23,33 +23,23 @@ const explorer = cosmiconfig(moduleName, {
 // shall it use URIEncode or URIDecode?
 // just an example, depends on configuation of static site generator
 // For example, https://gohugo.io/content-management/urls/#tokens
-const generateUrl: (source: string) => BrainDBOptions["generateUrl"] =
-  (source) => (path, frontmatter) => {
-    let url = "";
-    path =
+const generateUrl: (root: string | undefined) => BrainDBOptionsIn["url"] =
+  (source) => (path, _frontmatter) => {
+    const dir = source ? source : "";
+    let url =
       path
-        .replace(dirname(source), "")
-        .replace(/^\/\//, "/")
+        .replace(dir, "")
         .replace(/_?index\.md$/, "")
         .replace(/\.md$/, "") || "/";
 
-    if (frontmatter.slug) {
-      url = `${dirname(path)}/${frontmatter.slug}/`;
-    } else if (frontmatter.url) {
-      url = String(frontmatter.url);
-    } else {
-      url = path;
-    }
-
     if (!url.startsWith("/")) url = "/" + url;
-    if (!url.endsWith("/")) url = url + "/";
 
     return url;
   };
 
 export async function getConfig() {
   const defaultCfg: Config = {
-    source: cwd(),
+    root: cwd(),
     cache: true,
   };
 
@@ -60,6 +50,6 @@ export async function getConfig() {
   } catch (e) {}
 
   const res = { ...defaultCfg, ...cfg };
-  if (!res.generateUrl) res.generateUrl = generateUrl(res.source);
+  if (!res.url) res.url = generateUrl(res.source);
   return res;
 }

@@ -158,25 +158,20 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 
 ## TODO
 
-- [x] monorepo (turbo + pnpm)
-- [x] microbundle is not a good approach for CLI packages
-  - tried [`tsup`](https://github.com/egoist/tsup). Didn't work either.
-  - tried `tsc` directly, but with `Node16` modules, rather than ES Modules
-- CLI
-  - use `.braindb` as folder instead of file?
+- new configs
 - example integration with Astro
-  - wikilinks, PML
-    - function to generate URL (path, fronmatter)
-      - `generateUrl` based on [astro](https://github.com/withastro/astro/blob/017f981304cd22941a441e0f665f66f75ea76a7d/packages/astro/src/content/utils.ts#L213-L237) 
-    - config to decide what to generate: PML or relative links
   - backlinks
-    - separate JSON file or frontmatter
+    - frontmatter
+    - separate JSON file
+      - but in diffrent folder, because you can't mix file-types in Asto
   - short vs long slug (configuration)
     - `/a/b/unique` vs `unique`
     - page type can be part of slug, like `tag:unique` vs `page:unique`
       - unique inside type, default type
   - maybe global graph
   - maybe faceted search
+- CLI
+  - use `.braindb` as folder instead of file?
 - [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 - [ ] reactivity
   - [signals](https://preactjs.com/guide/v10/signals/)
