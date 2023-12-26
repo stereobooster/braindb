@@ -1,20 +1,11 @@
 # Usecases
 
-## TODO
-
-- frontmatter
-  - if it needs filter - one needs to use `schema`
-  - if it needs additional fields - one can use callback
-    - a way to add backlinks to frontmatter
-
 ## Astro integration
 
 There are two ways:
 
 - use CLI: watch files in some folder and output to `src/content` and then use `astro:content` for generated markdown files
-  - currently trying this option
 - use BraindDB directly, similar how one can integrate Contentful or any other 3rd-party content provider
-  - will try next
 
 ## Obvious cases
 

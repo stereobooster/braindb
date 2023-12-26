@@ -1,23 +1,18 @@
 import { map } from "unist-util-map";
 import { stringify as stringifyYaml } from "yaml";
 import { and, eq } from "drizzle-orm";
-import { document, link } from "./schema.js";
+import { DocumentProps, document, link } from "./schema.js";
 import { mdParser } from "./parser.js";
 import { Db } from "./db.js";
-import { BrainDBOptionsOut } from "./index.js";
+import { BrainDBOptionsOut, Frontmatter } from "./index.js";
 
 export function getMarkdown(
   db: Db,
-  idPath: string,
+  frontmatter: Frontmatter,
+  d: DocumentProps,
   options: BrainDBOptionsOut = {}
 ): string | Uint8Array {
-  const { transformPath, linkType, transformFrontmatter } = options;
-
-  const [d] = db.select().from(document).where(eq(document.path, idPath)).all();
-
-  const frontmatter = transformFrontmatter
-    ? transformFrontmatter(idPath, d.frontmatter)
-    : d.frontmatter;
+  const { transformPath, linkType } = options;
 
   let frontmatterDetected = false;
   const modified = map(d.ast as any, (node) => {

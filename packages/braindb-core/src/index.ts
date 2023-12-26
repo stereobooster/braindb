@@ -3,22 +3,25 @@ import mitt, { Emitter, Handler, WildcardHandler } from "mitt";
 import chokidar, { FSWatcher } from "chokidar";
 
 import { Db, getDb } from "./db.js";
-import { getLinksTo, resolveLinks } from "./resolveLinks.js";
+import { getLinksAll, resolveLinks } from "./resolveLinks.js";
 import { addDocument } from "./addDocument.js";
 import { symmetricDifference } from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
-import { getMarkdown } from "./getMarkdown.js";
 import { toDot } from "./toDot.js";
 import { toGraphology } from "./toJson.js";
+import { Document } from "./Document.js";
+import { document } from "./schema.js";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
-  update: { path: string };
-  delete: { path: string };
-  create: { path: string };
+  update: { document: Document };
+  delete: { document: Document };
+  create: { document: Document };
   ready: void;
 };
+
+export { Document };
 
 export type Frontmatter = Record<string, unknown>;
 
@@ -55,10 +58,7 @@ export type BrainDBOptionsOut = {
    * If output use PML, sometimes it may be required to adjust them to the new root
    */
   transformPath?: (path: string) => string;
-  /**
-   *
-   */
-  transformFrontmatter?: (path: string, frontmatter: Frontmatter) => Frontmatter;
+  transformFrontmatter?: (doc: Document) => Frontmatter;
 };
 
 export class BrainDB {
@@ -109,7 +109,9 @@ export class BrainDB {
         resolveLinks(this.db);
         this.initializing = false;
 
-        res.forEach((path) => this.emitter.emit("create", { path }));
+        res.forEach((path) =>
+          this.emitter.emit("create", { document: new Document(this.db, path) })
+        );
         this.emitter.emit("ready");
       })
       .on("add", async (file: string) => {
@@ -122,13 +124,16 @@ export class BrainDB {
           return;
         }
 
-        const linksBefore = getLinksTo(this.db, idPath);
+        const linksBefore = getLinksAll(this.db, idPath, false);
 
         await addDocument(this.db, idPath, this.cfg);
-        this.emitter.emit("create", { path: idPath });
-
         resolveLinks(this.db);
-        const linksAfter = getLinksTo(this.db, idPath);
+        this.emitter.emit("create", {
+          document: new Document(this.db, idPath),
+        });
+
+        const linksAfter = getLinksAll(this.db, idPath, false);
+
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
           this.emitter.emit("update", { path } as any)
         );
@@ -136,28 +141,32 @@ export class BrainDB {
       .on("unlink", (file: string) => {
         const idPath = fileToPathId(file);
 
-        const linksBefore = getLinksTo(this.db, idPath);
+        const linksBefore = getLinksAll(this.db, idPath, false);
 
         deleteDocument(this.db, idPath);
-        this.emitter.emit("delete", { path: idPath });
+        this.emitter.emit("delete", {
+          document: new Document(this.db, idPath),
+        });
 
         symmetricDifference(linksBefore, []).forEach((path) =>
-          this.emitter.emit("update", { path })
+          this.emitter.emit("update", { document: new Document(this.db, path) })
         );
       })
       .on("change", async (file: string) => {
         const idPath = fileToPathId(file);
 
-        const linksBefore = getLinksTo(this.db, idPath);
+        const linksBefore = getLinksAll(this.db, idPath, false);
 
         await addDocument(this.db, idPath, this.cfg);
-        this.emitter.emit("update", { path: idPath });
-
         resolveLinks(this.db);
-        const linksAfter = getLinksTo(this.db, idPath);
+        this.emitter.emit("update", {
+          document: new Document(this.db, idPath),
+        });
+
+        const linksAfter = getLinksAll(this.db, idPath, false);
 
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
-          this.emitter.emit("update", { path })
+          this.emitter.emit("update", { document: new Document(this.db, path) })
         );
       });
 
@@ -197,17 +206,13 @@ export class BrainDB {
 
   // experimental
 
-  /**
-   * Alternatively ther can be method to get document from the DB
-   * and instance of the document would have `getMarkdown` method
-   */
-  getMarkdown(idPath: string, options: BrainDBOptionsOut = {}) {
-    return getMarkdown(this.db, idPath, options);
+  documents() {
+    return this.db
+      .select({ path: document.path })
+      .from(document)
+      .all()
+      .map(({ path }) => new Document(this.db, path));
   }
-
-  // documents() {
-  //   return this.db.select().from(document);
-  // }
 
   // links() {
   //   return this.db.select().from(link);

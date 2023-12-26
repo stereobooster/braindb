@@ -158,20 +158,23 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 
 ## TODO
 
-- new configs
-- example integration with Astro
-  - backlinks
-    - frontmatter
-    - separate JSON file
-      - but in diffrent folder, because you can't mix file-types in Asto
-  - short vs long slug (configuration)
-    - `/a/b/unique` vs `unique`
-    - page type can be part of slug, like `tag:unique` vs `page:unique`
-      - unique inside type, default type
+- example integration with Astro (CLI)
+  - local graph
+    - for graph with depth 1: `backDocuments` and `forwardDocuments` would be enough
   - maybe global graph
   - maybe faceted search
 - CLI
   - use `.braindb` as folder instead of file?
+- `Link` class
+  - to use with `backlinks` and similar methods
+  - accessors: `from()`, `to()`, `label()`, `anchor()`, `title()` document title or header
+- frontmatter
+  - `schema`
+- Astro integration
+  - `getDocuments`
+  - `Document` class
+    - methods: `html()` for Astro
+      - markbroken links with html class
 - [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 - [ ] reactivity
   - [signals](https://preactjs.com/guide/v10/signals/)

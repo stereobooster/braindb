@@ -11,6 +11,7 @@ export { Config } from "./config.js";
 
 import { BrainDB } from "@braindb/core";
 
+import process from "node:process";
 import { Command } from "commander";
 const program = new Command();
 
@@ -19,11 +20,10 @@ program
   // .version(version)
   // .command("start", "start", { isDefault: true, })
   .description("Treat your markdown files as database")
-  .option("--source <path>", "where are markdown files")
-  .option("--destination <path>", "where to output markdown files")
-  .option("--cache", "use cache");
+  .option("--watch", "watch mode");
 
-program.parse();
+const cmd = program.parse();
+const opts = cmd.opts();
 
 getConfig().then((cfg) => {
   const { destination, transformPath, linkType, transformFrontmatter } = cfg;
@@ -35,26 +35,32 @@ getConfig().then((cfg) => {
     .on("*", (action, option) => {
       if (destination) {
         if (action === "ready") {
-          // const svgPath = `${destination}/graph.svg`;
-
           // const jsonPath =
           //   destination +
-          //   (destinationPath ? destinationPath(`/graph.json`) : "/graph.json");
+          //   (transformPath ? transformPath(`/graph.json`) : "/graph.json");
           // writeFileSync(jsonPath, JSON.stringify(bdb.toJson(), null, 2), {
           //   encoding: "utf8",
           // });
-          bdb.stop();
-          // console.log("Watching files");
+
+          if (opts.watch) {
+            console.log("Watching files");
+            process.on("SIGINT", () => {
+              bdb.stop();
+            });
+          } else {
+            bdb.stop();
+          }
         }
 
         if (action === "create" || action === "update") {
+          const document = option?.document!;
+          const path = option?.document?.path()!;
           const mdPath =
-            destination +
-            (transformPath ? transformPath(option?.path!) : option?.path!);
+            destination + (transformPath ? transformPath(path) : path);
           mkdirp.sync(dirname(mdPath));
           writeFileSync(
             mdPath,
-            bdb.getMarkdown(option?.path!, {
+            document.markdown({
               transformPath,
               linkType,
               transformFrontmatter,
@@ -64,7 +70,8 @@ getConfig().then((cfg) => {
             }
           );
         } else if (action === "delete") {
-          unlinkSync(destination + option?.path!);
+          const path = option?.document?.path()!;
+          unlinkSync(destination + path);
         }
       }
     })

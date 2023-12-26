@@ -1,4 +1,4 @@
-import { eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull, not, sql } from "drizzle-orm";
 import { link } from "./schema.js";
 import { Db } from "./db.js";
 
@@ -34,11 +34,49 @@ export function unresolvedLinks(db: Db) {
     .all();
 }
 
-export function getLinksTo(db: Db, idPath: string) {
+/**
+ * Incoming links
+ */
+export function getLinksTo(db: Db, idPath: string, selfLinks = true) {
   return db
     .selectDistinct({ from: link.from })
     .from(link)
-    .where(eq(link.to, idPath))
+    .where(
+      selfLinks
+        ? eq(link.to, idPath)
+        : and(eq(link.to, idPath), not(eq(link.from, idPath)))
+    )
     .all()
     .map((x) => x.from);
+}
+
+/**
+ * Outgoing links
+ */
+export function getLinksFrom(db: Db, idPath: string, selfLinks = true) {
+  return db
+    .selectDistinct({ to: link.to })
+    .from(link)
+    .where(
+      and(
+        not(isNull(link.to)),
+        selfLinks
+          ? eq(link.from, idPath)
+          : and(eq(link.from, idPath), not(eq(link.to, idPath)))
+      )
+    )
+    .all()
+    .map((x) => x.to as string);
+}
+
+/**
+ * Incoming and Outgoing links
+ */
+export function getLinksAll(db: Db, idPath: string, selfLinks = true) {
+  return [
+    ...new Set([
+      ...getLinksTo(db, idPath, selfLinks),
+      ...getLinksFrom(db, idPath, selfLinks),
+    ]),
+  ];
 }

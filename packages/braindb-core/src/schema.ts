@@ -50,6 +50,8 @@ export const document = sqliteTable(
   })
 );
 
+export type DocumentProps = typeof document.$inferSelect;
+
 export const link = sqliteTable(
   "links",
   {
