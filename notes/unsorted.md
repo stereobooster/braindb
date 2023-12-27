@@ -1,27 +1,103 @@
 # unsorted notes
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-```bash
-cd packages/braindb-cli
-bun run index.ts
-```
-
 ## concept
 
-- as content provider for Astro 
-	- https://github.com/withastro/astro/blob/481c13a08c2d6a5bc1b4a8fe4259714d868eb514/packages/astro/src/content/server-listeners.ts#L49-L76
-	- https://docs.astro.build/en/guides/content-collections/
-	- https://contentlayer.dev/docs/getting-started-cddd76b7
+- as content provider for Astro
+  - https://github.com/withastro/astro/blob/481c13a08c2d6a5bc1b4a8fe4259714d868eb514/packages/astro/src/content/server-listeners.ts#L49-L76
+  - https://docs.astro.build/en/guides/content-collections/
+  - https://contentlayer.dev/docs/getting-started-cddd76b7
 - faceted search interface
 - graph interface
   - graph metrices
+
+## TODO Astro
+
+- [ ] tailwind components
+  - https://flowbite.com/docs/getting-started/astro/
+  - https://preline.co/docs/frameworks-astro.html
+  - https://nextui.org/docs/frameworks/astro
+  - https://github.com/surjithctly/astroship
+  - https://daisyui.com/docs/install/
+  - https://astros.zank.studio/
+  - https://windstatic.com/
+  - https://stereobooster.com/posts/component-libraries-trends/#based-on-tailwind
+  - https://docs.astro.build/en/reference/api-reference/#content-collections-astrocontent
+  - https://devdojo.com/pines/docs/contribution
+  - https://github.com/withastro/astro/blob/latest/examples/framework-alpine/astro.config.mjs
+  - https://www.hyperui.dev/
+  - https://merakiui.com/components
+  - https://tw-elements.com/
+  - https://tailwindcomponents.com/
+- faceted search
+  - [pagefind-instantsearch](https://github.com/stereobooster/pagefind-instantsearch)
+  - facets
+  - client side astro component - https://github.com/withastro/starlight/blob/main/packages/starlight/components/Search.astro - tanstack table + solid? - https://daisyui.com/docs/use/ - https://tanstack.com/table/v8/docs/adapters/solid-table - https://ui.shadcn.com/docs/components/data-table - https://flowbite.com/blocks/application/advanced-tables/ - https://tw-elements.com/docs/standard/data/datatables/ - https://solid-ui-components.vercel.app/docs/components/table
+- start off by implementing concrete example and generalize later
+  - lists
+    - latest (by publish date, or by modification date)
+    - alphabetical
+    - other
+      - time line, graph, calendar
+  - sidebar
+    - custom
+    - file tree
+    - facets
+      - tags, categories
+      - publish date (but why)
+      - file tree can be one of filters (hierarchical)
+      - custom facets per category
+  - standalone pages
+    - what about sidebar?
+    - Right sidebar
+      - ToC
+      - backlinks
+      - mini graph
+  - tags pages
+    - do I need them? I can reuse faceted search instead
+    - but what about SEO?
+- [ ] take any data set
+  - sample data https://github.com/analysis-tools-dev/static-analysis/tree/master/data/tools
+  - https://github.com/analysis-tools-dev/static-analysis/tree/master/data/tools
+  - https://github.com/gohugoio/hugoDocs/blob/master/content/en/functions/data/GetCSV.md
+  - https://github.com/mdn/content/blob/main/files/en-us/web/css/-webkit-mask-composite/index.md
+  - https://michelebertoli.github.io/css-in-js/ maybe
+  - https://github.com/Devographics/entities/tree/main maybe
+
+## Astro search plugins
+
+- [orama](https://docs.oramasearch.com/open-source/plugins/plugin-astro)
+  - [uses generated HTML](https://github.com/oramasearch/orama/blob/main/packages/plugin-astro/src/index.ts)
+- for pagefind see [starlight](https://github.com/withastro/starlight/)
+  - [uses generated HTML](https://github.com/withastro/starlight/blob/d2822a1127c622e086ad8877a07adad70d8c3aab/packages/starlight/index.ts#L61-L72)
+- [minisearch](https://github.com/Barnabas/astro-minisearch/)
+  - [uses source files](https://github.com/Barnabas/astro-minisearch/blob/main/demo/src/pages/search.json.js#L11-L17)
+- [fuse](https://github.com/johnny-mh/blog2/tree/main/packages/astro-fuse)
+  - can use [source files](https://github.com/johnny-mh/blog2/blob/main/packages/astro-fuse/src/basedOnSource.ts)
+  - and [generated HTML](https://github.com/johnny-mh/blog2/blob/main/packages/astro-fuse/src/basedOnOutput.ts)
+- [lunr](https://github.com/jackcarey/astro-lunr)
+  - [uses generated HTML](https://github.com/jackcarey/astro-lunr/blob/master/src/index.ts)
+
+## Extract text
+
+- [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)
+- [strip-markdown](https://www.npmjs.com/package/strip-markdown)
+- [remark-plain-text](https://www.npmjs.com/package/remark-plain-text)
+
+## DB + httpvfs
+
+Idea:
+
+- save data in SQLite or DuckDB
+- use wasm library on the client side to do full text search and faceting
+- use httpvfs to prevent full download of the file
+  - https://phiresky.github.io/blog/2021/hosting-sqlite-databases-on-github-pages/
+    - https://github.com/phiresky/sql.js-httpvfs
+  - https://news.ycombinator.com/item?id=29040120
+  - https://www.npmjs.com/package/@degulabs/sqlite_web_vfs
+- but DuckDB wasm [size is big](https://github.com/duckdb/duckdb-wasm/discussions/1469)
+- it is possible to do faceting with SQL, it is not optimal though
+  - https://blog.jooq.org/how-to-calculate-multiple-aggregate-functions-in-a-single-query/
+  - https://github.com/lana-k/sqliteviz/wiki/How-to-build-a-pivot-table-in-SQLite
 
 ### Core
 

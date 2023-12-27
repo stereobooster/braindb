@@ -4,6 +4,7 @@ import { getMarkdown } from "./getMarkdown.js";
 import { BrainDBOptionsOut } from "./index.js";
 import { DocumentProps, document } from "./schema.js";
 import { getLinksTo } from "./resolveLinks.js";
+import { getHtml } from "./getHtml.js";
 
 export class Document {
   private idPath: string;
@@ -49,6 +50,9 @@ export class Document {
 
     return getMarkdown(this.db, frontmatter, this.getDoc(), options);
   }
+  html() {
+    return getHtml(this.db, this.getDoc());
+  }
   /**
    * Like backLinks, but returns unique documents, that links to this one
    */
@@ -60,7 +64,7 @@ export class Document {
   // TODO: backLinks, but I need `Link` class first
   // experimental
   title() {
-    return this.getDoc().frontmatter!["title"] as string || this.slug();
+    return (this.getDoc().frontmatter!["title"] as string) || this.slug();
   }
   // id() {
   //   return this.getDoc().properties["id"] as string

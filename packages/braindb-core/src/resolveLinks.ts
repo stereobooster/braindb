@@ -1,4 +1,4 @@
-import { and, eq, isNull, not, sql } from "drizzle-orm";
+import { and, eq, isNull, ne, sql, isNotNull } from "drizzle-orm";
 import { link } from "./schema.js";
 import { Db } from "./db.js";
 
@@ -44,7 +44,7 @@ export function getLinksTo(db: Db, idPath: string, selfLinks = true) {
     .where(
       selfLinks
         ? eq(link.to, idPath)
-        : and(eq(link.to, idPath), not(eq(link.from, idPath)))
+        : and(eq(link.to, idPath), ne(link.from, idPath))
     )
     .all()
     .map((x) => x.from);
@@ -59,10 +59,10 @@ export function getLinksFrom(db: Db, idPath: string, selfLinks = true) {
     .from(link)
     .where(
       and(
-        not(isNull(link.to)),
+        isNotNull(link.to),
         selfLinks
           ? eq(link.from, idPath)
-          : and(eq(link.from, idPath), not(eq(link.to, idPath)))
+          : and(eq(link.from, idPath), ne(link.to, idPath))
       )
     )
     .all()

@@ -158,23 +158,25 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 
 ## TODO
 
-- example integration with Astro (CLI)
-  - local graph
-    - for graph with depth 1: `backDocuments` and `forwardDocuments` would be enough
-  - maybe global graph
-  - maybe faceted search
-- CLI
-  - use `.braindb` as folder instead of file?
+- Astro integration
+  - `html()`
+    - use mdast to hast instead of hack with reparsing
+    - mark broken links with html class
+    - syntax highlighter for code
+    - and probably something else
 - `Link` class
   - to use with `backlinks` and similar methods
   - accessors: `from()`, `to()`, `label()`, `anchor()`, `title()` document title or header
 - frontmatter
   - `schema`
-- Astro integration
-  - `getDocuments`
-  - `Document` class
-    - methods: `html()` for Astro
-      - markbroken links with html class
+- CLI
+  - use `.braindb` as folder instead of file?
+- Astro integration 2
+  - local graph
+    - for graph with depth 1: `backDocuments` and `forwardDocuments` would be enough
+    - `cyto-nodejs` doesn't fit. I want to try https://github.com/graphology/graphology/blob/master/src/svg/index.js
+  - maybe global graph
+  - maybe faceted search
 - [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 - [ ] reactivity
   - [signals](https://preactjs.com/guide/v10/signals/)

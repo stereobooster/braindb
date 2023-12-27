@@ -206,12 +206,21 @@ export class BrainDB {
 
   // experimental
 
-  documents() {
-    return this.db
-      .select({ path: document.path })
-      .from(document)
-      .all()
-      .map(({ path }) => new Document(this.db, path));
+  async documents() {
+    const result = this.initializing
+      ? new Promise((resolve) => {
+          // @ts-expect-error TS is wrong
+          this.on("ready", () => resolve());
+        })
+      : Promise.resolve();
+
+    return result.then(() =>
+      this.db
+        .select({ path: document.path })
+        .from(document)
+        .all()
+        .map(({ path }) => new Document(this.db, path))
+    );
   }
 
   // links() {
