@@ -1,15 +1,5 @@
 # unsorted notes
 
-## concept
-
-- as content provider for Astro
-  - https://github.com/withastro/astro/blob/481c13a08c2d6a5bc1b4a8fe4259714d868eb514/packages/astro/src/content/server-listeners.ts#L49-L76
-  - https://docs.astro.build/en/guides/content-collections/
-  - https://contentlayer.dev/docs/getting-started-cddd76b7
-- faceted search interface
-- graph interface
-  - graph metrices
-
 ## TODO Astro
 
 - [ ] tailwind components
@@ -129,7 +119,6 @@ db instance with API:
   - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
   - https://github.com/reactjs/react.dev/blob/main/src/content/
 - [ ] on ready use DB to re-emit added?
-- [ ] move out `generateFile` from core?
 - generate JSON for Quartz graphs
   - [ ] backlinks
   - [ ] local graph
@@ -160,10 +149,6 @@ db instance with API:
       - [cypher](https://kuzudb.com/docusaurus/cypher/query-clauses/match)
   - [other graph formats](https://graph.stereobooster.com/notes/File-formats)
 
-### CLI
-
-- [ ] test with node + pnpm
-
 ### GUI
 
 - maybe https://tauri.app/
@@ -173,23 +158,6 @@ db instance with API:
 
 - https://github.com/microsoft/vscode-languageserver-node/tree/main/server
 - https://github.com/ImperiumMaximus/ts-lsp-client
-
-### Links
-
-Input:
-
-- portable markdown links
-- wikilinks
-- web links
-
-Internally:
-
-- portable markdown links
-
-Output:
-
-- portable markdown links
-- maybe option to output web links
 
 ## TODO
 
@@ -240,16 +208,3 @@ sql parsers (to implement [obsidian-dataview](https://github.com/blacksmithgu/ob
 Incremental parsing:
 
 - https://stereobooster.com/posts/markdown-parsers/#tree-sitter
-
-Monorepo:
-
-- https://github.com/changesets/changesets
-- https://rushjs.io/
-- https://bestofjs.org/projects?tags=monorepo
-- https://dev.to/0xahmad/running-both-nodejs-and-bun-apps-in-turborepo-33id
-- https://earthly.dev/blog/building-js-monorepo/
-- https://lerna.js.org/docs/lerna-and-nx
-- https://bit.dev/docs/quick-start/hello-world
-- https://themeselection.com/javascript-monorepo-tools/
-- https://moonrepo.dev/
-- https://2022.stateofjs.com/en-US/libraries/monorepo-tools/

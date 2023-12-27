@@ -1,12 +1,5 @@
 # Usecases
 
-## Astro integration
-
-There are two ways:
-
-- use CLI: watch files in some folder and output to `src/content` and then use `astro:content` for generated markdown files
-- use BraindDB directly, similar how one can integrate Contentful or any other 3rd-party content provider
-
 ## Obvious cases
 
 |                  | Output    | convert wiki-links | find broken links | build backlinks | build graph |

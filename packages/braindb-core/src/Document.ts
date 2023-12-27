@@ -50,9 +50,6 @@ export class Document {
 
     return getMarkdown(this.db, frontmatter, this.getDoc(), options);
   }
-  html() {
-    return getHtml(this.db, this.getDoc());
-  }
   /**
    * Like backLinks, but returns unique documents, that links to this one
    */
@@ -63,6 +60,9 @@ export class Document {
   }
   // TODO: backLinks, but I need `Link` class first
   // experimental
+  html() {
+    return getHtml(this.db, this.getDoc());
+  }
   title() {
     return (this.getDoc().frontmatter!["title"] as string) || this.slug();
   }
