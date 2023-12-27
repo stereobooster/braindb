@@ -1,0 +1,23 @@
+---
+import Layout from "../layouts/main.astro";
+import { getCollection } from "astro:content";
+
+const notes = await getCollection("notes");
+
+// https://docs.astro.build/en/recipes/modified-time/
+// <time datetime={note.data.publishedDate.toISOString()}>
+//         {note.data.publishedDate.toDateString()}
+//       </time>
+---
+
+<Layout content={{ title: "List of notes" }}>
+  <ul>
+    {
+      notes.map((note) => (
+        <li>
+          <a href={`${note.data.url}`}>{note.data.title}</a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>

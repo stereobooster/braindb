@@ -1,0 +1,34 @@
+---
+import Layout from "../../layouts/main.astro";
+import { getCollection } from "astro:content";
+// 1. Generate a new path for every collection entry
+export async function getStaticPaths() {
+  const notes = await getCollection("notes");
+  return notes.map((note) => {
+    return {
+      params: {
+        url: note.data.url.replace(/^\/notes\//, "").replace(/\/$/, ""),
+      },
+      props: { entry: note },
+    };
+  });
+}
+// 2. For your template, you can get the entry directly from the prop
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout content={entry.data}>
+  <div><b>Title:</b> {entry.data.title}</div>
+  <div>
+    <b>Backlinks:</b>
+    {
+      entry.data.backlinks.map(({ title, url }) => (
+        <li>
+          <a href={url}>{title}</a>
+        </li>
+      ))
+    }
+  </div>
+  <Content />
+</Layout>

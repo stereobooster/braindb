@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/main.astro";
+import { bdb } from "../lib/braindb";
+
+const notes = await bdb.documents();
+---
+
+<Layout content={{ title: "List of notes" }}>
+  <ul>
+    {
+      notes.map((note) => (
+        <li>
+          <a href={`${note.url()}`}>{note.title()}</a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>
