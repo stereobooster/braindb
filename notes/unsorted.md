@@ -6,12 +6,9 @@
   - https://flowbite.com/docs/getting-started/astro/
   - https://preline.co/docs/frameworks-astro.html
   - https://nextui.org/docs/frameworks/astro
-  - https://github.com/surjithctly/astroship
   - https://daisyui.com/docs/install/
-  - https://astros.zank.studio/
   - https://windstatic.com/
   - https://stereobooster.com/posts/component-libraries-trends/#based-on-tailwind
-  - https://docs.astro.build/en/reference/api-reference/#content-collections-astrocontent
   - https://devdojo.com/pines/docs/contribution
   - https://github.com/withastro/astro/blob/latest/examples/framework-alpine/astro.config.mjs
   - https://www.hyperui.dev/
@@ -66,12 +63,6 @@
   - and [generated HTML](https://github.com/johnny-mh/blog2/blob/main/packages/astro-fuse/src/basedOnOutput.ts)
 - [lunr](https://github.com/jackcarey/astro-lunr)
   - [uses generated HTML](https://github.com/jackcarey/astro-lunr/blob/master/src/index.ts)
-
-## Extract text
-
-- [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)
-- [strip-markdown](https://www.npmjs.com/package/strip-markdown)
-- [remark-plain-text](https://www.npmjs.com/package/remark-plain-text)
 
 ## DB + httpvfs
 
@@ -129,11 +120,7 @@ db instance with API:
   - https://www.npmjs.com/package/parse-gitignore
   - https://git-scm.com/docs/gitignore#_pattern_format
   - https://github.com/paulmillr/chokidar#path-filtering
-- events for adding/deleting edges
-- other
-  - `get` (by path)
-  - `getOutgoingLinks`
-  - `getIncomingLinks`
+- events for adding/deleting edges?
 - `query` ?
   - reactive
     - https://rxdb.info/quickstart.html

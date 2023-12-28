@@ -6,11 +6,15 @@ Place to start:
 
 - take existing starlight (Combo WLR)
   - add backlinks
+    - I need `get` method
   - check for broken links
   - add global graph for the content
-    - graphology, static SVG: can I add links?, can I add classes or CSS variables?
-- take existing obsidian (CLI)
-  - use CLI to transform markdown + starlight
+    - [graphology, static SVG](https://github.com/graphology/graphology/blob/master/src/svg/index.js): can I add links?, can I add classes or CSS variables?
+- take existing obsidian (CLI) - use CLI to transform markdown
+  - use starlight
+  - custom theme
+    - https://github.com/zankhq/astros
+    - https://github.com/surjithctly/astroship
 - faceted search
   - use braindb to generate JSON file for facets
   - maybe try pagefind for text search?
@@ -21,6 +25,27 @@ Ideas from discussions:
 - https://github.com/withastro/starlight/discussions/1113
 - https://github.com/withastro/starlight/discussions/1239
 - https://github.com/withastro/starlight/discussions/946
+- https://github.com/withastro/roadmap/discussions/688
+- https://github.com/withastro/roadmap/discussions/769
+- https://github.com/withastro/roadmap/discussions/434
+- https://github.com/withastro/roadmap/discussions/759
+- https://github.com/withastro/roadmap/discussions/736
+- https://github.com/withastro/roadmap/discussions/739
+- https://github.com/withastro/roadmap/discussions/424
+- https://github.com/withastro/roadmap/discussions/704
+- https://github.com/withastro/roadmap/discussions/696
+- https://github.com/withastro/roadmap/discussions/689
+- https://github.com/withastro/roadmap/discussions/686
+- https://github.com/withastro/roadmap/discussions/687
+- https://github.com/withastro/roadmap/discussions/551
+- https://github.com/withastro/roadmap/discussions/423
+- https://github.com/withastro/roadmap/discussions/505
+- https://github.com/withastro/roadmap/discussions/487
+- https://github.com/withastro/roadmap/discussions/470
+- https://github.com/withastro/roadmap/discussions/457
+- https://github.com/withastro/roadmap/discussions/437
+- https://github.com/withastro/roadmap/discussions/334
+- https://github.com/withastro/roadmap/discussions/76
 
 ## Combo without link resolving
 
