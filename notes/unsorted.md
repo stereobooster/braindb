@@ -2,23 +2,24 @@
 
 ## TODO Astro
 
-- [ ] tailwind components
-  - https://flowbite.com/docs/getting-started/astro/
-  - https://preline.co/docs/frameworks-astro.html
-  - https://nextui.org/docs/frameworks/astro
-  - https://daisyui.com/docs/install/
-  - https://windstatic.com/
-  - https://stereobooster.com/posts/component-libraries-trends/#based-on-tailwind
-  - https://devdojo.com/pines/docs/contribution
-  - https://github.com/withastro/astro/blob/latest/examples/framework-alpine/astro.config.mjs
-  - https://www.hyperui.dev/
-  - https://merakiui.com/components
-  - https://tw-elements.com/
-  - https://tailwindcomponents.com/
+- tailwind themes
+  - https://github.com/gndx/ev0-astro-theme
+  - https://github.com/flexdinesh/blogster/tree/main/themes/sleek
+  - https://github.com/satnaing/astro-paper
+  - https://github.com/chrismwilliams/astro-theme-cactus
+  - https://github.com/markteekman/accessible-astro-starter
+  - https://github.com/michael-andreuzza/astrosaas
 - faceted search
   - [pagefind-instantsearch](https://github.com/stereobooster/pagefind-instantsearch)
-  - facets
-  - client side astro component - https://github.com/withastro/starlight/blob/main/packages/starlight/components/Search.astro - tanstack table + solid? - https://daisyui.com/docs/use/ - https://tanstack.com/table/v8/docs/adapters/solid-table - https://ui.shadcn.com/docs/components/data-table - https://flowbite.com/blocks/application/advanced-tables/ - https://tw-elements.com/docs/standard/data/datatables/ - https://solid-ui-components.vercel.app/docs/components/table
+  - facets, client side astro component
+    - https://github.com/withastro/starlight/blob/main/packages/starlight/components/Search.astro
+    - tanstack table + solid?
+    - https://daisyui.com/docs/use/
+    - https://tanstack.com/table/v8/docs/adapters/solid-table
+    - https://ui.shadcn.com/docs/components/data-table
+    - https://flowbite.com/blocks/application/advanced-tables/
+    - https://tw-elements.com/docs/standard/data/datatables/
+    - https://solid-ui-components.vercel.app/docs/components/table
 - start off by implementing concrete example and generalize later
   - lists
     - latest (by publish date, or by modification date)

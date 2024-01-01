@@ -13,8 +13,6 @@ Place to start:
 - take existing obsidian (CLI) - use CLI to transform markdown
   - use starlight
   - custom theme
-    - https://github.com/zankhq/astros
-    - https://github.com/surjithctly/astroship
 - faceted search
   - use braindb to generate JSON file for facets
   - maybe try pagefind for text search?

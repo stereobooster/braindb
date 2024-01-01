@@ -6,7 +6,6 @@ export default defineConfig({
   integrations: [
     tailwind({
       configFile: "./tailwind.config.mjs",
-      // TODO: fix this
       applyBaseStyles: false,
     }),
   ],

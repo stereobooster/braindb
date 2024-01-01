@@ -15,7 +15,7 @@ export async function getStaticPaths() {
 }
 // 2. For your template, you can get the entry directly from the prop
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content, headings } = await entry.render();
 ---
 
 <Layout content={entry.data}>
@@ -30,5 +30,9 @@ const { Content } = await entry.render();
       ))
     }
   </div>
+  <!-- <div>
+    <b>Headings:</b>
+    {JSON.stringify(headings)}
+  </div> -->
   <Content />
 </Layout>

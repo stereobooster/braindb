@@ -169,6 +169,7 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
   - [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)
   - [strip-markdown](https://www.npmjs.com/package/strip-markdown)
   - [remark-plain-text](https://www.npmjs.com/package/remark-plain-text)
+  - mdast-util-to-string
 - `Link` class
   - to use with `backlinks` and similar methods
   - accessors: `from()`, `to()`, `label()`, `anchor()`, `title()` document title or header
