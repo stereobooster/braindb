@@ -150,36 +150,15 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 - CLI to transfor markdown files, for example from Obsidian vault to Hugo format
 - second-brain-note-taking app, like Obsidian or Foam
 
-## TODO
+## Packages
 
-- Astro integration experiment
-  - see [astro integration](/notes/astro-integration.md)
-- `html()`
-  - use `mdast` to `hast` instead of hack with reparsing
-  - mark broken links with html class
-  - syntax highlighter for code
-  - and probably something else
-- `text()`
-  - [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)
-  - [strip-markdown](https://www.npmjs.com/package/strip-markdown)
-  - [remark-plain-text](https://www.npmjs.com/package/remark-plain-text)
-  - [mdast-util-to-string](https://www.npmjs.com/package/mdast-util-to-string)
-- `Link` class
-  - to use with `backlinks` and similar methods
-  - accessors: `from()`, `to()`, `label()`, `anchor()`, `title()` document title or header
-- frontmatter
-  - `schema`
-- CLI
-  - use `.braindb` as folder instead of file?
-- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
-- [ ] reactivity
-  - [signals](https://preactjs.com/guide/v10/signals/)
-  - maybe [rxdb](https://rxdb.info) Observable
-- metadata
-  - frontmatter
-  - gitinfo
-  - incoming links
-- [great.db](https://www.npmjs.com/package/great.db) instead of better-sqlite3?
+- [braindb-core](/packages/braindb-core) - core package
+- [braindb-cli](/packages/braindb-cli) - cli package
+
+Demos:
+
+- [Astro + braindb-cli](/packages/demo-astro-cli)
+- [Astro + braindb-core](/packages/demo-astro-core)
 
 ## Logo
 
