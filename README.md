@@ -1,17 +1,11 @@
-# mddb
+# BrainDB
 
-## Name for the project
-
-- BrainDB - database for your [second brain](https://www.ssp.sh/brain/), [digital garden](https://github.com/MaggieAppleton/digital-gardeners), [zettelkasten](https://zettelkasten.de/posts/overview/)
-- DBrain?
-
-How to name subpackages?
-
-- would be nice to use namespace, like `@braindb/core`
-
-## Icon for the project
-
-- [brain](https://thenounproject.com/search/icons/?q=brain)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logo/logo-dark.svg">
+    <img alt="" src="logo/logo.svg" width="89" height="104">
+  </picture>
+</p>
 
 ## Vision
 
@@ -186,3 +180,7 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
   - gitinfo
   - incoming links
 - [great.db](https://www.npmjs.com/package/great.db) instead of better-sqlite3?
+
+## Logo
+
+Logo by Dairy Free Design from <a href="https://thenounproject.com/browse/icons/term/levitating-brain/" target="_blank" title="levitating brain Icons">Noun Project</a> (CC BY 3.0)
