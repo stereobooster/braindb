@@ -33,6 +33,7 @@ export default {
   url: generateUrl,
   linkType: "web",
   cache: false,
+  transformUnresolvedLink: (x, y) => console.log(`${x}:${y.position.start.line}:${y.position.start.column}`),
   // transformFrontmatter: (doc) => {
   //   const frontmatter = doc.frontmatter();
   //   frontmatter["url"] = doc.url();

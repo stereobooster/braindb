@@ -17,7 +17,7 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
-const doc = await bdb.findDocument(`/notes/${entry.id}`);
+const doc = await bdb.findDocument(`/${entry.collection}/${entry.id}`);
 
 // <div>
 //   <b>Backlinks:</b>

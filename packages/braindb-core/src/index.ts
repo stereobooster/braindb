@@ -60,6 +60,13 @@ export type BrainDBOptionsOut = {
    */
   transformPath?: (path: string) => string;
   transformFrontmatter?: (doc: Document) => Frontmatter;
+  /**
+   * experimental
+   * @param path string
+   * @param node mdast node
+   * @returns undefined | mdast node
+   */
+  transformUnresolvedLink?: (path: string, node: any) => any;
 };
 
 export class BrainDB {

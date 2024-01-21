@@ -26,7 +26,7 @@ const cmd = program.parse();
 const opts = cmd.opts();
 
 getConfig().then((cfg) => {
-  const { destination, transformPath, linkType, transformFrontmatter } = cfg;
+  const { destination, transformPath, linkType, transformFrontmatter, transformUnresolvedLink } = cfg;
 
   const dbPath = process.cwd() + "/.braindb";
   const bdb = new BrainDB({ ...cfg, dbPath });
@@ -64,6 +64,7 @@ getConfig().then((cfg) => {
               transformPath,
               linkType,
               transformFrontmatter,
+              transformUnresolvedLink
             }),
             {
               encoding: "utf8",

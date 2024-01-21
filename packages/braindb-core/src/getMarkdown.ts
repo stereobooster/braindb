@@ -12,7 +12,7 @@ export function getMarkdown(
   d: DocumentProps,
   options: BrainDBOptionsOut = {}
 ): string | Uint8Array {
-  const { transformPath, linkType } = options;
+  const { transformPath, linkType, transformUnresolvedLink } = options;
 
   let frontmatterDetected = false;
   const modified = map(d.ast as any, (node) => {
@@ -37,7 +37,8 @@ export function getMarkdown(
         )
         .all();
 
-      if (!resolvedLink || !resolvedLink.to) return node;
+      if (!resolvedLink || !resolvedLink.to)
+        return (transformUnresolvedLink && transformUnresolvedLink(d.path, node)) || node;
 
       let url: string;
 
@@ -56,8 +57,7 @@ export function getMarkdown(
 
       if (!url.startsWith("/")) url = "/" + url;
 
-      if (resolvedLink.to_anchor)
-        url = url + "#" + resolvedLink.to_anchor;
+      if (resolvedLink.to_anchor) url = url + "#" + resolvedLink.to_anchor;
       url = encodeURI(url);
 
       return {
