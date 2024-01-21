@@ -1,14 +1,14 @@
 ---
 import Layout from "../../layouts/main.astro";
 import { getCollection } from "astro:content";
+import { bdb } from "../../lib/braindb";
+
 // 1. Generate a new path for every collection entry
 export async function getStaticPaths() {
   const notes = await getCollection("notes");
   return notes.map((note) => {
     return {
-      params: {
-        url: note.data.url.replace(/^\/notes\//, "").replace(/\/$/, ""),
-      },
+      params: { slug: note.slug },
       props: { entry: note },
     };
   });
@@ -16,6 +16,19 @@ export async function getStaticPaths() {
 // 2. For your template, you can get the entry directly from the prop
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
+
+const doc = await bdb.findDocument(`/notes/${entry.id}`);
+
+// <div>
+//   <b>Backlinks:</b>
+//   {
+//     entry.data.backlinks.map(({ title, url }) => (
+//       <li>
+//         <a href={url}>{title}</a>
+//       </li>
+//     ))
+//   }
+// </div>
 ---
 
 <Layout content={entry.data}>
@@ -23,9 +36,9 @@ const { Content, headings } = await entry.render();
   <div>
     <b>Backlinks:</b>
     {
-      entry.data.backlinks.map(({ title, url }) => (
+      doc.backDocuments().map((x) => (
         <li>
-          <a href={url}>{title}</a>
+          <a href={x.url()}>{x.title()}</a>
         </li>
       ))
     }

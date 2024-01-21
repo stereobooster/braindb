@@ -1,9 +1,9 @@
 {
-  "name": "absolute-ablation",
+  "name": "demo-astro-core",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "exit 0",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",

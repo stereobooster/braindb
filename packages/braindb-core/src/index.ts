@@ -11,6 +11,7 @@ import { toDot } from "./toDot.js";
 import { toGraphology } from "./toJson.js";
 import { Document } from "./Document.js";
 import { document } from "./schema.js";
+import { eq } from "drizzle-orm";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -206,21 +207,32 @@ export class BrainDB {
 
   // experimental
 
-  async documents() {
-    const result = this.initializing
+  private ready() {
+    return this.initializing
       ? new Promise((resolve) => {
           // @ts-expect-error TS is wrong
           this.on("ready", () => resolve());
         })
       : Promise.resolve();
+  }
 
-    return result.then(() =>
-      this.db
-        .select({ path: document.path })
-        .from(document)
-        .all()
-        .map(({ path }) => new Document(this.db, path))
-    );
+  async documents() {
+    await this.ready();
+    return this.db
+      .select({ path: document.path })
+      .from(document)
+      .all()
+      .map(({ path }) => new Document(this.db, path));
+  }
+
+  async findDocument(path: string) {
+    await this.ready();
+    return this.db
+      .select({ path: document.path })
+      .from(document)
+      .where(eq(document.path, path))
+      .all()
+      .map(({ path }) => new Document(this.db, path))[0];
   }
 
   // links() {

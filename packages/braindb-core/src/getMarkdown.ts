@@ -55,8 +55,9 @@ export function getMarkdown(
       }
 
       if (!url.startsWith("/")) url = "/" + url;
-      if (resolvedLink.properties.to_anchor)
-        url = url + "#" + resolvedLink.properties.to_anchor;
+
+      if (resolvedLink.to_anchor)
+        url = url + "#" + resolvedLink.to_anchor;
       url = encodeURI(url);
 
       return {

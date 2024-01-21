@@ -102,6 +102,9 @@ importers:
       '@braindb/cli':
         specifier: workspace:*
         version: link:../braindb-cli
+      '@braindb/core':
+        specifier: workspace:*
+        version: link:../braindb-core
       '@tailwindcss/typography':
         specifier: ^0.5.10
         version: 0.5.10(tailwindcss@3.4.0)
