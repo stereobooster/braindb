@@ -2,11 +2,13 @@
 
 - Astro integration experiment
   - see [astro integration](/notes/astro-integration.md)
-- Restore toJson/toDot method
 - [Graphology](https://graphology.github.io/) integration
   - make static graph with node on initial load?
   - event listener - when node, edge added or node, edge removed
   - `layout-forceatlas2` + `svg`
+- CLI
+  - use `.braindb` as folder instead of file?
+- Restore `toDot` method
 - Faceted search
   - use event listener to produce JSON
   - use `text()`
@@ -22,8 +24,6 @@
   - and probably something else
 - frontmatter
   - `schema`
-- CLI
-  - use `.braindb` as folder instead of file?
 - [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
 - [ ] reactivity
   - [signals](https://preactjs.com/guide/v10/signals/)

@@ -3,7 +3,9 @@ import path from "node:path";
 import process from "node:process";
 import { BrainDB, type BrainDBOptionsIn } from "@braindb/core";
 
-const generateUrl: BrainDBOptionsIn["url"] = (filePath, _frontmatter) => {
+// slug implementation according to Astro
+// see astro/packages/astro/src/content/utils.ts
+const generateSlug = (filePath: string) => {
   const withoutFileExt = filePath.replace(
     new RegExp(path.extname(filePath) + "$"),
     ""
@@ -16,24 +18,31 @@ const generateUrl: BrainDBOptionsIn["url"] = (filePath, _frontmatter) => {
     .join("/")
     .replace(/\/index$/, "");
 
-  return `${slug}/`;
+  return slug;
 };
 
 export const bdb = new BrainDB({
   root: path.resolve(process.cwd(), "src/content"),
-  url: generateUrl,
+  url: (filePath, _frontmatter) => `${generateSlug(filePath)}/`,
   // source: "/notes",
   // dbPath: process.cwd() + "/.braindb",
   // cache: false,
 });
 
 bdb.start();
-bdb.on("*", (_action, opts) => {
+bdb.on("*", (action, opts) => {
   if (opts) {
     opts.document
       .unresolvedLinks()
       .forEach((link) =>
-        console.log(`${link.from().path()}:${link.line()}:${link.column()}`)
+        console.log(
+          `Unresolved link: ${link
+            .from()
+            .path()}:${link.line()}:${link.column()}`
+        )
       );
+  }
+  if (action === "ready") {
+    // console.log(bdb.toJson());
   }
 });

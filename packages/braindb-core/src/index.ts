@@ -216,9 +216,9 @@ export class BrainDB {
   /**
    * returns graph as DOT
    */
-  toDot() {
-    return toDot(this.db);
-  }
+  // toDot() {
+  //   return toDot(this.db);
+  // }
 
   /**
    * returns graph as JSON

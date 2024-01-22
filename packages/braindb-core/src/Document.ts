@@ -60,7 +60,6 @@ export class Document {
       idPath: this.idPath,
     }).map((from) => new Document(this.db, from));
   }
-  // TODO: backLinks, but I need `Link` class first
   title() {
     return (this.getDoc().frontmatter!["title"] as string) || this.slug();
   }
@@ -81,5 +80,4 @@ export class Document {
   html() {
     return getHtml(this.db, this.getDoc());
   }
-
 }
