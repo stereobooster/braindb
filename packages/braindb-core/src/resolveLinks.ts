@@ -26,18 +26,32 @@ export function resolveLinks(db: Db) {
   );
 }
 
-export function unresolvedLinks(db: Db) {
+export function unresolvedLinks(db: Db, idPath?: string) {
   return db
-    .select({ from: link.from, propperties: link.properties })
+    .select({ from: link.from, start: link.start })
     .from(link)
-    .where(isNull(link.to))
+    .where(
+      idPath === undefined
+        ? isNull(link.to)
+        : and(isNull(link.to), eq(link.from, idPath))
+    )
     .all();
 }
+
+type GetDocumentsProps = {
+  db: Db;
+  idPath: string;
+  selfLinks?: boolean;
+};
 
 /**
  * Incoming links
  */
-export function getLinksTo(db: Db, idPath: string, selfLinks = true) {
+export function getDocumentsFrom({
+  db,
+  idPath,
+  selfLinks = false,
+}: GetDocumentsProps) {
   return db
     .selectDistinct({ from: link.from })
     .from(link)
@@ -53,7 +67,11 @@ export function getLinksTo(db: Db, idPath: string, selfLinks = true) {
 /**
  * Outgoing links
  */
-export function getLinksFrom(db: Db, idPath: string, selfLinks = true) {
+export function getDocumentsTo({
+  db,
+  idPath,
+  selfLinks = false,
+}: GetDocumentsProps) {
   return db
     .selectDistinct({ to: link.to })
     .from(link)
@@ -72,11 +90,6 @@ export function getLinksFrom(db: Db, idPath: string, selfLinks = true) {
 /**
  * Incoming and Outgoing links
  */
-export function getLinksAll(db: Db, idPath: string, selfLinks = true) {
-  return [
-    ...new Set([
-      ...getLinksTo(db, idPath, selfLinks),
-      ...getLinksFrom(db, idPath, selfLinks),
-    ]),
-  ];
+export function getConnectedDocuments(props: GetDocumentsProps) {
+  return [...new Set([...getDocumentsFrom(props), ...getDocumentsTo(props)])];
 }

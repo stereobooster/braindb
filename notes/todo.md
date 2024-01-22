@@ -2,15 +2,14 @@
 
 - Astro integration experiment
   - see [astro integration](/notes/astro-integration.md)
-- broken links
-  - `Document.unresolvedLinks()`?
 - [Graphology](https://graphology.github.io/) integration
-  - event listener - when node, edge added or node, edge removed
+  - make static graph with node on initial load?
   - numeric ids (autoincrement)?
+  - event listener - when node, edge added or node, edge removed
   - `layout-forceatlas2` + `svg`
-- `Link` class
-  - to use with `backlinks` and similar methods
-  - accessors: `from()`, `to()`, `label()`, `anchor()`, `title()` document title or header
+- Link
+  - row, column
+  - document autoincrement id
 - Faceted search
   - use event listener to produce JSON
   - use `text()`

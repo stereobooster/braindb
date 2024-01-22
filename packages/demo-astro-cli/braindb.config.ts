@@ -37,7 +37,7 @@ export default {
   // transformFrontmatter: (doc) => {
   //   const frontmatter = doc.frontmatter();
   //   frontmatter["url"] = doc.url();
-  //   frontmatter["backlinks"] = doc.backDocuments().map((bl) => ({
+  //   frontmatter["backlinks"] = doc.documentsFrom().map((bl) => ({
   //     url: bl.url(),
   //     title: bl.title(),
   //   }));

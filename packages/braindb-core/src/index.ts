@@ -3,7 +3,7 @@ import mitt, { Emitter, Handler, WildcardHandler } from "mitt";
 import chokidar, { FSWatcher } from "chokidar";
 
 import { Db, getDb } from "./db.js";
-import { getLinksAll, resolveLinks } from "./resolveLinks.js";
+import { getConnectedDocuments, resolveLinks } from "./resolveLinks.js";
 import { addDocument } from "./addDocument.js";
 import { symmetricDifference } from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
@@ -132,7 +132,10 @@ export class BrainDB {
           return;
         }
 
-        const linksBefore = getLinksAll(this.db, idPath, false);
+        const linksBefore = getConnectedDocuments({
+          db: this.db,
+          idPath,
+        });
 
         await addDocument(this.db, idPath, this.cfg);
         resolveLinks(this.db);
@@ -140,7 +143,10 @@ export class BrainDB {
           document: new Document(this.db, idPath),
         });
 
-        const linksAfter = getLinksAll(this.db, idPath, false);
+        const linksAfter = getConnectedDocuments({
+          db: this.db,
+          idPath,
+        });
 
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
           this.emitter.emit("update", { path } as any)
@@ -149,7 +155,10 @@ export class BrainDB {
       .on("unlink", (file: string) => {
         const idPath = fileToPathId(file);
 
-        const linksBefore = getLinksAll(this.db, idPath, false);
+        const linksBefore = getConnectedDocuments({
+          db: this.db,
+          idPath,
+        });
 
         deleteDocument(this.db, idPath);
         this.emitter.emit("delete", {
@@ -163,7 +172,10 @@ export class BrainDB {
       .on("change", async (file: string) => {
         const idPath = fileToPathId(file);
 
-        const linksBefore = getLinksAll(this.db, idPath, false);
+        const linksBefore = getConnectedDocuments({
+          db: this.db,
+          idPath,
+        });
 
         await addDocument(this.db, idPath, this.cfg);
         resolveLinks(this.db);
@@ -171,7 +183,10 @@ export class BrainDB {
           document: new Document(this.db, idPath),
         });
 
-        const linksAfter = getLinksAll(this.db, idPath, false);
+        const linksAfter = getConnectedDocuments({
+          db: this.db,
+          idPath,
+        });
 
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
           this.emitter.emit("update", { document: new Document(this.db, path) })

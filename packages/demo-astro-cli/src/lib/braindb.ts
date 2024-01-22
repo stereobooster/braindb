@@ -20,12 +20,16 @@ const generateUrl: BrainDBOptionsIn["url"] = (filePath, _frontmatter) => {
 };
 
 export const bdb = new BrainDB({
-  // dbPath: process.cwd() + "/.braindb",
   root: path.resolve(process.cwd(), "src/content"),
-  // source: "/notes",
   url: generateUrl,
+  // source: "/notes",
+  // dbPath: process.cwd() + "/.braindb",
   // cache: false,
 });
 
 bdb.start();
-// bdb.on("*", (action) => console.log(action));
+// bdb.on("*", (_action, opts) => {
+//   if (opts) {
+//     opts.document.unresolvedLinks().forEach((link) => console.log(link));
+//   }
+// });

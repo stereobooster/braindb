@@ -87,3 +87,5 @@ export const link = sqliteTable(
     to_path: index("to_path").on(t.to_path),
   })
 );
+
+export type LinkProps = typeof link.$inferSelect;
