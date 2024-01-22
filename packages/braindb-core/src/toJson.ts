@@ -1,113 +1,113 @@
-import { isNotNull, sql } from "drizzle-orm";
-import { document, link } from "./schema.js";
+// import { isNotNull, sql } from "drizzle-orm";
+// import { document, link } from "./schema.js";
 import { Db } from "./db.js";
 
-const defaults = {
-  style: [
-    {
-      selector: "node",
-      style: {
-        label: "data(label)",
-      },
-    },
-    {
-      selector: "edge",
-      style: {
-        "curve-style": "bezier",
-        "control-point-step-size": 40,
-      },
-    },
-  ],
-  layout: {
-    name: "grid",
-  },
-  width: 1000,
-  height: 1000,
-  background: "white",
-};
+// const defaults = {
+//   style: [
+//     {
+//       selector: "node",
+//       style: {
+//         label: "data(label)",
+//       },
+//     },
+//     {
+//       selector: "edge",
+//       style: {
+//         "curve-style": "bezier",
+//         "control-point-step-size": 40,
+//       },
+//     },
+//   ],
+//   layout: {
+//     name: "grid",
+//   },
+//   width: 1000,
+//   height: 1000,
+//   background: "white",
+// };
 
-export function toCyjs(db: Db) {
-  const edges = db
-    .select({
-      source: link.from_id,
-      target: link.to_id,
-    })
-    .from(link)
-    // need to show broken links on the graph
-    .where(isNotNull(link.to))
-    .all()
-    .map((data) => ({ data }));
+// export function toCyjs(db: Db) {
+//   const edges = db
+//     .select({
+//       source: link.from_id,
+//       target: link.to_id,
+//     })
+//     .from(link)
+//     // need to show broken links on the graph
+//     .where(isNotNull(link.to))
+//     .all()
+//     .map((data) => ({ data }));
 
-  const nodes = db
-    .select({
-      id: sql<string>`json_extract(${document.properties}, '$.id')`,
-      label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
-    })
-    .from(document)
-    .all()
-    .map((data) => ({ data }));
+//   const nodes = db
+//     .select({
+//       id: sql<string>`json_extract(${document.properties}, '$.id')`,
+//       label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
+//     })
+//     .from(document)
+//     .all()
+//     .map((data) => ({ data }));
 
-  return { elements: { nodes, edges }, ...defaults };
-}
+//   return { elements: { nodes, edges }, ...defaults };
+// }
 
 // https://github.com/vasturiano/react-force-graph/blob/master/src/packages/react-force-graph-3d/index.d.ts#L6
-export function toReactForceGraph(db: Db) {
-  const links = db
-    .select({
-      source: link.from_id,
-      target: link.to_id,
-    })
-    .from(link)
-    // need to show broken links on the graph
-    .where(isNotNull(link.to))
-    .all();
+// export function toReactForceGraph(db: Db) {
+//   const links = db
+//     .select({
+//       source: link.from_id,
+//       target: link.to_id,
+//     })
+//     .from(link)
+//     // need to show broken links on the graph
+//     .where(isNotNull(link.to))
+//     .all();
 
-  const nodes = db
-    .select({
-      id: sql<string>`json_extract(${document.properties}, '$.id')`,
-      label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
-    })
-    .from(document)
-    .all();
+//   const nodes = db
+//     .select({
+//       id: sql<string>`json_extract(${document.properties}, '$.id')`,
+//       label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
+//     })
+//     .from(document)
+//     .all();
 
-  return { nodes, links };
-}
+//   return { nodes, links };
+// }
 
 // https://graphology.github.io/serialization.html#format
-export function toGraphology(db: Db) {
-  const edges = db
-    .select({
-      source: link.from_id,
-      target: link.to_id,
-    })
-    .from(link)
-    // need to show broken links on the graph
-    .where(isNotNull(link.to))
-    .all();
+export function toGraphology(_db: Db) {
+  // const edges = db
+  //   .select({
+  //     source: link.from_id,
+  //     target: link.to_id,
+  //   })
+  //   .from(link)
+  //   // need to show broken links on the graph
+  //   .where(isNotNull(link.to))
+  //   .all();
 
-  const nodes = db
-    .select({
-      key: sql<string>`json_extract(${document.properties}, '$.id')`,
-      label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
-      url: document.url
-    })
-    .from(document)
-    .all()
-    .map(({ key, ...attributes }) => ({
-      key,
-      attributes,
-    }));
+  // const nodes = db
+  //   .select({
+  //     key: sql<string>`json_extract(${document.properties}, '$.id')`,
+  //     label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
+  //     url: document.url
+  //   })
+  //   .from(document)
+  //   .all()
+  //   .map(({ key, ...attributes }) => ({
+  //     key,
+  //     attributes,
+  //   }));
 
-  return {
-    attributes: { name: "g" },
-    options: {
-      allowSelfLoops: true,
-      multi: true,
-      type: "directed",
-    },
-    nodes,
-    edges,
-  };
+  // return {
+  //   attributes: { name: "g" },
+  //   options: {
+  //     allowSelfLoops: true,
+  //     multi: true,
+  //     type: "directed",
+  //   },
+  //   nodes,
+  //   edges,
+  // };
 }
 
 // https://jsongraphformat.info/

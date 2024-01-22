@@ -1,16 +1,23 @@
 {
   "version": "5",
   "dialect": "sqlite",
-  "id": "6e05a885-8d18-44ab-b589-1c32499e4733",
+  "id": "b3b143ce-d981-4bb9-9e53-8c89f9379455",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "documents": {
       "name": "documents",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
         "path": {
           "name": "path",
           "type": "text",
-          "primaryKey": true,
+          "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
@@ -35,6 +42,13 @@
           "notNull": true,
           "autoincrement": false
         },
+        "mtime": {
+          "name": "mtime",
+          "type": "real",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
         "checksum": {
           "name": "checksum",
           "type": "text",
@@ -55,20 +69,6 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
-        },
-        "properties": {
-          "name": "properties",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "mtime": {
-          "name": "mtime",
-          "type": "real",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
         }
       },
       "indexes": {
@@ -85,6 +85,13 @@
             "url"
           ],
           "isUnique": false
+        },
+        "path": {
+          "name": "path",
+          "columns": [
+            "path"
+          ],
+          "isUnique": true
         }
       },
       "foreignKeys": {},
@@ -94,6 +101,13 @@
     "links": {
       "name": "links",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": true
+        },
         "from": {
           "name": "from",
           "type": "text",
@@ -113,27 +127,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "properties": {
-          "name": "properties",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "from_id": {
-          "name": "from_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "to_id": {
-          "name": "to_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         },
         "to_slug": {
@@ -169,6 +162,20 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false,
+          "autoincrement": false
+        },
+        "line": {
+          "name": "line",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "column": {
+          "name": "column",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
           "autoincrement": false
         }
       },

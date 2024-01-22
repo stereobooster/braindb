@@ -2,14 +2,11 @@
 
 - Astro integration experiment
   - see [astro integration](/notes/astro-integration.md)
+- Restore toJson/toDot method
 - [Graphology](https://graphology.github.io/) integration
   - make static graph with node on initial load?
-  - numeric ids (autoincrement)?
   - event listener - when node, edge added or node, edge removed
   - `layout-forceatlas2` + `svg`
-- Link
-  - row, column
-  - document autoincrement id
 - Faceted search
   - use event listener to produce JSON
   - use `text()`

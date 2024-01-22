@@ -9,7 +9,7 @@ import { type Node } from "unist";
 import { document, link } from "./schema.js";
 import { JsonObject } from "./types.js";
 import { mdParser } from "./parser.js";
-import { getCheksum, getUid, isExternalLink } from "./utils.js";
+import { getCheksum, isExternalLink } from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsIn } from "./index.js";
@@ -51,8 +51,6 @@ export async function addDocument(db: Db, idPath: string, cfg: BrainDBOptionsIn)
   // typeof document.$inferInsert
   const newDocument = {
     frontmatter,
-    // TODO: make id autoicnrement and move out of properties
-    properties: { id: getUid() },
     path: idPath,
     ast,
     markdown,
@@ -113,20 +111,20 @@ export async function addDocument(db: Db, idPath: string, cfg: BrainDBOptionsIn)
       }
 
       const start = node.position.start.offset as number;
-      const from_id = newDocument.properties.id;
+      const line = node.position.start.line as number;
+      const column = node.position.start.column as number;
 
       db.insert(link)
         .values({
           from: idPath,
           start,
-          properties: {},
-          // TODO: remove ids from link
-          from_id,
           to_url,
           to_path,
           to_slug,
           to_anchor,
           label,
+          line,
+          column
         })
         .run();
 

@@ -1,8 +1,8 @@
-import { eq, isNull } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { Db } from "./db.js";
 import { getMarkdown } from "./getMarkdown.js";
 import { BrainDBOptionsOut } from "./index.js";
-import { DocumentProps, document, link } from "./schema.js";
+import { DocumentProps, document } from "./schema.js";
 import { getDocumentsFrom, unresolvedLinks } from "./resolveLinks.js";
 import { getHtml } from "./getHtml.js";
 import { Link } from "./Link.js";
@@ -72,9 +72,9 @@ export class Document {
       (x) => new Link(this.db, x.from, x.start)
     );
   }
-  // id() {
-  //   return this.getDoc().properties["id"] as string
-  // }
+  id() {
+    return this.getDoc().id
+  }
   /**
    * experimental
    */

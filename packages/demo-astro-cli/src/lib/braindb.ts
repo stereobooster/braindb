@@ -28,8 +28,12 @@ export const bdb = new BrainDB({
 });
 
 bdb.start();
-// bdb.on("*", (_action, opts) => {
-//   if (opts) {
-//     opts.document.unresolvedLinks().forEach((link) => console.log(link));
-//   }
-// });
+bdb.on("*", (_action, opts) => {
+  if (opts) {
+    opts.document
+      .unresolvedLinks()
+      .forEach((link) =>
+        console.log(`${link.from().path()}:${link.line()}:${link.column()}`)
+      );
+  }
+});

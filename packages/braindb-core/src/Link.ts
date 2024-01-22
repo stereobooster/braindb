@@ -41,15 +41,19 @@ export class Link {
     return this.getLnk().to_anchor;
   }
 
-  // line() {
-  //   throw new Error("Not implemented");
-  // }
+  line() {
+    return this.getLnk().line;
+  }
 
-  // column() {
-  //   throw new Error("Not implemented");
-  // }
+  column() {
+    return this.getLnk().column;
+  }
 
-  // label() {
-  //   throw new Error("Not implemented");
-  // }
+  label() {
+    return this.getLnk().label;
+  }
+
+  id() {
+    return this.getLnk().id;
+  }
 }

@@ -1,7 +1,7 @@
 import type { Config } from "drizzle-kit";
 
 export default {
-  schema: "./src/schema.js",
+  schema: "./src/schema.ts",
   out: "./drizzle",
   // for `bunx drizzle-kit studio` but it doesn't work
   driver: "better-sqlite",

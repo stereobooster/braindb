@@ -9,15 +9,18 @@ export function resolveLinks(db: Db) {
   db.run(
     sql`
   REPLACE INTO links
-  SELECT "from", "path" as "to", "start", 
-    links.properties as "properties",
-    links.from_id as "from_id",
-    json_extract(documents.properties, '$.id') as to_id,
-    links.to_slug as to_slug,
-    links.to_url as to_url,
-    links.to_path as to_path,
-    links.to_anchor as to_anchor,
-    links.label as label
+  SELECT
+    links.id,
+    links."from",
+    documents.path as "to",
+    links.start,
+    links.to_slug,
+    links.to_url,
+    links.to_path,
+    links.to_anchor,
+    links.label,
+    links.line,
+    links.column
   FROM links INNER JOIN documents ON
       links.to_slug = documents.slug OR
       links.to_url = documents.url OR

@@ -24,7 +24,8 @@ import { JsonObject } from "./types.js";
 export const document = sqliteTable(
   "documents",
   {
-    path: text("path").primaryKey(),
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    path: text("path").notNull(),
     // content
     frontmatter: text("frontmatter", { mode: "json" })
       .$type<JsonObject>()
@@ -32,19 +33,16 @@ export const document = sqliteTable(
     ast: text("ast", { mode: "json" }).notNull(),
     markdown: text("markdown").notNull(),
     // to avoide reparse
-    checksum: text("checksum").notNull(),
-    // for link resolution - may add index to it
-    slug: text("slug").notNull(),
-    url: text("url").notNull(),
-    // properties
-    properties: text("properties", { mode: "json" })
-      .$type<JsonObject>()
-      .notNull(),
     // file modification time https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_stat.h.html
     mtime: real("mtime").notNull(),
+    checksum: text("checksum").notNull(),
+    // for link resolution
+    slug: text("slug").notNull(),
+    url: text("url").notNull(),
+    // title: text("title"),
   },
   (t) => ({
-    // path: index("path").on(t.path),
+    path: unique("path").on(t.path),
     slug: index("slug").on(t.slug),
     url: index("url").on(t.url),
   })
@@ -55,6 +53,7 @@ export type DocumentProps = typeof document.$inferSelect;
 export const link = sqliteTable(
   "links",
   {
+    id: integer("id").primaryKey({ autoIncrement: true }),
     // edge for directed graph
     from: text("from").notNull(),
     to: text("to"),
@@ -66,19 +65,13 @@ export const link = sqliteTable(
      * - path + start.column + start.line
      */
     start: integer("start").notNull(),
-    // properties
-    properties: text("properties", { mode: "json" })
-      .$type<JsonObject>()
-      .notNull(),
-    // do I need ast?
-    // ast: text("ast", { mode: "json" }).notNull(),
-    from_id: text("from_id").notNull(),
-    to_id: text("to_id"),
     to_slug: text("to_slug"),
     to_url: text("to_url"),
     to_path: text("to_path"),
     to_anchor: text("to_anchor"),
     label: text("label"),
+    line: integer("line").notNull(),
+    column: integer("column").notNull(),
   },
   (t) => ({
     from_start: unique("from_start").on(t.from, t.start),

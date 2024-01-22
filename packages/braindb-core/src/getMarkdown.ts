@@ -5,6 +5,7 @@ import { DocumentProps, document, link } from "./schema.js";
 import { mdParser } from "./parser.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsOut, Frontmatter } from "./index.js";
+import { isExternalLink } from "./utils.js";
 
 export function getMarkdown(
   db: Db,
@@ -29,6 +30,8 @@ export function getMarkdown(
           ? (node.children[0].value as string)
           : node.data.alias;
 
+      if (isExternalLink(node.url)) return node;
+
       const [resolvedLink] = db
         .select()
         .from(link)
@@ -38,7 +41,10 @@ export function getMarkdown(
         .all();
 
       if (!resolvedLink || !resolvedLink.to)
-        return (transformUnresolvedLink && transformUnresolvedLink(d.path, node)) || node;
+        return (
+          (transformUnresolvedLink && transformUnresolvedLink(d.path, node)) ||
+          node
+        );
 
       let url: string;
 
