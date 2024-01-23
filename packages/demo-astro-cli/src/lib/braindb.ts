@@ -1,7 +1,11 @@
 import { slug as githubSlug } from "github-slugger";
 import path from "node:path";
 import process from "node:process";
-import { BrainDB, type BrainDBOptionsIn } from "@braindb/core";
+import { BrainDB } from "@braindb/core";
+import circular from "graphology-layout/circular";
+import graphology from "graphology";
+// @ts-ignore
+const { MultiGraph } = graphology;
 
 // slug implementation according to Astro
 // see astro/packages/astro/src/content/utils.ts
@@ -30,7 +34,7 @@ export const bdb = new BrainDB({
 });
 
 bdb.start();
-bdb.on("*", (action, opts) => {
+bdb.on("*", (_action, opts) => {
   if (opts) {
     opts.document
       .unresolvedLinks()
@@ -42,7 +46,16 @@ bdb.on("*", (action, opts) => {
         )
       );
   }
-  if (action === "ready") {
-    // console.log(bdb.toJson());
-  }
 });
+
+export const getGraph = async () => {
+  const graph = new MultiGraph();
+  const data = await bdb.toGraphologyJson();
+  graph.import(data as any);
+  graph.forEachNode((node) => {
+    // graph.setNodeAttribute(node, "color", "#f00");
+    graph.setNodeAttribute(node, "size", 0.075);
+  });
+  circular.assign(graph);
+  return graph;
+};

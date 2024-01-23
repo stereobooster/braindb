@@ -213,6 +213,15 @@ export class BrainDB {
     return this;
   }
 
+  private ready() {
+    return this.initializing
+      ? new Promise((resolve) => {
+          // @ts-expect-error TS is wrong
+          this.on("ready", () => resolve());
+        })
+      : Promise.resolve();
+  }
+
   /**
    * returns graph as DOT
    */
@@ -223,20 +232,12 @@ export class BrainDB {
   /**
    * returns graph as JSON
    */
-  toJson() {
+  async toGraphologyJson() {
+    await this.ready();
     return toGraphology(this.db);
   }
 
   // experimental
-
-  private ready() {
-    return this.initializing
-      ? new Promise((resolve) => {
-          // @ts-expect-error TS is wrong
-          this.on("ready", () => resolve());
-        })
-      : Promise.resolve();
-  }
 
   async documents() {
     await this.ready();

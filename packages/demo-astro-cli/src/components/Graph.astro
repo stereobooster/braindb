@@ -1,0 +1,16 @@
+---
+import { renderer, DEFAULTS } from "./graphRenderer";
+
+export interface Props {
+  graph: any;
+}
+
+const { graph } = Astro.props;
+const result = renderer(graph, {
+  ...DEFAULTS,
+  width: 800,
+  height: 400,
+});
+---
+
+<Fragment set:html={result} />

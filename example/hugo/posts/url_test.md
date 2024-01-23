@@ -1,4 +1,4 @@
 ---
-title: Slug test
+title: URL test
 url: other/url-test
 ---

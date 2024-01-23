@@ -1,14 +1,14 @@
 ---
 import Layout from "../layouts/main.astro";
+import Graph from "../components/Graph.astro";
 import { getCollection } from "astro:content";
+import { getGraph } from "../lib/braindb";
 
 const notes = await getCollection("notes");
-
-// https://docs.astro.build/en/recipes/modified-time/
-// <time datetime={note.data.publishedDate.toISOString()}>
-//         {note.data.publishedDate.toDateString()}
-//       </time>
+const graph = await getGraph();
 ---
+
+<Graph graph={graph} />
 
 <Layout content={{ title: "List of notes" }}>
   <ul>

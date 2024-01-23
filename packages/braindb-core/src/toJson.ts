@@ -12,6 +12,8 @@ export function toGraphology(db: Db) {
     .select({
       source: documentFrom.id,
       target: documentTo.id,
+      // key: link.id,
+      // attributes: { label: link.label },
     })
     .from(link)
     .innerJoin(documentFrom, eq(link.from, documentFrom.path))
@@ -23,17 +25,15 @@ export function toGraphology(db: Db) {
   const nodes = db
     .select({
       key: document.id,
-      label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
-      url: document.url,
+      attributes: {
+        label: sql<string>`json_extract(${document.frontmatter}, '$.title')`,
+        url: document.url,
+      },
     })
     .from(document)
-    .all()
-    .map(({ key, ...attributes }) => ({
-      key,
-      attributes,
-    }));
+    .all();
 
-  return {
+    return {
     attributes: { name: "g" },
     options: {
       allowSelfLoops: true,

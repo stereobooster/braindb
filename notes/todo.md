@@ -3,9 +3,9 @@
 - Astro integration experiment
   - see [astro integration](/notes/astro-integration.md)
 - [Graphology](https://graphology.github.io/) integration
-  - make static graph with node on initial load?
+  - add arrows to lines
+  - alternative layouts (`forceatlas2`, `nooverlap`)
   - event listener - when node, edge added or node, edge removed
-  - `layout-forceatlas2` + `svg`
 - CLI
   - use `.braindb` as folder instead of file?
 - Restore `toDot` method
