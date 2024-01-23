@@ -4,9 +4,6 @@
 
 Place to start:
 
-- take existing starlight (Combo WLR)
-  - add global graph for the content
-    - [graphology, static SVG](https://github.com/graphology/graphology/blob/master/src/svg/index.js): can I add links?, can I add classes or CSS variables?
 - take existing obsidian (CLI) - use CLI to transform markdown
   - use starlight
   - custom theme

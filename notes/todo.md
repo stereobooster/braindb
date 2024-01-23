@@ -2,16 +2,15 @@
 
 - Astro integration experiment
   - see [astro integration](/notes/astro-integration.md)
+- Faceted search
+  - use event listener to produce JSON
+  - use `text()` or integrate with pagefind
+- CLI
+  - use `.braindb` as folder instead of file?
 - [Graphology](https://graphology.github.io/) integration
   - add arrows to lines
   - alternative layouts (`forceatlas2`, `nooverlap`)
   - event listener - when node, edge added or node, edge removed
-- CLI
-  - use `.braindb` as folder instead of file?
-- Restore `toDot` method
-- Faceted search
-  - use event listener to produce JSON
-  - use `text()`
 - `text()`
   - [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)
   - [strip-markdown](https://www.npmjs.com/package/strip-markdown)

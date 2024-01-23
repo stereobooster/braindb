@@ -4,7 +4,6 @@ import { getMarkdown } from "./getMarkdown.js";
 import { BrainDBOptionsOut } from "./index.js";
 import { DocumentProps, document } from "./schema.js";
 import { getDocumentsFrom, unresolvedLinks } from "./resolveLinks.js";
-import { getHtml } from "./getHtml.js";
 import { Link } from "./Link.js";
 
 export class Document {
@@ -51,6 +50,12 @@ export class Document {
 
     return getMarkdown(this.db, frontmatter, this.getDoc(), options);
   }
+  title() {
+    return (this.getDoc().frontmatter!["title"] as string) || this.slug();
+  }
+  id() {
+    return this.getDoc().id
+  }
   /**
    * From which documents there are links to this one
    */
@@ -60,9 +65,6 @@ export class Document {
       idPath: this.idPath,
     }).map((from) => new Document(this.db, from));
   }
-  title() {
-    return (this.getDoc().frontmatter!["title"] as string) || this.slug();
-  }
   /**
    * experimental - maybe use instead outgoingLinks(to=null)
    */
@@ -71,13 +73,7 @@ export class Document {
       (x) => new Link(this.db, x.from, x.start)
     );
   }
-  id() {
-    return this.getDoc().id
-  }
-  /**
-   * experimental
-   */
-  html() {
-    return getHtml(this.db, this.getDoc());
-  }
+  // html() {
+  //   return getHtml(this.db, this.getDoc());
+  // }
 }

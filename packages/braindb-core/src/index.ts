@@ -7,7 +7,6 @@ import { getConnectedDocuments, resolveLinks } from "./resolveLinks.js";
 import { addDocument } from "./addDocument.js";
 import { symmetricDifference } from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
-import { toDot } from "./toDot.js";
 import { toGraphology } from "./toJson.js";
 import { Document } from "./Document.js";
 import { document } from "./schema.js";
@@ -222,21 +221,6 @@ export class BrainDB {
       : Promise.resolve();
   }
 
-  /**
-   * returns graph as DOT
-   */
-  // toDot() {
-  //   return toDot(this.db);
-  // }
-
-  /**
-   * returns graph as JSON
-   */
-  async toGraphologyJson() {
-    await this.ready();
-    return toGraphology(this.db);
-  }
-
   // experimental
 
   async documents() {
@@ -261,4 +245,13 @@ export class BrainDB {
   // links() {
   //   return this.db.select().from(link);
   // }
+
+  /**
+   * returns graph as JSON
+   * deprecate in favour of documents, links
+   */
+  async toGraphologyJson() {
+    await this.ready();
+    return toGraphology(this.db);
+  }
 }

@@ -127,24 +127,6 @@ importers:
         specifier: ^3.4.0
         version: 3.4.0
 
-  packages/demo-astro-core:
-    dependencies:
-      '@astrojs/tailwind':
-        specifier: ^5.1.0
-        version: 5.1.0(astro@4.0.8)(tailwindcss@3.4.0)
-      '@braindb/core':
-        specifier: workspace:*
-        version: link:../braindb-core
-      '@tailwindcss/typography':
-        specifier: ^0.5.10
-        version: 0.5.10(tailwindcss@3.4.0)
-      astro:
-        specifier: ^4.0.8
-        version: 4.0.8(typescript@5.2.2)
-      tailwindcss:
-        specifier: ^3.4.0
-        version: 3.4.0
-
 packages:
 
   /@alloc/quick-lru@5.2.0:

@@ -6,6 +6,8 @@ export interface Props {
 }
 
 const { graph } = Astro.props;
+
+// probably need to use cache here
 const result = renderer(graph, {
   ...DEFAULTS,
   width: 800,

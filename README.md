@@ -157,8 +157,7 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 
 Demos:
 
-- [Astro + braindb-cli](/packages/demo-astro-cli)
-- [Astro + braindb-core](/packages/demo-astro-core)
+- [Astro + braindb](/packages/demo-astro-cli)
 
 ## Logo
 
