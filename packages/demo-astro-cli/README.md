@@ -3,7 +3,7 @@
 ## concept
 
 - CLI watches files and writes processed files to `src/content/notes`
-- Astro content collection configures to take files from `src/content/notes`
+- Astro content collection takes files from `src/content/notes`
 
 ## TODO
 
@@ -33,3 +33,42 @@
   - https://github.com/markteekman/accessible-astro-components#usage
   - https://github.com/delucis/astro-embed/tree/main/packages/astro-embed-youtube#readme
   - https://github.com/felix-berlin/astro-breadcrumbs
+- tailwind themes
+  - https://github.com/gndx/ev0-astro-theme
+  - https://github.com/flexdinesh/blogster/tree/main/themes/sleek
+  - https://github.com/satnaing/astro-paper
+  - https://github.com/chrismwilliams/astro-theme-cactus
+  - https://github.com/markteekman/accessible-astro-starter
+  - https://github.com/michael-andreuzza/astrosaas
+- faceted search
+  - facets, client side astro component
+    - https://github.com/withastro/starlight/blob/main/packages/starlight/components/Search.astro
+    - https://daisyui.com/docs/use/
+    - https://tanstack.com/table/v8/docs/adapters/solid-table
+    - https://ui.shadcn.com/docs/components/data-table
+    - https://flowbite.com/blocks/application/advanced-tables/
+    - https://tw-elements.com/docs/standard/data/datatables/
+    - https://solid-ui-components.vercel.app/docs/components/table
+- start off by implementing concrete example and generalize later
+  - lists
+    - latest (by publish date, or by modification date)
+    - alphabetical
+    - other
+      - time line, graph, calendar
+  - sidebar
+    - custom
+    - file tree
+    - facets
+      - tags, categories
+      - publish date (but why)
+      - file tree can be one of filters (hierarchical)
+      - custom facets per category
+  - standalone pages
+    - what about sidebar?
+    - Right sidebar
+      - ToC
+      - backlinks
+      - mini graph
+  - tags pages
+    - do I need them? I can reuse faceted search instead
+    - but what about SEO?

@@ -1,17 +1,5 @@
 # Astro integration
 
-## TODO
-
-Place to start:
-
-- take existing obsidian (CLI) - use CLI to transform markdown
-  - use starlight
-  - custom theme
-- faceted search
-  - use braindb to generate JSON file for facets
-  - maybe try pagefind for text search?
-  - UI: table, hierarchical filter (file tree), tags
-
 Ideas from discussions:
 
 - https://github.com/withastro/starlight/discussions/1113

@@ -103,7 +103,7 @@ export class BrainDB {
     const fileToPathId = (file: string) =>
       (file.startsWith("/") ? file : "/" + file).replace(this.cfg.root, "");
 
-    const files = `${this.cfg.root}${this.cfg.source}/**/*.md`;
+    const files = `${this.cfg.root}${this.cfg.source}/**/*.{md,mdx}`;
     this.watcher = chokidar
       .watch(files, {
         ignored: /(^|[\/\\])\../, // ignore dotfiles

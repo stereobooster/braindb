@@ -3,7 +3,6 @@ import { dirname, resolve } from "node:path";
 import { visit, SKIP, EXIT } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
-// import GithubSlugger from "github-slugger";
 import { type Node } from "unist";
 
 import { document, link } from "./schema.js";
