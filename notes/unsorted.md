@@ -1,44 +1,14 @@
 # unsorted notes
 
-### Core
+### Test with real life example
 
-db instance with API:
-
-- [ ] broken links - show on the graph
-- [ ] test with real life example
-  - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
-  - https://github.com/obsidianmd/obsidian-help (Obsidian)
-  - https://github.com/mdn/content/tree/main/files/en-us (Custom)
-  - https://github.com/github/docs/tree/main/content (Next.js)
-  - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
-  - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
-  - https://github.com/reactjs/react.dev/blob/main/src/content/
-  - sample data https://github.com/analysis-tools-dev/static-analysis/tree/master/data/tools
-  - https://github.com/analysis-tools-dev/static-analysis/tree/master/data/tools
-  - https://github.com/gohugoio/hugoDocs/blob/master/content/en/functions/data/GetCSV.md
-  - https://github.com/mdn/content/blob/main/files/en-us/web/css/-webkit-mask-composite/index.md
-  - https://michelebertoli.github.io/css-in-js/ maybe
-  - https://github.com/Devographics/entities/tree/main maybe
-- [ ] a way to clean up deleted files
-  - mark all new files (`created_at`) than delete from DB and emit events
-- [ ] respect `.gitignore` and output folder
-  - https://www.npmjs.com/package/parse-gitignore
-  - https://git-scm.com/docs/gitignore#_pattern_format
-  - https://github.com/paulmillr/chokidar#path-filtering
-- events for adding/deleting edges?
-- `query` ?
-  - reactive
-    - https://rxdb.info/quickstart.html
-    - https://rethinkdb.com/docs/sql-to-reql/javascript/
-  - specify or discover metadata (frontmatter)
-    - https://docs.astro.build/en/guides/content-collections/#defining-a-collection-schema
-  - sql transformation [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview)
-    - `from "path"`
-    - `select`/`where`/`order` metdata fields
-    - alternatives to `select` - `table`, `plot`, `graph`
-    - path queries
-      - [datalog](https://docs.cozodb.org/en/latest/tips.html)
-      - [cypher](https://kuzudb.com/docusaurus/cypher/query-clauses/match)
+- https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
+- https://github.com/obsidianmd/obsidian-help (Obsidian)
+- https://github.com/mdn/content/tree/main/files/en-us (Custom)
+- https://github.com/github/docs/tree/main/content (Next.js)
+- https://github.com/primer/design/tree/main/content (Gatsby, mdx)
+- https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
+- https://github.com/reactjs/react.dev/blob/main/src/content/
 
 ### GUI
 
@@ -77,6 +47,10 @@ frontend
 tui to run SQL in watch mode
 
 ## Links
+
+- path queries
+  - [datalog](https://docs.cozodb.org/en/latest/tips.html)
+  - [cypher](https://kuzudb.com/docusaurus/cypher/query-clauses/match)
 
 sql parsers (to implement [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview)):
 
