@@ -2,8 +2,6 @@
 
 ## Core
 
-- Readme files for packages
-- Warning about alpha-quality
 - CLI
   - use `.braindb` as folder instead of file?
 - Remove `toGraphologyJson` from core package
