@@ -1,5 +1,10 @@
 {
   "name": "@braindb/core",
+  "version": "0.0.1",
+  "description": "markdown-graph-content-layer-database",
+  "homepage": "https://github.com/stereobooster/braindb",
+  "author": "stereobooster",
+  "license": "MIT",
   "keywords": [
     "markdown",
     "database",
@@ -8,9 +13,6 @@
     "graph",
     "contentlayer"
   ],
-  "description": "markdown-graph-content-layer-database",
-  "homepage": "https://github.com/stereobooster/braindb",
-  "version": "0.0.1",
   "type": "module",
   "exports": {
     "types": "./dist/index.d.js",
