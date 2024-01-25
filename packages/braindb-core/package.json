@@ -1,6 +1,15 @@
 {
   "name": "@braindb/core",
-  "private": true,
+  "keywords": [
+    "markdown",
+    "database",
+    "content",
+    "obsidian",
+    "graph",
+    "contentlayer"
+  ],
+  "description": "markdown-graph-content-layer-database",
+  "homepage": "https://github.com/stereobooster/braindb",
   "version": "0.0.1",
   "type": "module",
   "exports": {
