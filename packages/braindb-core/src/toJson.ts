@@ -33,7 +33,7 @@ export function toGraphology(db: Db) {
     .from(document)
     .all();
 
-    return {
+  return {
     attributes: { name: "g" },
     options: {
       allowSelfLoops: true,

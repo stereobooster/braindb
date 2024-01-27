@@ -7,12 +7,12 @@ import { getConnectedDocuments, resolveLinks } from "./resolveLinks.js";
 import { addDocument } from "./addDocument.js";
 import { symmetricDifference } from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
-import { toGraphology } from "./toJson.js";
 import { Document } from "./Document.js";
-import { document } from "./schema.js";
+import { document, link } from "./schema.js";
 import { eq } from "drizzle-orm";
 import { mkdirp } from "mkdirp";
 import { join } from "node:path";
+import { Link } from "./Link.js";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -229,8 +229,6 @@ export class BrainDB {
       : Promise.resolve();
   }
 
-  // experimental
-
   async documents() {
     await this.ready();
     return this.db
@@ -250,16 +248,12 @@ export class BrainDB {
       .map(({ path }) => new Document(this.db, path))[0];
   }
 
-  // links() {
-  //   return this.db.select().from(link);
-  // }
-
-  /**
-   * returns graph as JSON
-   * deprecate in favour of documents, links
-   */
-  async toGraphologyJson() {
+  async links() {
     await this.ready();
-    return toGraphology(this.db);
+    return this.db
+      .select({ from: link.from, start: link.start })
+      .from(link)
+      .all()
+      .map(({ from, start }) => new Link(this.db, from, start));
   }
 }

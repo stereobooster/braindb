@@ -2,7 +2,6 @@
 
 ## Core
 
-- Remove `toGraphologyJson` from core package
 - `text()`
   - [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)
   - [strip-markdown](https://www.npmjs.com/package/strip-markdown)
