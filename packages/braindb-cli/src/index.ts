@@ -28,7 +28,7 @@ const opts = cmd.opts();
 getConfig().then((cfg) => {
   const { destination, transformPath, linkType, transformFrontmatter, transformUnresolvedLink } = cfg;
 
-  const dbPath = process.cwd() + "/.braindb";
+  const dbPath = process.cwd();
   const bdb = new BrainDB({ ...cfg, dbPath });
 
   bdb

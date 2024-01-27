@@ -2,8 +2,6 @@
 
 ## Core
 
-- CLI
-  - use `.braindb` as folder instead of file?
 - Remove `toGraphologyJson` from core package
 - `text()`
   - [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)

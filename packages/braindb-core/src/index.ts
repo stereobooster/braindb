@@ -11,6 +11,8 @@ import { toGraphology } from "./toJson.js";
 import { Document } from "./Document.js";
 import { document } from "./schema.js";
 import { eq } from "drizzle-orm";
+import { mkdirp } from "mkdirp";
+import { join } from "node:path";
 // import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -89,7 +91,13 @@ export class BrainDB {
 
     // @ts-expect-error https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
-    this.db = getDb(this.cfg.dbPath || ":memory:");
+    if (this.cfg.dbPath) {
+      let dbPath = join(this.cfg.dbPath, ".braindb");
+      mkdirp.sync(dbPath);
+      this.db = getDb(join(dbPath, "db.sqlite"));
+    } else {
+      this.db = getDb(":memory:");
+    }
   }
 
   start() {
