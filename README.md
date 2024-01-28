@@ -12,7 +12,7 @@
 
 ## What is this?
 
-**TL;DR** markdown-graph-content-layer-database. For full description see [vision](/notes/vision.md).
+**TL;DR** markdown-graph-content-layer-database. For the full description see [vision](/notes/vision.md).
 
 ## Packages
 

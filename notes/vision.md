@@ -134,9 +134,9 @@ Other options would be to use some kind of [faceted search interface](https://st
 
 ## Core
 
-Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) is that they are built in another applications and not reusable. I think it would be beneficial to implement **core** library which later could be reused for:
+Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) is that they are built-in into another applications and not reusable. I think it would be beneficial to implement **core** library which, later could be reused for:
 
 - content layer for Astro (or Next.js, Nuxt etc.)
 - Language Server ([LSP](https://microsoft.github.io/language-server-protocol/))
-- CLI to transfor markdown files, for example from Obsidian vault to Hugo format
+- CLI to transfor markdown files, for example, from Obsidian vault to Hugo format
 - second-brain-note-taking app, like Obsidian or Foam

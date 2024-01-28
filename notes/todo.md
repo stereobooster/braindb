@@ -15,7 +15,6 @@
 - [ ] reactivity
   - [signals](https://preactjs.com/guide/v10/signals/)
   - maybe [rxdb](https://rxdb.info) Observable
-- [great.db](https://www.npmjs.com/package/great.db) instead of better-sqlite3?
 
 ## CLI
 

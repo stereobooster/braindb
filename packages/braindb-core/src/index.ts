@@ -13,7 +13,6 @@ import { eq } from "drizzle-orm";
 import { mkdirp } from "mkdirp";
 import { join } from "node:path";
 import { Link } from "./Link.js";
-// import { document, link } from "./src/schema";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
