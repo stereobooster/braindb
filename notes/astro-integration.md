@@ -14,7 +14,6 @@ Ideas from discussions:
 - https://github.com/withastro/roadmap/discussions/424
 - https://github.com/withastro/roadmap/discussions/704
 - https://github.com/withastro/roadmap/discussions/696
-- https://github.com/withastro/roadmap/discussions/689
 - https://github.com/withastro/roadmap/discussions/686
 - https://github.com/withastro/roadmap/discussions/687
 - https://github.com/withastro/roadmap/discussions/551

@@ -59,6 +59,9 @@ importers:
       remark-wiki-link:
         specifier: ^1.0.4
         version: 1.0.4
+      strip-markdown:
+        specifier: ^6.0.0
+        version: 6.0.0
       unified:
         specifier: ^11.0.3
         version: 11.0.3
@@ -5109,6 +5112,12 @@ packages:
   /strip-json-comments@2.0.1:
     resolution: {integrity: sha512-4gB8na07fecVVkOI6Rs4e7T6NOTki5EmL7TUduTs6bu3EdnSycntVJ4re8kgZA+wx9IueI2Y11bfbgwtzuE0KQ==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /strip-markdown@6.0.0:
+    resolution: {integrity: sha512-mSa8FtUoX3ExJYDkjPUTC14xaBAn4Ik5GPQD45G5E2egAmeV3kHgVSTfIoSDggbF6Pk9stahVgqsLCNExv6jHw==}
+    dependencies:
+      '@types/mdast': 4.0.3
     dev: false
 
   /style-to-object@0.4.4:

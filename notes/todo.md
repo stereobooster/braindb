@@ -2,11 +2,6 @@
 
 ## Core
 
-- `text()`
-  - [remark-mdx-to-plain-text](https://www.npmjs.com/package/remark-mdx-to-plain-text)
-  - [strip-markdown](https://www.npmjs.com/package/strip-markdown)
-  - [remark-plain-text](https://www.npmjs.com/package/remark-plain-text)
-  - [mdast-util-to-string](https://www.npmjs.com/package/mdast-util-to-string)
 - frontmatter
   - `schema`
 - [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching

@@ -18,17 +18,6 @@ const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
 
 const doc = await bdb.findDocument(`/${entry.collection}/${entry.id}`);
-
-// <div>
-//   <b>Backlinks:</b>
-//   {
-//     entry.data.backlinks.map(({ title, url }) => (
-//       <li>
-//         <a href={url}>{title}</a>
-//       </li>
-//     ))
-//   }
-// </div>
 ---
 
 <Layout content={entry.data}>

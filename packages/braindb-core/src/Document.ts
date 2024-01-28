@@ -5,6 +5,7 @@ import { BrainDBOptionsOut } from "./index.js";
 import { DocumentProps, document } from "./schema.js";
 import { getDocumentsFrom, unresolvedLinks } from "./resolveLinks.js";
 import { Link } from "./Link.js";
+import { toText } from "./toText.js";
 
 export class Document {
   private idPath: string;
@@ -54,8 +55,9 @@ export class Document {
     return (this.getDoc().frontmatter!["title"] as string) || this.slug();
   }
   id() {
-    return this.getDoc().id
+    return this.getDoc().id;
   }
+
   /**
    * From which documents there are links to this one
    */
@@ -65,6 +67,7 @@ export class Document {
       idPath: this.idPath,
     }).map((from) => new Document(this.db, from));
   }
+
   /**
    * experimental - maybe use instead outgoingLinks(to=null)
    */
@@ -73,7 +76,11 @@ export class Document {
       (x) => new Link(this.db, x.from, x.start)
     );
   }
-  // html() {
-  //   return getHtml(this.db, this.getDoc());
-  // }
+
+  /**
+   * experimental
+   */
+  text() {
+    return toText(this.getDoc().ast);
+  }
 }
