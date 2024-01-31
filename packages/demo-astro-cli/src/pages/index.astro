@@ -2,7 +2,7 @@
 import Layout from "../layouts/main.astro";
 import Graph from "../components/Graph.astro";
 import { getCollection } from "astro:content";
-import { getGraph } from "../lib/braindb";
+import { getGraph } from "../lib/graph";
 
 const notes = await getCollection("notes");
 const graph = await getGraph();

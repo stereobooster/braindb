@@ -2,10 +2,6 @@ import { slug as githubSlug } from "github-slugger";
 import path from "node:path";
 import process from "node:process";
 import { BrainDB } from "@braindb/core";
-import circular from "graphology-layout/circular";
-import graphology from "graphology";
-// @ts-ignore
-const { MultiGraph } = graphology;
 
 // slug implementation according to Astro
 // see astro/packages/astro/src/content/utils.ts
@@ -47,43 +43,3 @@ bdb.on("*", (_action, opts) => {
       );
   }
 });
-
-export const getGraph = async () => {
-  const graph = new MultiGraph();
-  const data = await toGraphologyJson(bdb);
-  graph.import(data as any);
-  graph.forEachNode((node) => {
-    // graph.setNodeAttribute(node, "color", "#f00");
-    graph.setNodeAttribute(node, "size", 0.075);
-  });
-  circular.assign(graph);
-  return graph;
-};
-
-const toGraphologyJson = async (db: BrainDB) => {
-  const nodes = (await db.documents()).map((document) => ({
-    key: document.id(),
-    attributes: {
-      label: document.frontmatter().title as string,
-      url: document.url(),
-    },
-  }));
-
-  const edges = (await db.links())
-    .filter((link) => link.to() !== null)
-    .map((link) => ({
-      source: link.from().id(),
-      target: link.to().id(),
-    }));
-
-  return {
-    attributes: { name: "g" },
-    options: {
-      allowSelfLoops: true,
-      multi: true,
-      type: "directed",
-    },
-    nodes,
-    edges,
-  };
-};

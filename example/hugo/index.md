@@ -19,8 +19,10 @@ Read more here: https://gohugo.io/content-management/urls/
 
 #### Unsupported
 
-[page variables][pagevars]
+[pagevars][]
 [pagevars]: /example/hugo/posts/post
+
+Possible solution: https://github.com/remarkjs/remark-inline-links
 
 ### Portable link
 
