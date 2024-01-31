@@ -69,6 +69,12 @@ export type BrainDBOptionsOut = {
   transformUnresolvedLink?: (path: string, node: any) => any;
 };
 
+// this would be similar to 
+// https://github.com/stereobooster/facets/blob/main/packages/facets/src/Facets.ts#L138-L150
+export type DocumentsOtions = {
+  slug?: string;
+};
+
 export class BrainDB {
   private cfg: BrainDBOptionsIn;
   private emitter: Emitter<Events>;
@@ -219,7 +225,7 @@ export class BrainDB {
     return this;
   }
 
-  private ready() {
+  ready() {
     return this.initializing
       ? new Promise((resolve) => {
           // @ts-expect-error TS is wrong
@@ -228,17 +234,22 @@ export class BrainDB {
       : Promise.resolve();
   }
 
-  async documents() {
-    await this.ready();
-    return this.db
-      .select({ path: document.path })
-      .from(document)
-      .all()
-      .map(({ path }) => new Document(this.db, path));
+  documentsSync(options?: DocumentsOtions) {
+    let query = this.db.select({ path: document.path }).from(document);
+
+    if (options?.slug !== undefined) {
+      query.where(eq(document.slug, options?.slug));
+    }
+
+    return query.all().map(({ path }) => new Document(this.db, path));
   }
 
-  async findDocument(path: string) {
+  async documents(options?: DocumentsOtions) {
     await this.ready();
+    return this.documentsSync(options);
+  }
+
+  findDocumentSync(path: string) {
     return this.db
       .select({ path: document.path })
       .from(document)
@@ -247,12 +258,21 @@ export class BrainDB {
       .map(({ path }) => new Document(this.db, path))[0];
   }
 
-  async links() {
+  async findDocument(path: string) {
     await this.ready();
+    return this.findDocumentSync(path);
+  }
+
+  linksSync() {
     return this.db
       .select({ from: link.from, start: link.start })
       .from(link)
       .all()
       .map(({ from, start }) => new Link(this.db, from, start));
+  }
+
+  async links() {
+    await this.ready();
+    return this.linksSync();
   }
 }
