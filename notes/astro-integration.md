@@ -2,16 +2,13 @@
 
 Ideas from discussions:
 
-- https://github.com/withastro/starlight/discussions/1113
-- https://github.com/withastro/starlight/discussions/1239
-- https://github.com/withastro/starlight/discussions/946
+- https://github.com/withastro/roadmap/discussions/424
 - https://github.com/withastro/roadmap/discussions/688
 - https://github.com/withastro/roadmap/discussions/769
 - https://github.com/withastro/roadmap/discussions/434
 - https://github.com/withastro/roadmap/discussions/759
 - https://github.com/withastro/roadmap/discussions/736
 - https://github.com/withastro/roadmap/discussions/739
-- https://github.com/withastro/roadmap/discussions/424
 - https://github.com/withastro/roadmap/discussions/704
 - https://github.com/withastro/roadmap/discussions/696
 - https://github.com/withastro/roadmap/discussions/686
@@ -22,7 +19,6 @@ Ideas from discussions:
 - https://github.com/withastro/roadmap/discussions/487
 - https://github.com/withastro/roadmap/discussions/470
 - https://github.com/withastro/roadmap/discussions/457
-- https://github.com/withastro/roadmap/discussions/437
 - https://github.com/withastro/roadmap/discussions/334
 - https://github.com/withastro/roadmap/discussions/76
 
