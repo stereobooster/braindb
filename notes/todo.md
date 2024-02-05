@@ -27,8 +27,6 @@
   - use event listener to produce JSON
   - use `text()` or integrate with pagefind
 - [Graphology](https://graphology.github.io/) integration
-  - add arrows to lines
-  - alternative layouts (`forceatlas2`, `nooverlap`)
   - event listener - when node, edge added or node, edge removed
   - show broken links, maybe?
 - `html()`

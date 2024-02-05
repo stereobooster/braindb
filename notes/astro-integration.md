@@ -1,5 +1,8 @@
 # Astro integration
 
+> [!WARNING]
+> This is outdated article.
+
 Ideas from discussions:
 
 - https://github.com/withastro/roadmap/discussions/424
