@@ -32,6 +32,9 @@ importers:
 
   packages/braindb-core:
     dependencies:
+      '@stereobooster/remark-wiki-link':
+        specifier: ^2.0.1
+        version: 2.0.1
       better-sqlite3:
         specifier: ^8.6.0
         version: 8.6.0
@@ -56,9 +59,6 @@ importers:
       remark-stringify:
         specifier: ^10.0.3
         version: 10.0.3
-      remark-wiki-link:
-        specifier: ^1.0.4
-        version: 1.0.4
       strip-markdown:
         specifier: ^6.0.0
         version: 6.0.0
@@ -1336,6 +1336,21 @@ packages:
     requiresBuild: true
     dev: false
     optional: true
+
+  /@stereobooster/mdast-util-wiki-link@0.1.2:
+    resolution: {integrity: sha512-qFkm4mB7vz6M9zX+05+m+CzKGYZAiShS6vQY+hUW7N3fzlVrZMCF8KMGC0GYop3b0UUVeFvpCgSRl/nqqLxsMw==}
+    dependencies:
+      '@babel/runtime': 7.23.2
+      mdast-util-to-markdown: 0.6.5
+    dev: false
+
+  /@stereobooster/remark-wiki-link@2.0.1:
+    resolution: {integrity: sha512-8PJyCp85qX7jnaCvEYzXIjSwzRf5CHWpwn4tnYj+9sgaHjHqbQTr8NPMZ9BkXwRLXg/KgaA5hz/hy2r+QuTtnA==}
+    dependencies:
+      '@babel/runtime': 7.23.2
+      '@stereobooster/mdast-util-wiki-link': 0.1.2
+      micromark-extension-wiki-link: 0.0.4
+    dev: false
 
   /@tailwindcss/typography@0.5.10(tailwindcss@3.4.0):
     resolution: {integrity: sha512-Pe8BuPJQJd3FfRnm6H0ulKIGoMEQS+Vq01R6M5aCrFB/ccR/shT+0kXLjouGC1gFLm9hopTFN+DMP0pfwRWzPw==}
@@ -3495,13 +3510,6 @@ packages:
       '@types/mdast': 4.0.3
     dev: false
 
-  /mdast-util-wiki-link@0.0.2:
-    resolution: {integrity: sha512-lSsR10/dPuYIxzjGZIGA4oYzsnEnqcsD6DTXL0pqdbBzNB9teKVZB2aIzZcUsdg31v/NoHOstkVwzbN6VrQLtw==}
-    dependencies:
-      '@babel/runtime': 7.23.2
-      mdast-util-to-markdown: 0.6.5
-    dev: false
-
   /memoizee@0.4.15:
     resolution: {integrity: sha512-UBWmJpLZd5STPm7PMUlOw/TSy972M+z8gcyQ5veOnSDRREz/0bmpyTfKt3/51DhEBqCZQn1udM/5flcSPYhkdQ==}
     dependencies:
@@ -4743,14 +4751,6 @@ packages:
       '@types/mdast': 4.0.3
       mdast-util-to-markdown: 2.1.0
       unified: 11.0.4
-    dev: false
-
-  /remark-wiki-link@1.0.4:
-    resolution: {integrity: sha512-kLgRlXn5cBMa3Fa+OgcI6L4yyYdI74TdIiynBtOvrZN9q7o4mDCYrfAAt7VgLvQyuLBrPARPM1g67ZuAWA1yFg==}
-    dependencies:
-      '@babel/runtime': 7.23.2
-      mdast-util-wiki-link: 0.0.2
-      micromark-extension-wiki-link: 0.0.4
     dev: false
 
   /repeat-string@1.6.1:
