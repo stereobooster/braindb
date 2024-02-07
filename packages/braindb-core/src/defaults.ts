@@ -4,7 +4,7 @@ import { basename } from "node:path";
 export const getUrl = (filePath: string, _frontmatter: Frontmatter) => {
   let url =
     filePath
-      .replace(/_?index\.md$/, "")
+      .replace(/\/_?index\.md$/, "")
       .replace(/\.md$/, "") || "/";
 
   // if (!url.startsWith("/")) url = "/" + url;
@@ -25,5 +25,5 @@ export const getUrl = (filePath: string, _frontmatter: Frontmatter) => {
 // };
 
 export const getSlug = (filePath: string, _frontmatter: Frontmatter) => {
-  return basename(filePath.replace(/_?index\.md$/, ""), ".md") || "/";
+  return basename(filePath.replace(/\/_?index\.md$/, ""), ".md") || "/";
 };
