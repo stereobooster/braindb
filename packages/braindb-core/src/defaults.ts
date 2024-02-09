@@ -3,9 +3,7 @@ import { basename } from "node:path";
 
 export const getUrl = (filePath: string, _frontmatter: Frontmatter) => {
   let url =
-    filePath
-      .replace(/\/_?index\.md$/, "")
-      .replace(/\.md$/, "") || "/";
+    filePath.replace(/\/_?index\.mdx?$/, "").replace(/\.mdx?$/, "") || "/";
 
   // if (!url.startsWith("/")) url = "/" + url;
   if (!url.endsWith("/")) url = url + "/";
@@ -20,10 +18,10 @@ export const getUrl = (filePath: string, _frontmatter: Frontmatter) => {
 //     // no validation - trusting source
 //     slug = String(frontmatter.slug);
 //   } else {
-//     slug = basename(filePath.replace(/_?index\.md$/, ""), ".md") || "/";
+//     slug = basename(filePath.replace(/\/_?index\.mdx?$/, "")).replace(/\.mdx?$/, "") || "/"
 //   }
 // };
 
-export const getSlug = (filePath: string, _frontmatter: Frontmatter) => {
-  return basename(filePath.replace(/\/_?index\.md$/, ""), ".md") || "/";
-};
+export const getSlug = (filePath: string, _frontmatter: Frontmatter) =>
+  basename(filePath.replace(/\/_?index\.mdx?$/, "")).replace(/\.mdx?$/, "") ||
+  "/";
