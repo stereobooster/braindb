@@ -40,7 +40,8 @@ const generateUrl: (root: string | undefined) => BrainDBOptionsIn["url"] =
 export async function getConfig() {
   const defaultCfg: Config = {
     root: cwd(),
-    cache: true,
+    // TODO: make true when cache would be improved
+    cache: false,
   };
 
   let cfg: Partial<Config> = {};

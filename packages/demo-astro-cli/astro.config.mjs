@@ -12,6 +12,6 @@ export default defineConfig({
     mdx(),
   ],
   vite: {
-    optimizeDeps: { exclude: ["fsevents"] },
+    optimizeDeps: { exclude: ["fsevents", "@node-rs/xxhash-wasm32-wasi"] },
   },
 });

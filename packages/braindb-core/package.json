@@ -40,6 +40,8 @@
     "drizzle-kit": "^0.19.13"
   },
   "dependencies": {
+    "@node-rs/xxhash": "^1.7.0",
+    "@stereobooster/remark-wiki-link": "^2.0.1",
     "better-sqlite3": "^8.6.0",
     "chokidar": "^3.5.3",
     "drizzle-orm": "^0.28.6",
@@ -48,7 +50,6 @@
     "remark-frontmatter": "^4.0.1",
     "remark-parse": "^10.0.2",
     "remark-stringify": "^10.0.3",
-    "@stereobooster/remark-wiki-link": "^2.0.1",
     "strip-markdown": "^6.0.0",
     "unified": "^11.0.3",
     "unist-util-map": "^4.0.0",

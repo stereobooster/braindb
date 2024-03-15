@@ -1,16 +1,7 @@
-import { createHash, randomBytes } from "node:crypto";
+import { xxh64 } from "@node-rs/xxhash";
 
 // can use streaming instead of reading whole file
-// https://github.com/Cyan4973/xxHash
-export const getCheksum = (str: string) =>
-  createHash("md5").update(str, "utf8").digest("base64url");
-
-// https://github.com/juanelas/bigint-crypto-utils/blob/main/src/ts/randBetween.ts
-// it should be of length 26
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
-export const getUid = () =>
-  "n" + randomBytes(128).readBigInt64BE().toString(36).replace("-", "");
-
+export const getCheksum = (str: string) => xxh64(str).toString(36);
 
 const externalLinkRegexp = RegExp(`^[a-z]+://`);
 

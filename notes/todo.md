@@ -2,14 +2,23 @@
 
 ## Core
 
-- frontmatter
+- [ ] sort by date
+  - local date [`(await stat(absolutePath)).mtime`](https://nodejs.org/api/fs.html#class-fsstats)
+  - date from git `execSync('git log -1 --pretty="format:%cI" "${filepath}"');`
+- [ ] cache
+  - take into account configuration in cache
+  - also need to clean up old records (deleted files), otherwise cach will grow indefinetly
+  - do I need to take into account `inode`?
+- [ ] frontmatter
   - `schema`
-- [ ] cache https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
-  - created_at, updated_at
-  - date from git
 - [ ] reactivity
   - [signals](https://preactjs.com/guide/v10/signals/)
   - maybe [rxdb](https://rxdb.info) Observable
+
+## Support Bun
+
+- use [`great.db`](https://www.npmjs.com/package/great.db) instead of `better-sqlite3`
+- use [`xxhash-wasm`](https://github.com/jungomi/xxhash-wasm) instead of `@node-rs/xxhash`
 
 ## CLI
 

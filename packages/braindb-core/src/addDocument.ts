@@ -14,7 +14,11 @@ import { Db } from "./db.js";
 import { BrainDBOptionsIn } from "./index.js";
 import { getSlug, getUrl } from "./defaults.js";
 
-export async function addDocument(db: Db, idPath: string, cfg: BrainDBOptionsIn) {
+export async function addDocument(
+  db: Db,
+  idPath: string,
+  cfg: BrainDBOptionsIn
+) {
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
@@ -26,16 +30,23 @@ export async function addDocument(db: Db, idPath: string, cfg: BrainDBOptionsIn)
     .where(eq(document.path, idPath))
     .all();
 
+  const absolutePath = cfg.root + idPath;
   let mtime = 0;
   let checksum = "";
   let markdown = "";
-  const absolutePath = cfg.root + idPath;
 
   if (cfg.cache) {
     // https://nodejs.org/api/fs.html#class-fsstats
     mtime = (await stat(absolutePath)).mtimeMs;
-    // comparing dates is cheaper than checksum, but not as reliable
-    if (existingDocument && existingDocument.mtime === mtime) return;
+    // https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
+    const trustedTimestamp =
+      existingDocument && Math.abs(existingDocument.mtime - Date.now()) > 1000;
+    if (
+      existingDocument &&
+      trustedTimestamp &&
+      existingDocument.mtime === mtime
+    )
+      return;
 
     markdown = await readFile(absolutePath, { encoding: "utf8" });
     checksum = getCheksum(markdown);
@@ -56,7 +67,9 @@ export async function addDocument(db: Db, idPath: string, cfg: BrainDBOptionsIn)
     checksum,
     mtime,
     url: cfg.url ? cfg.url(idPath, frontmatter) : getUrl(idPath, frontmatter),
-    slug: cfg.slug ? cfg.slug(idPath, frontmatter) : getSlug(idPath, frontmatter),
+    slug: cfg.slug
+      ? cfg.slug(idPath, frontmatter)
+      : getSlug(idPath, frontmatter),
   };
 
   if (existingDocument) deleteDocument(db, idPath);
@@ -123,7 +136,7 @@ export async function addDocument(db: Db, idPath: string, cfg: BrainDBOptionsIn)
           to_anchor,
           label,
           line,
-          column
+          column,
         })
         .run();
 
