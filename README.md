@@ -22,6 +22,7 @@
 Demos:
 
 - [Astro + braindb](/packages/demo-astro-cli)
+- [astro-digital-garden](https://astro-digital-garden.stereobooster.com/recipes/braindb/)
 
 ## Logo
 
