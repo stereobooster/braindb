@@ -3,17 +3,21 @@
 ## Core
 
 - [ ] sort by date
+  - store `updated_at` (date in SQL format)
+  - config to use git date
+  - is git date the same as modifiction of file before commit?
   - local date [`(await stat(absolutePath)).mtime`](https://nodejs.org/api/fs.html#class-fsstats)
   - date from git `execSync('git log -1 --pretty="format:%cI" "${filepath}"');`
 - [ ] cache
   - take into account configuration in cache
-  - also need to clean up old records (deleted files), otherwise cach will grow indefinetly
+    - https://github.com/yahoo/serialize-javascript + hash
+  - also need to clean up old records (deleted files), otherwise cache will grow indefinetly
+    - at start take current timestamp
+    - pass it to `addDocument` and store in DB as `revised_at`
+    - in the end (`ready`) delete all files that have different `revised_at`
+    - strategy can be smatter, than immeaditely delete, for example to preserve cache across git branch switch
   - do I need to take into account `inode`?
-- [ ] frontmatter
-  - `schema`
-- [ ] reactivity
-  - [signals](https://preactjs.com/guide/v10/signals/)
-  - maybe [rxdb](https://rxdb.info) Observable
+- [ ] [frontmatter schema](/notes/schema.md)
 
 ## Support Bun
 
@@ -22,8 +26,6 @@
 
 ## CLI
 
-- [ ] a way to clean up deleted files
-  - mark all new files (`created_at`) than delete from DB and emit events
 - [ ] respect `.gitignore` and output folder
   - https://www.npmjs.com/package/parse-gitignore
   - https://git-scm.com/docs/gitignore#_pattern_format
@@ -32,6 +34,10 @@
 
 ## Other
 
+- reactivity/memoization
+  - [signals](https://preactjs.com/guide/v10/signals/)
+  - maybe [rxdb](https://rxdb.info) Observable
+  - [electric-sql: Live queries](https://electric-sql.com/docs/usage/data-access/queries#live-queries)
 - Faceted search
   - use event listener to produce JSON
   - use `text()` or integrate with pagefind
