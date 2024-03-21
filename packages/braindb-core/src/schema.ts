@@ -5,9 +5,11 @@ import {
   unique,
   real,
   index,
+  int,
 } from "drizzle-orm/sqlite-core";
 import { JsonObject } from "./types.js";
 
+// int("updated_at", { mode: "timestamp" }),
 // const timestamp = customType<{
 //   data: Date;
 //   driverData: string;
@@ -24,6 +26,7 @@ import { JsonObject } from "./types.js";
 export const document = sqliteTable(
   "documents",
   {
+    // can use Inode number here
     id: integer("id").primaryKey({ autoIncrement: true }),
     path: text("path").notNull(),
     // content
@@ -33,13 +36,14 @@ export const document = sqliteTable(
     ast: text("ast", { mode: "json" }).notNull(),
     markdown: text("markdown").notNull(),
     // to avoide reparse
-    // file modification time https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/sys_stat.h.html
+    // file modification time https://man7.org/linux/man-pages/man3/stat.3type.html
     mtime: real("mtime").notNull(),
     checksum: text("checksum").notNull(),
     // for link resolution
     slug: text("slug").notNull(),
     url: text("url").notNull(),
     // title: text("title"),
+    updated_at: int("updated_at").default(0).notNull(),
   },
   (t) => ({
     path: unique("path").on(t.path),

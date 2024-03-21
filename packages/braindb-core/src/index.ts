@@ -9,7 +9,7 @@ import { symmetricDifference } from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
 import { Document } from "./Document.js";
 import { document, link } from "./schema.js";
-import { eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { mkdirp } from "mkdirp";
 import { join } from "node:path";
 import { Link } from "./Link.js";
@@ -51,6 +51,12 @@ export type BrainDBOptionsIn = {
    * source files
    */
   source?: string;
+  /**
+   * if truthy will use git date for `updated_at` field:
+   * - if `true` will use `root` as git folder
+   * - if string will use given string as git folder
+   */
+  git?: string | boolean;
 };
 
 export type BrainDBOptionsOut = {
@@ -69,10 +75,13 @@ export type BrainDBOptionsOut = {
   transformUnresolvedLink?: (path: string, node: any) => any;
 };
 
-// this would be similar to 
+export type SortDirection = "asc" | "desc";
+
+// this would be similar to
 // https://github.com/stereobooster/facets/blob/main/packages/facets/src/Facets.ts#L138-L150
 export type DocumentsOtions = {
   slug?: string;
+  sort?: ["updated_at", SortDirection];
 };
 
 export class BrainDB {
@@ -237,6 +246,11 @@ export class BrainDB {
 
   documentsSync(options?: DocumentsOtions) {
     let query = this.db.select({ path: document.path }).from(document);
+
+    if (options?.sort !== undefined) {
+      const dir = options?.sort?.[1] === "asc" ? asc : desc;
+      query.orderBy(dir(document.updated_at));
+    }
 
     if (options?.slug !== undefined) {
       query.where(eq(document.slug, options?.slug));

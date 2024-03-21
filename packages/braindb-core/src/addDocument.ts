@@ -13,6 +13,14 @@ import { deleteDocument } from "./deleteDocument.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsIn } from "./index.js";
 import { getSlug, getUrl } from "./defaults.js";
+import { Repository } from "@napi-rs/simple-git";
+
+// simplest memoization
+let repo: Repository;
+function getRepo(path: string) {
+  if (!repo) repo = Repository.discover(path);
+  return repo;
+}
 
 export async function addDocument(
   db: Db,
@@ -31,13 +39,31 @@ export async function addDocument(
     .all();
 
   const absolutePath = cfg.root + idPath;
-  let mtime = 0;
+  // https://nodejs.org/api/fs.html#class-fsstats
+  const st = await stat(absolutePath);
+  const mtime = st.mtimeMs;
   let checksum = "";
   let markdown = "";
 
+  let updated_at = Math.round(mtime);
+  if (cfg.git) {
+    try {
+      if (cfg.git === true) {
+        const repo = getRepo(cfg.root);
+        updated_at = repo.getFileLatestModifiedDate(idPath.replace("/", ""));
+      } else {
+        const repo = getRepo(cfg.git);
+        updated_at = await repo.getFileLatestModifiedDateAsync(
+          absolutePath.replace(cfg.git + "/", "")
+        );
+      }
+    } catch (e) {
+      // TODO: maybe config logger?
+      console.log(`Warning: ${e}`);
+    }
+  }
+
   if (cfg.cache) {
-    // https://nodejs.org/api/fs.html#class-fsstats
-    mtime = (await stat(absolutePath)).mtimeMs;
     // https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
     const trustedTimestamp =
       existingDocument && Math.abs(existingDocument.mtime - Date.now()) > 1000;
@@ -70,6 +96,7 @@ export async function addDocument(
     slug: cfg.slug
       ? cfg.slug(idPath, frontmatter)
       : getSlug(idPath, frontmatter),
+    updated_at,
   };
 
   if (existingDocument) deleteDocument(db, idPath);

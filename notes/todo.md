@@ -2,12 +2,6 @@
 
 ## Core
 
-- [ ] sort by date
-  - store `updated_at` (date in SQL format)
-  - config to use git date
-  - is git date the same as modifiction of file before commit?
-  - local date [`(await stat(absolutePath)).mtime`](https://nodejs.org/api/fs.html#class-fsstats)
-  - date from git `execSync('git log -1 --pretty="format:%cI" "${filepath}"');`
 - [ ] cache
   - take into account configuration in cache
     - https://github.com/yahoo/serialize-javascript + hash

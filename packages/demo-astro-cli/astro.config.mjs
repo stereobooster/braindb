@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
-import mdx from '@astrojs/mdx';
+import mdx from "@astrojs/mdx";
 
 // https://astro.build/config
 export default defineConfig({
@@ -12,6 +12,12 @@ export default defineConfig({
     mdx(),
   ],
   vite: {
-    optimizeDeps: { exclude: ["fsevents", "@node-rs/xxhash-wasm32-wasi"] },
+    optimizeDeps: {
+      exclude: [
+        "fsevents",
+        "@node-rs/xxhash-wasm32-wasi",
+        "@napi-rs/simple-git-darwin-x64",
+      ],
+    },
   },
 });

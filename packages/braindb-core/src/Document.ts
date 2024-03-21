@@ -57,6 +57,9 @@ export class Document {
   id() {
     return this.getDoc().id;
   }
+  updatedAt() {
+    return new Date(this.getDoc().updated_at);
+  }
 
   /**
    * From which documents there are links to this one

@@ -2,6 +2,8 @@
 
 ### Test with real life example
 
+- Dataview
+  - https://collapsedwave.com/Meta/%F0%9F%A6%85-Core-Dashboard
 - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
 - https://github.com/obsidianmd/obsidian-help (Obsidian)
 - https://github.com/mdn/content/tree/main/files/en-us (Custom)
