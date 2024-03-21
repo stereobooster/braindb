@@ -30,6 +30,7 @@ export async function addDocument(
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
+      // id: document.id,
       path: document.path,
       checksum: document.checksum,
       mtime: document.mtime,
@@ -47,10 +48,13 @@ export async function addDocument(
 
   let updated_at = Math.round(mtime);
   if (cfg.git) {
+    // TODO: maybe, if file is modified use `mtimeMs` instead of git date?
     try {
       if (cfg.git === true) {
         const repo = getRepo(cfg.root);
-        updated_at = repo.getFileLatestModifiedDate(idPath.replace("/", ""));
+        updated_at = await repo.getFileLatestModifiedDateAsync(
+          idPath.replace("/", "")
+        );
       } else {
         const repo = getRepo(cfg.git);
         updated_at = await repo.getFileLatestModifiedDateAsync(
@@ -86,6 +90,7 @@ export async function addDocument(
 
   // typeof document.$inferInsert
   const newDocument = {
+    // id: existingDocument?.id,
     frontmatter,
     path: idPath,
     ast,
