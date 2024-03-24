@@ -24,14 +24,6 @@
 
 ### Other ideas
 
-- [ ] threads (but sqlite single threaded)
-  - https://github.com/piscinajs/piscina
-  - https://github.com/poolifier/poolifier
-  - https://github.com/Vincit/tarn.js
-  - https://github.com/SUCHMOKUO/node-worker-threads-pool
-  - https://github.com/andywer/threads.js
-  - https://github.com/tim-hub/pambdajs
-
 API
 
 - https://github.com/drizzle-team/drizzle-trpc-zod
@@ -47,13 +39,3 @@ frontend
 - live reload
 
 tui to run SQL in watch mode
-
-## SQL parsers
-
-SQL parsers, to implement [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview):
-
-- https://github.com/kristianmandrup/chevrotain-mini-sql-lang
-- https://nanosql.io/welcome.html
-- https://github.com/JavaScriptor/js-sql-parser
-- https://github.com/forward/sql-parser
-- https://alasql.org/
