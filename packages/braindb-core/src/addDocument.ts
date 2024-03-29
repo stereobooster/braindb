@@ -12,7 +12,7 @@ import { getCheksum, isExternalLink } from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsIn } from "./index.js";
-import { getSlug, getUrl } from "./defaults.js";
+import { defaultGetSlug, defaultGetUrl } from "./defaults.js";
 import { Repository } from "@napi-rs/simple-git";
 
 export const emptyAst = {};
@@ -89,6 +89,8 @@ export async function addDocument(
 
   const ast = await mdParser.parse(markdown);
   const frontmatter = getFrontmatter(ast);
+  const getUrl = cfg.url || defaultGetUrl;
+  const getSlug = cfg.slug || defaultGetSlug;
 
   // typeof document.$inferInsert
   const newDocument = {
@@ -98,10 +100,8 @@ export async function addDocument(
     ast: cfg.storeMarkdown === false ? emptyAst : ast,
     checksum,
     mtime,
-    url: cfg.url ? cfg.url(idPath, frontmatter) : getUrl(idPath, frontmatter),
-    slug: cfg.slug
-      ? cfg.slug(idPath, frontmatter)
-      : getSlug(idPath, frontmatter),
+    url: getUrl(idPath, frontmatter),
+    slug: getSlug(idPath, frontmatter),
     updated_at,
   };
 
@@ -109,6 +109,7 @@ export async function addDocument(
 
   // TODO: should not update frontmatter here,
   // but title may be exception (or not?), because it is required for wikilinks
+  // Alternatively: can use first H1 as title
   if (!newDocument.frontmatter.title)
     newDocument.frontmatter.title = newDocument.slug;
 

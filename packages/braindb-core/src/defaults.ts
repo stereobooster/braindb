@@ -1,7 +1,7 @@
 import { Frontmatter } from "./index.js";
 import { basename } from "node:path";
 
-export const getUrl = (filePath: string, _frontmatter: Frontmatter) => {
+export const defaultGetUrl = (filePath: string, _frontmatter: Frontmatter) => {
   let url =
     filePath.replace(/\/_?index\.mdx?$/, "").replace(/\.mdx?$/, "") || "/";
 
@@ -22,6 +22,6 @@ export const getUrl = (filePath: string, _frontmatter: Frontmatter) => {
 //   }
 // };
 
-export const getSlug = (filePath: string, _frontmatter: Frontmatter) =>
+export const defaultGetSlug = (filePath: string, _frontmatter: Frontmatter) =>
   basename(filePath.replace(/\/_?index\.mdx?$/, "")).replace(/\.mdx?$/, "") ||
   "/";

@@ -16,16 +16,7 @@
 
 ## Performance
 
-- [ ] parallel processing (but sqlite single threaded)
-  - read file, calculate checksum, parse
-  - [libs](https://npmtrends.com/node-worker-pool-vs-piscina-vs-threads-vs-worker-farm-vs-worker-loader-vs-worker-plugin-vs-workerize-vs-workerize-loader-vs-workerpool)
-    - https://github.com/josdejong/workerpool
-    - https://github.com/piscinajs/piscina
-    - https://github.com/poolifier/poolifier
-    - https://github.com/Vincit/tarn.js
-    - https://github.com/SUCHMOKUO/node-worker-threads-pool
-    - https://threads.js.org/usage-pool
-    - https://github.com/tim-hub/pambdajs
+- [ ] [parallel processing](./parallel.md)
 - [incremental parsing](https://parsing.stereobooster.com/other/incremental-parsers/)
   - https://github.com/lezer-parser/markdown
   - https://github.com/tree-sitter-grammars/tree-sitter-markdown
