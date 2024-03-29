@@ -28,6 +28,7 @@ export const bdb = new BrainDB({
   // dbPath: process.cwd(),
   // cache: true,
   // git: path.resolve(process.cwd(), "../.."),
+  storeMarkdown: false
 });
 
 bdb.start();

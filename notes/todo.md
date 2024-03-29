@@ -16,8 +16,6 @@
 
 ## Performance
 
-- [ ] no need to store `ast`, `markdown` if they are not used
-  - for example, in astro integration we only use metadata and links
 - [ ] parallel processing (but sqlite single threaded)
   - read file, calculate checksum, parse
   - [libs](https://npmtrends.com/node-worker-pool-vs-piscina-vs-threads-vs-worker-farm-vs-worker-loader-vs-worker-plugin-vs-workerize-vs-workerize-loader-vs-workerpool)

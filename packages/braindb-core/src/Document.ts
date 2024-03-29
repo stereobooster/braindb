@@ -25,6 +25,14 @@ export class Document {
     return this.doc;
   }
 
+  private checkAst() {
+    const ast = this.getDoc().ast as any;
+    if (!ast || ast.type !== "root")
+      throw new Error(
+        "Do not use `storeMarkdown: false` if you want to use `markdown` and `text`"
+      );
+  }
+
   constructor(db: Db, idPath: string) {
     this.idPath = idPath;
     this.db = db;
@@ -43,6 +51,7 @@ export class Document {
     return this.getDoc().frontmatter!;
   }
   markdown(options: BrainDBOptionsOut = {}) {
+    this.checkAst();
     const { transformFrontmatter } = options;
 
     const frontmatter = transformFrontmatter
@@ -84,6 +93,7 @@ export class Document {
    * experimental
    */
   text() {
+    this.checkAst();
     return toText(this.getDoc().ast);
   }
 }

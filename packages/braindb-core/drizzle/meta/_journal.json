@@ -15,6 +15,13 @@
       "when": 1710975544103,
       "tag": "0001_petite_fixer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1711738431891,
+      "tag": "0002_worthless_silk_fever",
+      "breakpoints": true
     }
   ]
 }

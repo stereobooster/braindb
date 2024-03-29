@@ -1,6 +1,6 @@
 {
   "name": "@braindb/core",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "markdown-graph-content-layer-database",
   "homepage": "https://github.com/stereobooster/braindb",
   "author": "stereobooster",
@@ -35,25 +35,25 @@
     "generate": "drizzle-kit generate:sqlite"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.5",
-    "@types/hast": "^3.0.3",
-    "drizzle-kit": "^0.19.13"
+    "@types/better-sqlite3": "^7.6.9",
+    "@types/hast": "^3.0.4",
+    "drizzle-kit": "^0.20.14"
   },
   "dependencies": {
     "@napi-rs/simple-git": "^0.1.16",
     "@node-rs/xxhash": "^1.7.0",
-    "@stereobooster/remark-wiki-link": "^2.0.1",
-    "better-sqlite3": "^8.6.0",
-    "chokidar": "^3.5.3",
-    "drizzle-orm": "^0.28.6",
+    "@stereobooster/remark-wiki-link": "^2.1.0",
+    "better-sqlite3": "^9.4.3",
+    "chokidar": "^3.6.0",
+    "drizzle-orm": "^0.30.6",
     "mitt": "^3.0.1",
     "mkdirp": "^3.0.1",
-    "remark-frontmatter": "^4.0.1",
-    "remark-parse": "^10.0.2",
-    "remark-stringify": "^10.0.3",
+    "remark-frontmatter": "^5.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
     "strip-markdown": "^6.0.0",
-    "unified": "^11.0.3",
+    "unified": "^11.0.4",
     "unist-util-map": "^4.0.0",
-    "yaml": "^2.3.2"
+    "yaml": "^2.4.1"
   }
 }

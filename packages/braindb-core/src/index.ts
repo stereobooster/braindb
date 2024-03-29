@@ -57,6 +57,11 @@ export type BrainDBOptionsIn = {
    * - if string will use given string as git folder
    */
   git?: string | boolean;
+  /**
+   * if you never use Document's `markdown` and `text`
+   * you can set this to `false` in order to save some memory
+   */
+  storeMarkdown?: boolean;
 };
 
 export type BrainDBOptionsOut = {

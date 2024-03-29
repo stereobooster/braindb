@@ -15,6 +15,8 @@ import { BrainDBOptionsIn } from "./index.js";
 import { getSlug, getUrl } from "./defaults.js";
 import { Repository } from "@napi-rs/simple-git";
 
+export const emptyAst = {};
+
 // simplest memoization
 let repo: Repository;
 function getRepo(path: string) {
@@ -93,8 +95,7 @@ export async function addDocument(
     // id: existingDocument?.id,
     frontmatter,
     path: idPath,
-    ast,
-    markdown,
+    ast: cfg.storeMarkdown === false ? emptyAst : ast,
     checksum,
     mtime,
     url: cfg.url ? cfg.url(idPath, frontmatter) : getUrl(idPath, frontmatter),

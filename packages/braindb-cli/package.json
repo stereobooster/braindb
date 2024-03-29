@@ -35,10 +35,9 @@
     "clean": "rm -rf dist",
     "tsc": "tsc"
   },
-  "devDependencies": {},
   "dependencies": {
     "@braindb/core": "workspace:*",
-    "cosmiconfig": "^8.3.6",
+    "cosmiconfig": "^9.0.0",
     "mkdirp": "^3.0.1"
   }
 }

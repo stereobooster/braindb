@@ -34,7 +34,7 @@ export const document = sqliteTable(
       .$type<JsonObject>()
       .notNull(),
     ast: text("ast", { mode: "json" }).notNull(),
-    markdown: text("markdown").notNull(),
+    // markdown: text("markdown").notNull(),
     // to avoide reparse
     // file modification time https://man7.org/linux/man-pages/man3/stat.3type.html
     mtime: real("mtime").notNull(),
