@@ -3,7 +3,7 @@
 ### Test with real life example
 
 - Dataview
-  - https://collapsedwave.com/Meta/%F0%9F%A6%85-Core-Dashboard
+  - https://github.com/migueltorrescosta/collapsedwave/blob/main/content/Meta/%F0%9F%A6%85%20Core%20Dashboard.md
 - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
 - https://github.com/obsidianmd/obsidian-help (Obsidian)
 - https://github.com/mdn/content/tree/main/files/en-us (Custom)
@@ -39,3 +39,16 @@ frontend
 - live reload
 
 tui to run SQL in watch mode
+
+## Examples
+
+- tags
+  - https://github.com/topics/digital-garden
+  - https://github.com/topics/second-brain
+  - https://github.com/topics/digital-gardening
+- https://github.com/thedevdavid/digital-garden
+- https://github.com/pixelart7/chaiyapat-astro-site/blob/main/astro.config.ts
+- https://github.com/johackim/remark-obsidian
+- https://github.com/wikibonsai/wikibonsai
+- https://github.com/bahlo/arnes-notes
+- https://github.com/TuanManhCao/digital-garden

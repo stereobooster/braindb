@@ -16,14 +16,17 @@
 
 ## Performance
 
+- [ ] no need to store `ast`, `markdown` if they are not used
+  - for example, in astro integration we only use metadata and links
 - [ ] parallel processing (but sqlite single threaded)
   - read file, calculate checksum, parse
-  - libs
+  - [libs](https://npmtrends.com/node-worker-pool-vs-piscina-vs-threads-vs-worker-farm-vs-worker-loader-vs-worker-plugin-vs-workerize-vs-workerize-loader-vs-workerpool)
+    - https://github.com/josdejong/workerpool
     - https://github.com/piscinajs/piscina
     - https://github.com/poolifier/poolifier
     - https://github.com/Vincit/tarn.js
     - https://github.com/SUCHMOKUO/node-worker-threads-pool
-    - https://github.com/andywer/threads.js
+    - https://threads.js.org/usage-pool
     - https://github.com/tim-hub/pambdajs
 - [incremental parsing](https://parsing.stereobooster.com/other/incremental-parsers/)
   - https://github.com/lezer-parser/markdown
@@ -65,6 +68,7 @@
   - path to original document, anchor (aka id, aka slug), ast?, text, level
   - use for link resolution
 - reactivity/memoization
+  - [materialite](https://github.com/vlcn-io/materialite)
   - [signals](https://preactjs.com/guide/v10/signals/)
   - maybe [rxdb](https://rxdb.info) Observable
   - [electric-sql: Live queries](https://electric-sql.com/docs/usage/data-access/queries#live-queries)
