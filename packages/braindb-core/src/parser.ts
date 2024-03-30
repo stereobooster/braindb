@@ -5,7 +5,7 @@ import wikiLinkPlugin from "@stereobooster/remark-wiki-link";
 import remarkStringify from "remark-stringify";
 // import remarkMdx from "remark-mdx"
 
-export const mdParser: any = unified()
+export const mdParser = unified()
   .use(remarkParse)
   .use(remarkFrontmatter)
   .use(wikiLinkPlugin, { aliasDivider: "|" })

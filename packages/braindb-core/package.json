@@ -37,13 +37,14 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.9",
     "@types/hast": "^3.0.4",
+    "@types/serialize-javascript": "^5.0.4",
     "drizzle-kit": "^0.20.14"
   },
   "dependencies": {
     "@napi-rs/simple-git": "^0.1.16",
     "@node-rs/xxhash": "^1.7.0",
     "@stereobooster/remark-wiki-link": "^2.1.0",
-    "@types/serialize-javascript": "^5.0.4",
+    "@types/mdast": "^4.0.3",
     "better-sqlite3": "^9.4.3",
     "chokidar": "^3.6.0",
     "drizzle-orm": "^0.30.6",

@@ -41,9 +41,9 @@ importers:
       '@stereobooster/remark-wiki-link':
         specifier: ^2.1.0
         version: 2.1.0
-      '@types/serialize-javascript':
-        specifier: ^5.0.4
-        version: 5.0.4
+      '@types/mdast':
+        specifier: ^4.0.3
+        version: 4.0.3
       better-sqlite3:
         specifier: ^9.4.3
         version: 9.4.3
@@ -90,6 +90,9 @@ importers:
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
+      '@types/serialize-javascript':
+        specifier: ^5.0.4
+        version: 5.0.4
       drizzle-kit:
         specifier: ^0.20.14
         version: 0.20.14
@@ -1721,7 +1724,7 @@ packages:
 
   /@types/serialize-javascript@5.0.4:
     resolution: {integrity: sha512-Z2R7UKFuNWCP8eoa2o9e5rkD3hmWxx/1L0CYz0k2BZzGh0PhEVMp9kfGiqEml/0IglwNERXZ2hwNzIrSz/KHTA==}
-    dev: false
+    dev: true
 
   /@types/unist@2.0.10:
     resolution: {integrity: sha512-IfYcSBWE3hLpBg8+X2SEa8LVkJdJEkT2Ese2aaLs3ptGdVtABxndrMaxuFlQ1qdFf9Q5rDvDpxI3WwgvKFAsQA==}
