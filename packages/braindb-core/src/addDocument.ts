@@ -82,7 +82,8 @@ export async function addDocument(
       await db
         .update(document)
         .set({ revision })
-        .where(eq(document.id, existingDocument.id));
+        .where(eq(document.path, idPath));
+      await db.update(link).set({ revision }).where(eq(link.from, idPath));
       return;
     }
 
@@ -92,7 +93,8 @@ export async function addDocument(
       await db
         .update(document)
         .set({ revision })
-        .where(eq(document.id, existingDocument.id));
+        .where(eq(document.path, idPath));
+      await db.update(link).set({ revision }).where(eq(link.from, idPath));
       return;
     }
   } else {
