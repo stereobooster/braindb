@@ -27,12 +27,13 @@ function getRepo(path: string) {
 export async function addDocument(
   db: Db,
   idPath: string,
-  cfg: BrainDBOptionsIn
+  cfg: BrainDBOptionsIn,
+  revision: number
 ) {
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
-      // id: document.id,
+      id: document.id,
       path: document.path,
       checksum: document.checksum,
       mtime: document.mtime,
@@ -77,24 +78,36 @@ export async function addDocument(
       existingDocument &&
       trustedTimestamp &&
       existingDocument.mtime === mtime
-    )
+    ) {
+      await db
+        .update(document)
+        .set({ revision })
+        .where(eq(document.id, existingDocument.id));
       return;
+    }
 
     markdown = await readFile(absolutePath, { encoding: "utf8" });
     checksum = getCheksum(markdown);
-    if (existingDocument && existingDocument.checksum === checksum) return;
+    if (existingDocument && existingDocument.checksum === checksum) {
+      await db
+        .update(document)
+        .set({ revision })
+        .where(eq(document.id, existingDocument.id));
+      return;
+    }
   } else {
     markdown = await readFile(absolutePath, { encoding: "utf8" });
   }
 
   const ast = await mdParser.parse(markdown);
+  markdown = "";
   const frontmatter = getFrontmatter(ast);
   const getUrl = cfg.url || defaultGetUrl;
   const getSlug = cfg.slug || defaultGetSlug;
 
   // typeof document.$inferInsert
   const newDocument = {
-    // id: existingDocument?.id,
+    id: existingDocument?.id,
     frontmatter,
     path: idPath,
     ast: cfg.storeMarkdown === false ? emptyAst : ast,
@@ -103,6 +116,7 @@ export async function addDocument(
     url: getUrl(idPath, frontmatter),
     slug: getSlug(idPath, frontmatter),
     updated_at,
+    revision,
   };
 
   if (existingDocument) deleteDocument(db, idPath);
@@ -171,6 +185,7 @@ export async function addDocument(
           label,
           line,
           column,
+          revision,
         })
         .run();
 

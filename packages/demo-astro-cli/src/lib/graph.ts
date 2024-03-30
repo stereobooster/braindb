@@ -14,12 +14,12 @@ export async function getGraph() {
 }
 
 async function toGraphologyJson(db: BrainDB) {
-  const nodes = (await db.documents()).map((document) => ({
+  const nodes = (await db.documents()).map((document, i) => ({
     key: document.id(),
     attributes: {
       label: document.frontmatter().title as string,
       url: document.url(),
-      size: 0.05
+      size: 0.05,
       // color: "#f00"
     },
   }));

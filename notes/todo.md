@@ -3,11 +3,6 @@
 ## Core
 
 - [ ] cache
-  - also need to clean up old records (deleted files), otherwise cache will grow indefinetly
-    - at start take current timestamp
-    - pass it to `addDocument` and store in DB as `revised_at`
-    - in the end (`ready`) delete all files that have different `revised_at`
-    - strategy can be smatter, than immeaditely delete, for example to preserve cache across git branch switch
   - take into account configuration in cache
     - https://github.com/yahoo/serialize-javascript + hash
   - take into account versions of libraries

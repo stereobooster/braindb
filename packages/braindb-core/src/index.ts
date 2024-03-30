@@ -6,7 +6,7 @@ import { Db, getDb } from "./db.js";
 import { getConnectedDocuments, resolveLinks } from "./resolveLinks.js";
 import { addDocument } from "./addDocument.js";
 import { symmetricDifference } from "./utils.js";
-import { deleteDocument } from "./deleteDocument.js";
+import { deleteDocument, deleteOldRevision } from "./deleteDocument.js";
 import { Document } from "./Document.js";
 import { document, link } from "./schema.js";
 import { asc, desc, eq } from "drizzle-orm";
@@ -123,6 +123,8 @@ export class BrainDB {
   start() {
     if (this.watcher) throw new Error("Already started");
 
+    const revision = new Date().getTime();
+
     this.initializing = true;
     // this will acumulate all files, which can be problematic
     // what if instead of array - fetch files from DB in the end
@@ -141,6 +143,7 @@ export class BrainDB {
       .on("ready", async () => {
         const res = await Promise.all(this.initQueue);
         this.initQueue = [];
+        deleteOldRevision(this.db, revision);
         resolveLinks(this.db);
         this.initializing = false;
 
@@ -153,7 +156,9 @@ export class BrainDB {
         const idPath = fileToPathId(file);
 
         if (this.initializing) {
-          const p = addDocument(this.db, idPath, this.cfg).then(() => idPath);
+          const p = addDocument(this.db, idPath, this.cfg, revision).then(
+            () => idPath
+          );
           this.initQueue.push(p);
           await p;
           return;
@@ -164,7 +169,7 @@ export class BrainDB {
           idPath,
         });
 
-        await addDocument(this.db, idPath, this.cfg);
+        await addDocument(this.db, idPath, this.cfg, revision);
         resolveLinks(this.db);
         this.emitter.emit("create", {
           document: new Document(this.db, idPath),
@@ -204,7 +209,7 @@ export class BrainDB {
           idPath,
         });
 
-        await addDocument(this.db, idPath, this.cfg);
+        await addDocument(this.db, idPath, this.cfg, revision);
         resolveLinks(this.db);
         this.emitter.emit("update", {
           document: new Document(this.db, idPath),
@@ -225,6 +230,7 @@ export class BrainDB {
 
   async stop() {
     if (this.watcher) await this.watcher.close();
+    this.initQueue = [];
     return this;
   }
 

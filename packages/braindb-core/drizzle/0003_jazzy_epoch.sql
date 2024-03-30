@@ -1,0 +1,1 @@
+ALTER TABLE documents ADD `revision` integer DEFAULT 0 NOT NULL;

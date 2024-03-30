@@ -5,7 +5,6 @@ import {
   unique,
   real,
   index,
-  int,
 } from "drizzle-orm/sqlite-core";
 import { JsonObject } from "./types.js";
 
@@ -43,7 +42,8 @@ export const document = sqliteTable(
     slug: text("slug").notNull(),
     url: text("url").notNull(),
     // title: text("title"),
-    updated_at: int("updated_at").default(0).notNull(),
+    updated_at: integer("updated_at").default(0).notNull(),
+    revision: integer("revision").default(0).notNull(),
   },
   (t) => ({
     path: unique("path").on(t.path),
@@ -76,6 +76,7 @@ export const link = sqliteTable(
     label: text("label"),
     line: integer("line").notNull(),
     column: integer("column").notNull(),
+    revision: integer("revision").default(0).notNull(),
   },
   (t) => ({
     from_start: unique("from_start").on(t.from, t.start),

@@ -22,6 +22,20 @@
       "when": 1711738431891,
       "tag": "0002_worthless_silk_fever",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "5",
+      "when": 1711755760856,
+      "tag": "0003_jazzy_epoch",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1711756629582,
+      "tag": "0004_ambitious_starbolt",
+      "breakpoints": true
     }
   ]
 }
