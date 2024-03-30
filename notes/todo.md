@@ -1,12 +1,15 @@
 # TODO
 
 ## Core
+
 - [ ] Extract Tasks (e.g. `- [ ] TODO`)
+  - `mdast-util-gfm-task-list-item`, `remark-gfm`
   - separate table
-  - path to original document, ast, text?, checked(true/false)
+  - id, path to original document, ast, checked(true/false)
   - query interface
 - [ ] Extract Headings
   - either need to allow to pass remark plugins (`import { rehypeHeadingIds } from "@astrojs/markdown-remark";`) or pass slug function
+    - https://github.com/withastro/astro/blob/main/packages/markdown/remark/src/rehype-collect-headings.ts
   - separate table
   - path to original document, anchor (aka id, aka slug), ast?, text, level
   - use for link resolution
@@ -38,6 +41,8 @@
 
 ## Other
 
+- read-only mode (for Next.js)
+  - https://github.com/thedevdavid/digital-garden
 - cache
   - take into account versions of libraries?
   - do I need to take into account `inode`?
@@ -71,8 +76,13 @@
   - syntax highlighter for code
   - and probably something else
 - [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview):
-  - https://github.com/kristianmandrup/chevrotain-mini-sql-lang
-  - https://nanosql.io/welcome.html
-  - https://github.com/JavaScriptor/js-sql-parser
-  - https://github.com/forward/sql-parser
-  - https://alasql.org/
+  - can I fork [it](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/index.ts) and replace obsidian vault with braindb?
+  - parsers
+    - https://github.com/kristianmandrup/chevrotain-mini-sql-lang
+    - https://nanosql.io/welcome.html
+    - https://github.com/JavaScriptor/js-sql-parser
+    - https://github.com/forward/sql-parser
+    - https://alasql.org/
+- content query
+  - https://content.nuxt.com/composables/query-content
+  - https://github.com/datopian/markdowndb?tab=readme-ov-file#or-using-markdowndb-nodejs-api-in-a-framework-of-your-choice
