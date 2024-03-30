@@ -37,7 +37,9 @@ export const document = sqliteTable(
     // to avoide reparse
     // file modification time https://man7.org/linux/man-pages/man3/stat.3type.html
     mtime: real("mtime").notNull(),
+    // file hash
     checksum: text("checksum").notNull(),
+    cfghash: integer("cfghash").default(0).notNull(),
     // for link resolution
     slug: text("slug").notNull(),
     url: text("url").notNull(),
@@ -76,7 +78,6 @@ export const link = sqliteTable(
     label: text("label"),
     line: integer("line").notNull(),
     column: integer("column").notNull(),
-    revision: integer("revision").default(0).notNull(),
   },
   (t) => ({
     from_start: unique("from_start").on(t.from, t.start),

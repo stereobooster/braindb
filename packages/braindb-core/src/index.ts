@@ -106,8 +106,7 @@ export class BrainDB {
     if (this.cfg.source && !this.cfg.source.startsWith("/"))
       this.cfg.source = "/" + this.cfg.source;
 
-    // TODO: make true when cache would be improved
-    if (this.cfg.cache === undefined) this.cfg.cache = false;
+    if (this.cfg.cache === undefined) this.cfg.cache = Boolean(this.cfg.dbPath);
 
     // @ts-expect-error https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();

@@ -36,6 +36,20 @@
       "when": 1711756629582,
       "tag": "0004_ambitious_starbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1711762860250,
+      "tag": "0005_stormy_luckman",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1711800425368,
+      "tag": "0006_icy_iron_monger",
+      "breakpoints": true
     }
   ]
 }

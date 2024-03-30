@@ -9,10 +9,13 @@ export function deleteDocument(db: Db, idPath: string) {
 }
 
 export function deleteOldRevision(db: Db, revision: number) {
-  db.delete(document)
+  db.select({
+    path: document.path,
+  })
+    .from(document)
     .where(not(eq(document.revision, revision)))
-    .run();
-  db.delete(link)
-    .where(not(eq(link.revision, revision)))
-    .run();
+    .all()
+    .forEach(({ path }) => {
+      deleteDocument(db, path);
+    });
 }

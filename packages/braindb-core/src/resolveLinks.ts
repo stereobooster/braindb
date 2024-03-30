@@ -20,8 +20,7 @@ export function resolveLinks(db: Db) {
     links.to_anchor,
     links.label,
     links.line,
-    links.column,
-    links.revision
+    links.column
   FROM links INNER JOIN documents ON
       links.to_slug = documents.slug OR
       links.to_url = documents.url OR

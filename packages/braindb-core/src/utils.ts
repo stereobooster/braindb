@@ -1,7 +1,23 @@
-import { xxh64 } from "@node-rs/xxhash";
+import { xxh64, xxh32 } from "@node-rs/xxhash";
+import serialize from "serialize-javascript";
+
+const memoizeSecret: any = {};
+export const memoizeOnce = <A, B>(f: (x: A) => B) => {
+  let arg: A = memoizeSecret;
+  let result: B;
+  return (x: A) => {
+    if (x !== arg) {
+      arg = x;
+      result = f(x);
+    }
+    return result;
+  };
+};
+
+export const cheksumConfig = memoizeOnce((conf: any) => xxh32(serialize(conf)));
 
 // can use streaming instead of reading whole file
-export const getCheksum = (str: string) => xxh64(str).toString(36);
+export const cheksum64str = (str: string) => xxh64(str).toString(36);
 
 const externalLinkRegexp = RegExp(`^[a-z]+://`);
 

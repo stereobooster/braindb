@@ -8,7 +8,12 @@ import { type Node } from "unist";
 import { document, link } from "./schema.js";
 import { JsonObject } from "./types.js";
 import { mdParser } from "./parser.js";
-import { getCheksum, isExternalLink } from "./utils.js";
+import {
+  cheksum64str,
+  cheksumConfig,
+  isExternalLink,
+  memoizeOnce,
+} from "./utils.js";
 import { deleteDocument } from "./deleteDocument.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsIn } from "./index.js";
@@ -17,12 +22,7 @@ import { Repository } from "@napi-rs/simple-git";
 
 export const emptyAst = {};
 
-// simplest memoization
-let repo: Repository;
-function getRepo(path: string) {
-  if (!repo) repo = Repository.discover(path);
-  return repo;
-}
+const getRepo = memoizeOnce((path: string) => Repository.discover(path));
 
 export async function addDocument(
   db: Db,
@@ -35,8 +35,9 @@ export async function addDocument(
     .select({
       id: document.id,
       path: document.path,
-      checksum: document.checksum,
       mtime: document.mtime,
+      checksum: document.checksum,
+      cfghash: document.cfghash,
     })
     .from(document)
     .where(eq(document.path, idPath))
@@ -48,6 +49,42 @@ export async function addDocument(
   const mtime = st.mtimeMs;
   let checksum = "";
   let markdown = "";
+  let cfghash = 0;
+
+  if (cfg.cache) {
+    cfghash = cheksumConfig(cfg);
+    // https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
+    const trustedTimestamp =
+      existingDocument && Math.abs(existingDocument.mtime - Date.now()) > 1000;
+    if (
+      existingDocument &&
+      trustedTimestamp &&
+      existingDocument.cfghash === cfghash &&
+      existingDocument.mtime === mtime
+    ) {
+      await db
+        .update(document)
+        .set({ revision /*, updated_at */ })
+        .where(eq(document.path, idPath));
+      return;
+    }
+
+    markdown = await readFile(absolutePath, { encoding: "utf8" });
+    checksum = cheksum64str(markdown);
+    if (
+      existingDocument &&
+      existingDocument.cfghash === cfghash &&
+      existingDocument.checksum === checksum
+    ) {
+      await db
+        .update(document)
+        .set({ revision /*, updated_at */ })
+        .where(eq(document.path, idPath));
+      return;
+    }
+  } else {
+    markdown = await readFile(absolutePath, { encoding: "utf8" });
+  }
 
   let updated_at = Math.round(mtime);
   if (cfg.git) {
@@ -70,37 +107,6 @@ export async function addDocument(
     }
   }
 
-  if (cfg.cache) {
-    // https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
-    const trustedTimestamp =
-      existingDocument && Math.abs(existingDocument.mtime - Date.now()) > 1000;
-    if (
-      existingDocument &&
-      trustedTimestamp &&
-      existingDocument.mtime === mtime
-    ) {
-      await db
-        .update(document)
-        .set({ revision })
-        .where(eq(document.path, idPath));
-      await db.update(link).set({ revision }).where(eq(link.from, idPath));
-      return;
-    }
-
-    markdown = await readFile(absolutePath, { encoding: "utf8" });
-    checksum = getCheksum(markdown);
-    if (existingDocument && existingDocument.checksum === checksum) {
-      await db
-        .update(document)
-        .set({ revision })
-        .where(eq(document.path, idPath));
-      await db.update(link).set({ revision }).where(eq(link.from, idPath));
-      return;
-    }
-  } else {
-    markdown = await readFile(absolutePath, { encoding: "utf8" });
-  }
-
   const ast = await mdParser.parse(markdown);
   markdown = "";
   const frontmatter = getFrontmatter(ast);
@@ -113,8 +119,9 @@ export async function addDocument(
     frontmatter,
     path: idPath,
     ast: cfg.storeMarkdown === false ? emptyAst : ast,
-    checksum,
     mtime,
+    checksum,
+    cfghash,
     url: getUrl(idPath, frontmatter),
     slug: getSlug(idPath, frontmatter),
     updated_at,
@@ -187,7 +194,6 @@ export async function addDocument(
           label,
           line,
           column,
-          revision,
         })
         .run();
 

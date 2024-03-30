@@ -1,16 +1,20 @@
 # TODO
 
 ## Core
-
-- [ ] cache
-  - take into account configuration in cache
-    - https://github.com/yahoo/serialize-javascript + hash
-  - take into account versions of libraries
-  - do I need to take into account `inode`?
+- [ ] Extract Tasks (e.g. `- [ ] TODO`)
+  - separate table
+  - path to original document, ast, text?, checked(true/false)
+  - query interface
+- [ ] Extract Headings
+  - either need to allow to pass remark plugins (`import { rehypeHeadingIds } from "@astrojs/markdown-remark";`) or pass slug function
+  - separate table
+  - path to original document, anchor (aka id, aka slug), ast?, text, level
+  - use for link resolution
 - [ ] [frontmatter schema](/notes/schema.md)
 
 ## Performance
 
+- [ ] sql prepared statements
 - [ ] [parallel processing](./parallel.md)
 - [incremental parsing](https://parsing.stereobooster.com/other/incremental-parsers/)
   - https://github.com/lezer-parser/markdown
@@ -34,6 +38,16 @@
 
 ## Other
 
+- cache
+  - take into account versions of libraries?
+  - do I need to take into account `inode`?
+  - BigInt for hash maybe?
+    - `UNSIGNED BIG INT`
+    - https://orm.drizzle.team/docs/column-types/sqlite#bigint
+    - https://github.com/WiseLibs/better-sqlite3/blob/master/docs/integer.md#the-bigint-primitive-type
+- yaml
+  - https://github.com/biojppm/rapidyaml
+  - https://philna.sh/blog/2023/02/02/yaml-document-from-hell-javascript-edition/
 - Faceted search
   - Astro JSON route with faceted data
   - Pagefind integration either
@@ -42,15 +56,6 @@
     - Or [build index based on generated html](https://github.com/withastro/starlight/blob/d2822a1127c622e086ad8877a07adad70d8c3aab/packages/starlight/index.ts#L61-L72)
   - Update facets lib to support pagefind
   - Integrate InstantSearch UI
-- Extract Tasks (e.g. `- [ ] TODO`)
-  - separate table
-  - path to original document, ast, text?, checked(true/false)
-  - query interface
-- Extract Headings
-  - either need to allow to pass remark plugins (`import { rehypeHeadingIds } from "@astrojs/markdown-remark";`) or pass slug function
-  - separate table
-  - path to original document, anchor (aka id, aka slug), ast?, text, level
-  - use for link resolution
 - reactivity/memoization
   - [materialite](https://github.com/vlcn-io/materialite)
   - [signals](https://preactjs.com/guide/v10/signals/)
