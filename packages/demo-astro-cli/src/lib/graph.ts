@@ -1,5 +1,5 @@
 import { BrainDB } from "@braindb/core";
-import { bdb } from "./braindb";
+import { bdb } from "./braindb.mjs";
 import circular from "graphology-layout/circular";
 import graphology from "graphology";
 // @ts-ignore

@@ -1,3 +1,6 @@
+// @ts-expect-error https://github.com/microsoft/TypeScript/issues/42873#issuecomment-2037722981
+import type { Root } from "mdast";
+
 import { unified } from "unified";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkParse from "remark-parse";

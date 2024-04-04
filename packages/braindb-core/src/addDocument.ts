@@ -3,7 +3,7 @@ import { dirname, resolve } from "node:path";
 import { visit, SKIP, EXIT } from "unist-util-visit";
 import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
-import { type Node } from "unist";
+import type { Node } from "unist";
 
 import { document, link } from "./schema.js";
 import { JsonObject } from "./types.js";
@@ -103,11 +103,12 @@ export async function addDocument(
       }
     } catch (e) {
       // TODO: maybe config logger?
+      // TODO: use LRU of Bloom filter to report warning only once
       console.log(`Warning: ${e}`);
     }
   }
 
-  const ast = await mdParser.parse(markdown);
+  const ast = mdParser.parse(markdown);
   markdown = "";
   const frontmatter = getFrontmatter(ast);
   const getUrl = cfg.url || defaultGetUrl;

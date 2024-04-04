@@ -11,12 +11,12 @@
     "braindb": "braindb"
   },
   "dependencies": {
-    "@astrojs/mdx": "^2.2.2",
+    "@astrojs/mdx": "^2.2.3",
     "@astrojs/tailwind": "^5.1.0",
-    "@braindb/cli": "workspace:*",
     "@braindb/core": "workspace:*",
     "@tailwindcss/typography": "^0.5.12",
-    "astro": "^4.5.12",
+    "astro": "^4.5.15",
+    "github-slugger": "^2.0.0",
     "graphology": "^0.25.4",
     "graphology-layout": "^0.6.1",
     "graphology-svg": "^0.1.3",

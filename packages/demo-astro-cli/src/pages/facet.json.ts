@@ -1,4 +1,4 @@
-import { bdb } from "../lib/braindb";
+import { bdb } from "../lib/braindb.mjs";
 
 export async function GET() {
   return new Response(

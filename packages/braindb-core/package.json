@@ -45,9 +45,10 @@
     "@node-rs/xxhash": "^1.7.0",
     "@stereobooster/remark-wiki-link": "^2.1.0",
     "@types/mdast": "^4.0.3",
-    "better-sqlite3": "^9.4.3",
+    "@types/unist": "^3.0.2",
+    "better-sqlite3": "^9.4.5",
     "chokidar": "^3.6.0",
-    "drizzle-orm": "^0.30.6",
+    "drizzle-orm": "^0.30.7",
     "mitt": "^3.0.1",
     "mkdirp": "^3.0.1",
     "remark-frontmatter": "^5.0.0",
@@ -57,6 +58,7 @@
     "strip-markdown": "^6.0.0",
     "unified": "^11.0.4",
     "unist-util-map": "^4.0.0",
+    "unist-util-visit": "^5.0.0",
     "yaml": "^2.4.1"
   }
 }
