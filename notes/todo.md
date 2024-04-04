@@ -83,6 +83,3 @@
     - https://github.com/JavaScriptor/js-sql-parser
     - https://github.com/forward/sql-parser
     - https://alasql.org/
-- content query
-  - https://content.nuxt.com/composables/query-content
-  - https://github.com/datopian/markdowndb?tab=readme-ov-file#or-using-markdowndb-nodejs-api-in-a-framework-of-your-choice

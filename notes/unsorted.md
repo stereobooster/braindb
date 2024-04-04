@@ -42,6 +42,7 @@ tui to run SQL in watch mode
 
 ## Examples
 
+- https://github.com/timlrx/contentlayer2
 - https://lume.land/
 - tags
   - https://github.com/topics/digital-garden

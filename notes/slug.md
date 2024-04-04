@@ -1,4 +1,4 @@
-## How to form slug for root pages?
+# How to form slug for root pages?
 
 Root pages can be `index.md`, `index.mdx` (or `readme.md`, `readme.mdx` in GitHub).
 

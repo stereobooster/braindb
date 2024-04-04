@@ -2,6 +2,10 @@
 
 Main source of inspiration - [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/)
 
+Related:
+
+- https://contentlayer.dev/docs/sources/files/mapping-document-types-bf100a10
+
 Basic idea:
 
 - folder represents table/collection
@@ -35,7 +39,7 @@ Options:
 - On the other side one can always use `z.any()`
 - Astro uses convention of one schema per top level folder. But in our case this is not convinient
   - Use one schema for root, with default type `undefined` and default schema `z.any()`
-  - top level folder = type,  but optional. If there is no config it would use default one (from root)
+  - top level folder = type, but optional. If there is no config it would use default one (from root)
   - shall we allow arbitrary paths (glob) for schemas
     - what to do if more than one schema matches for file? Throw an error?
 
@@ -180,16 +184,4 @@ For inspiration:
 
 One of options for querying data is to expose [Drizzle ORM](https://orm.drizzle.team/docs/rqb). But this exposes implementation details.
 
-I think to expose querying interface similar to [facets](https://github.com/stereobooster/facets/blob/05e9b0811d5c4ca35fc83fab1c8d2f60e8918599/packages/facets/src/Facets.ts#L138-L150). It is to some extent is limited. But if people need more they can use generated DB directly.
-
-## Built-in fields vs frontmatter
-
-There are built-in fields: `path`, `url`, `markdown` (will be added `updated_at`, `type`). They don't require schema.
-
-What to do if we have same fields in frontmatter? We can explicitly target those fields with prefix `frontmatter` or `fm`.
-
-- `sort: ["updated_at", "asc"]` will sort by built if field
-- `sort: ["fm.updated_at", "asc"]` will sort by field in frontmatter
-- `sort: ["something", "asc"]` will sort by field in frontmatter (because there is no such built-in field)
-- `sort: ["something.else", "asc"]` will sort by field `else` nested in object `something` in frontmatter
-  - which means we can't use fields with `.` in it. In order to support `.` probably need to intrdouce escape sequence `\.`
+[](./content-query.md)
