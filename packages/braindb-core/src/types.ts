@@ -7,7 +7,9 @@ This type can be useful to enforce some input to be JSON-compatible or as a supe
 
 @category JSON
 */
-export type JsonObject = {[Key in string]: JsonValue} & {[Key in string]?: JsonValue | undefined};
+export type JsonObject = { [Key in string]: JsonValue } & {
+  [Key in string]?: JsonValue | undefined;
+};
 
 /**
 Matches a JSON array.
@@ -31,3 +33,11 @@ Matches any valid JSON value.
 @category JSON
 */
 export type JsonValue = JsonPrimitive | JsonObject | JsonArray;
+
+// special case of limited JSON - without arrays
+
+export type JsonLimitedValue = JsonPrimitive | JsonLimitedObject;
+
+export type JsonLimitedObject = { [Key in string]: JsonLimitedValue } & {
+  [Key in string]?: JsonLimitedValue | undefined;
+};

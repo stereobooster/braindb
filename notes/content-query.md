@@ -6,32 +6,40 @@ Related:
 
 - https://content.nuxt.com/composables/query-content
 - https://github.com/datopian/markdowndb?tab=readme-ov-file#or-using-markdowndb-nodejs-api-in-a-framework-of-your-choice
+- https://pagefind.app/docs/js-api-filtering/#using-compound-filters
 
 ## Curently available
 
 ```ts
 export type DocumentsOtions = {
   slug?: string;
+  url?: string;
+  frontmatter?: JsonLimitedObject;
   sort?: ["updated_at", SortDirection];
 };
 documents(options?: DocumentsOtions) {}
 ```
 
-## Future
+## Open questions
 
-- find by `url`
-- find by field in frontmater - `frontmater: { something: true}`
-
-How to do?
-
+- SQLite docs
+  - https://stackoverflow.com/questions/63651913/is-there-a-method-to-check-if-an-array-includes-one-value-in-sqlite
+  - https://www.sqlite.org/lang_expr.html#the_like_glob_regexp_match_and_extract_operators
+- Find all docs with couple values for the same field (OR) `frontmater: { date: [X, Y] }`
 - Find all docs with tag - `frontmater: { tags: [tag] }`?
   - Find all posts with exactly one tag?
 - Find all posts with any tag (OR) - `frontmater: { tags: [tag1, tag2] }`?
   - Find all posts with two tags (AND)?
 - Find all docs where field exists in frontmatter - `frontmater: { tags: ... }`?
 - Find all docs where field doesn't exist in frontmatter - `frontmater: { tags: null }`?
-- Find all docs where path starts with (matches some pattern)
-- Find all docs where url starts with (matches some pattern)
+- Pattern match
+  - Find all docs where path starts with (matches some pattern)
+  - Find all docs where url starts with (matches some pattern)
+  - Find all docs where title matches some pattern
+
+## Alternative approach
+
+Use some kind of DSL, like https://orm.drizzle.team/docs/operators
 
 ## Built-in fields vs frontmatter
 

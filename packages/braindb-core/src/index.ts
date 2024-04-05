@@ -9,10 +9,11 @@ import { symmetricDifference } from "./utils.js";
 import { deleteDocument, deleteOldRevision } from "./deleteDocument.js";
 import { Document } from "./Document.js";
 import { document, link } from "./schema.js";
-import { asc, desc, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { mkdirp } from "mkdirp";
 import { join } from "node:path";
 import { Link } from "./Link.js";
+import { DocumentsOtions, documentsSync, SortDirection } from "./query.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
@@ -22,7 +23,7 @@ type Events = {
   ready: void;
 };
 
-export { Document };
+export { Document, DocumentsOtions, SortDirection };
 
 export type Frontmatter = Record<string, unknown>;
 
@@ -78,15 +79,6 @@ export type BrainDBOptionsOut = {
    * @returns undefined | mdast node
    */
   transformUnresolvedLink?: (path: string, node: any) => any;
-};
-
-export type SortDirection = "asc" | "desc";
-
-// this would be similar to
-// https://github.com/stereobooster/facets/blob/main/packages/facets/src/Facets.ts#L138-L150
-export type DocumentsOtions = {
-  slug?: string;
-  sort?: ["updated_at", SortDirection];
 };
 
 export class BrainDB {
@@ -255,18 +247,7 @@ export class BrainDB {
   }
 
   documentsSync(options?: DocumentsOtions) {
-    let query = this.db.select({ path: document.path }).from(document);
-
-    if (options?.sort !== undefined) {
-      const dir = options?.sort?.[1] === "asc" ? asc : desc;
-      query.orderBy(dir(document.updated_at));
-    }
-
-    if (options?.slug !== undefined) {
-      query.where(eq(document.slug, options?.slug));
-    }
-
-    return query.all().map(({ path }) => new Document(this.db, path));
+    return documentsSync(this.db, options);
   }
 
   async documents(options?: DocumentsOtions) {

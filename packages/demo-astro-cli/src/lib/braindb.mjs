@@ -37,6 +37,16 @@ bdb.start();
 bdb.on("*", (action, opts) => {
   if (action === "ready") {
     console.log(`Done: ${new Date().getTime() - start}`);
+    // console.log(
+    //   bdb.documentsSync({
+    //     // sort: ["updated_at", "asc"],
+    //     // slug: "mdx-page",
+    //     frontmatter: {
+    //       // test: 1
+    //       tags: "tag",
+    //     },
+    //   })
+    // );
   }
   if (opts) {
     opts.document

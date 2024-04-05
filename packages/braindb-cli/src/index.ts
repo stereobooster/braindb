@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import { unlinkSync } from "node:fs";
-import { mkdirp } from "mkdirp";
 import { writeFileSync } from "node:fs";
 import { dirname } from "node:path";
+import { mkdirp } from "mkdirp";
 
 import { getConfig } from "./config.js";
 export { Config } from "./config.js";
