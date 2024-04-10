@@ -14,6 +14,7 @@ export const memoizeOnce = <A, B>(f: (x: A) => B) => {
   };
 };
 
+// alternative https://github.com/zbauman3/Deterministic-Object-Hash
 export const cheksumConfig = memoizeOnce((conf: any) => xxh32(serialize(conf)));
 
 // can use streaming instead of reading whole file
