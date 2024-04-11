@@ -44,7 +44,9 @@
 - read-only mode (for Next.js)
   - https://github.com/thedevdavid/digital-garden
 - cache
+  - https://github.com/zbauman3/Deterministic-Object-Hash
   - take into account versions of libraries?
+    - https://github.com/novemberborn/package-hash
   - do I need to take into account `inode`?
   - BigInt for hash maybe?
     - `UNSIGNED BIG INT`
