@@ -1,5 +1,5 @@
 import { xxh64, xxh32 } from "@node-rs/xxhash";
-import serialize from "serialize-javascript";
+import { deterministicString } from "deterministic-object-hash";
 
 const memoizeSecret: any = {};
 export const memoizeOnce = <A, B>(f: (x: A) => B) => {
@@ -14,8 +14,7 @@ export const memoizeOnce = <A, B>(f: (x: A) => B) => {
   };
 };
 
-// alternative https://github.com/zbauman3/Deterministic-Object-Hash
-export const cheksumConfig = memoizeOnce((conf: any) => xxh32(serialize(conf)));
+export const cheksumConfig = memoizeOnce((conf: any) => xxh32(deterministicString(conf)));
 
 // can use streaming instead of reading whole file
 export const cheksum64str = (str: string) => xxh64(str).toString(36);

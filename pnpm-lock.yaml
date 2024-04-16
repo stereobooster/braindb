@@ -50,6 +50,9 @@ importers:
       chokidar:
         specifier: ^3.6.0
         version: 3.6.0
+      deterministic-object-hash:
+        specifier: ^2.0.2
+        version: 2.0.2
       drizzle-orm:
         specifier: ^0.30.7
         version: 0.30.7(@types/better-sqlite3@7.6.9)(better-sqlite3@9.4.5)
@@ -65,9 +68,6 @@ importers:
       remark-stringify:
         specifier: ^11.0.0
         version: 11.0.0
-      serialize-javascript:
-        specifier: ^6.0.2
-        version: 6.0.2
       strip-markdown:
         specifier: ^6.0.0
         version: 6.0.0
@@ -4743,12 +4743,6 @@ packages:
     dev: false
     optional: true
 
-  /randombytes@2.1.0:
-    resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
-    dependencies:
-      safe-buffer: 5.2.1
-    dev: false
-
   /rc@1.2.8:
     resolution: {integrity: sha512-y3bGgqKj3QBdxLbLkomlohkvsA8gdAiUQlSBJnBhfn+BPxg4bc62d8TcBW15wavDfgexCgccckhcZvywyQYPOw==}
     hasBin: true
@@ -5014,12 +5008,6 @@ packages:
     hasBin: true
     dependencies:
       lru-cache: 6.0.0
-
-  /serialize-javascript@6.0.2:
-    resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
-    dependencies:
-      randombytes: 2.1.0
-    dev: false
 
   /sharp@0.32.6:
     resolution: {integrity: sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==}

@@ -53,7 +53,7 @@
     "remark-frontmatter": "^5.0.0",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
-    "serialize-javascript": "^6.0.2",
+    "deterministic-object-hash": "^2.0.2",
     "strip-markdown": "^6.0.0",
     "unified": "^11.0.4",
     "unist-util-map": "^4.0.0",
