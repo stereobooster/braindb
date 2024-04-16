@@ -97,7 +97,7 @@ importers:
         specifier: ^0.20.14
         version: 0.20.14
 
-  packages/demo-astro-cli:
+  packages/demo-astro:
     dependencies:
       '@astrojs/mdx':
         specifier: ^2.2.3
