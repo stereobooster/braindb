@@ -27,7 +27,7 @@ export const bdb = new BrainDB({
   root: path.resolve(process.cwd(), "src/content"),
   url: (filePath, _frontmatter) => `${generateSlug(filePath)}/`,
   // source: "/notes",
-  // dbPath: process.cwd(),
+  dbPath: process.cwd() + "/x",
   // cache: true,
   // git: path.resolve(process.cwd(), "../.."),
   storeMarkdown: false,

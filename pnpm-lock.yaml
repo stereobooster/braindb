@@ -26,9 +26,6 @@ importers:
       cosmiconfig:
         specifier: ^9.0.0
         version: 9.0.0(typescript@5.2.2)
-      mkdirp:
-        specifier: ^3.0.1
-        version: 3.0.1
 
   packages/braindb-core:
     dependencies:
@@ -57,9 +54,6 @@ importers:
         specifier: ^0.30.7
         version: 0.30.7(@types/better-sqlite3@7.6.9)(better-sqlite3@9.4.5)
       mitt:
-        specifier: ^3.0.1
-        version: 3.0.1
-      mkdirp:
         specifier: ^3.0.1
         version: 3.0.1
       remark-frontmatter:
@@ -4303,12 +4297,6 @@ packages:
 
   /mkdirp-classic@0.5.3:
     resolution: {integrity: sha512-gKLcREMhtuZRwRAfqP3RFW+TK4JqApVBtOIftVgjuABpAtpxhPGaDcfvbhNvD0B8iD1oUr/txX35NjcaY6Ns/A==}
-    dev: false
-
-  /mkdirp@3.0.1:
-    resolution: {integrity: sha512-+NsyUUAZDmo6YVHzL/stxSu3t9YS1iljliy3BSDrXJ/dkn1KYdmtZODGGjLcc9XLgVVpH4KshHB8XmZgMhaBXg==}
-    engines: {node: '>=10'}
-    hasBin: true
     dev: false
 
   /mnemonist@0.39.8:

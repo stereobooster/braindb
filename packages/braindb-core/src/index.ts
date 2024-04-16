@@ -10,7 +10,7 @@ import { deleteDocument, deleteOldRevision } from "./deleteDocument.js";
 import { Document } from "./Document.js";
 import { document, link } from "./schema.js";
 import { eq } from "drizzle-orm";
-import { mkdirp } from "mkdirp";
+import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { Link } from "./Link.js";
 import { DocumentsOtions, documentsSync, SortDirection } from "./query.js";
@@ -104,7 +104,7 @@ export class BrainDB {
     this.emitter = mitt<Events>();
     if (this.cfg.dbPath) {
       let dbPath = join(this.cfg.dbPath, ".braindb");
-      mkdirp.sync(dbPath);
+      mkdirSync(dbPath, { recursive: true });
       this.db = getDb(join(dbPath, "db.sqlite"));
     } else {
       this.db = getDb(":memory:");

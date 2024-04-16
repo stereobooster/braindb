@@ -68,6 +68,7 @@
   - [signals](https://preactjs.com/guide/v10/signals/)
   - maybe [rxdb](https://rxdb.info) Observable
   - [electric-sql: Live queries](https://electric-sql.com/docs/usage/data-access/queries#live-queries)
+  - https://github.com/wycats/js-reactivity-benchmark
 - [Graphology](https://graphology.github.io/) integration
   - event listener - when node, edge added or node, edge removed
   - show broken links, maybe?

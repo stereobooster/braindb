@@ -3,7 +3,7 @@
 import { unlinkSync } from "node:fs";
 import { writeFileSync } from "node:fs";
 import { dirname } from "node:path";
-import { mkdirp } from "mkdirp";
+import { mkdirSync } from "node:fs";
 
 import { getConfig } from "./config.js";
 export { Config } from "./config.js";
@@ -57,7 +57,7 @@ getConfig().then((cfg) => {
           const path = option?.document?.path()!;
           const mdPath =
             destination + (transformPath ? transformPath(path) : path);
-          mkdirp.sync(dirname(mdPath));
+          mkdirSync(dirname(mdPath), { recursive: true });
           writeFileSync(
             mdPath,
             document.markdown({

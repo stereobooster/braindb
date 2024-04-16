@@ -50,7 +50,6 @@
     "chokidar": "^3.6.0",
     "drizzle-orm": "^0.30.7",
     "mitt": "^3.0.1",
-    "mkdirp": "^3.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
