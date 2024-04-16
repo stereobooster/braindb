@@ -13,7 +13,6 @@ import remarkStringify from "remark-stringify";
 
 const processor = unified()
   .use(stripMarkdown)
-  // @ts-ignore
   .use(remarkStringify, { resourceLink: false });
 
 export function toText(ast: any) {
