@@ -16,12 +16,11 @@
 
 ## Packages
 
-- [braindb-core](/packages/braindb-core) - core package
-- [braindb-cli](/packages/braindb-cli) - cli package
+- [braindb-core](/packages/braindb-core) - core package ![NPM Version](https://img.shields.io/npm/v/%40braindb%2Fcore)
+- [braindb-cli](/packages/braindb-cli) - cli package ![NPM Version](https://img.shields.io/npm/v/%40braindb%2Fcli)
 
 Demos:
 
-- [Astro + braindb](/packages/demo-astro-cli)
 - [astro-digital-garden](https://astro-digital-garden.stereobooster.com/recipes/braindb/)
 
 ## Logo
