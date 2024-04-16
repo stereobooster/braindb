@@ -5,7 +5,7 @@ import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
 import type { Node } from "unist";
 
-import { document, link } from "./schema.js";
+import { document, link, task } from "./schema.js";
 import { JsonObject } from "./types.js";
 import { mdParser } from "./parser.js";
 import {
@@ -201,8 +201,31 @@ export async function addDocument(
       return SKIP;
     }
 
+    if (
+      node.type === "listItem" &&
+      (node.checked === true || node.checked === false)
+    ) {
+      const start = node.position.start.offset as number;
+      const line = node.position.start.line as number;
+      const column = node.position.start.column as number;
+      const checked = node.checked;
+      const ast = node.children[0];
+
+      db.insert(task)
+        .values({
+          from: idPath,
+          start,
+          line,
+          column,
+          checked,
+          ast,
+        })
+        .run();
+
+      return SKIP;
+    }
+
     // if (node.type === "heading") {
-    //   console.log(slugger.slug(node.children[0].value));
     //   return SKIP;
     // }
   });

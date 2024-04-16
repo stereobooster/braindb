@@ -2,11 +2,6 @@
 
 ## Core
 
-- [ ] Extract Tasks (e.g. `- [ ] TODO`)
-  - `mdast-util-gfm-task-list-item`, `remark-gfm`
-  - separate table
-  - id, path to original document, ast, checked(true/false)
-  - query interface
 - [ ] Extract Headings
   - either need to allow to pass remark plugins (`import { rehypeHeadingIds } from "@astrojs/markdown-remark";`) or pass slug function
     - https://github.com/withastro/astro/blob/main/packages/markdown/remark/src/rehype-collect-headings.ts

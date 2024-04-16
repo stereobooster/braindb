@@ -6,10 +6,12 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkParse from "remark-parse";
 import wikiLinkPlugin from "@stereobooster/remark-wiki-link";
 import remarkStringify from "remark-stringify";
+import remarkGfm from "remark-gfm";
 // import remarkMdx from "remark-mdx"
 
 export const mdParser = unified()
   .use(remarkParse)
   .use(remarkFrontmatter)
   .use(wikiLinkPlugin, { aliasDivider: "|" })
+  .use(remarkGfm)
   .use(remarkStringify, { resourceLink: false });

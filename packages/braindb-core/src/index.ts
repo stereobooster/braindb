@@ -8,12 +8,13 @@ import { addDocument } from "./addDocument.js";
 import { symmetricDifference } from "./utils.js";
 import { deleteDocument, deleteOldRevision } from "./deleteDocument.js";
 import { Document } from "./Document.js";
-import { document, link } from "./schema.js";
+import { document, link, task } from "./schema.js";
 import { eq } from "drizzle-orm";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { Link } from "./Link.js";
 import { DocumentsOtions, documentsSync, SortDirection } from "./query.js";
+import { Task } from "./Task.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
@@ -23,7 +24,7 @@ type Events = {
   ready: void;
 };
 
-export { Document, DocumentsOtions, SortDirection };
+export { Document, DocumentsOtions, SortDirection, Task, Link };
 
 export type Frontmatter = Record<string, unknown>;
 
@@ -280,5 +281,21 @@ export class BrainDB {
   async links() {
     await this.ready();
     return this.linksSync();
+  }
+
+  /**
+   * TODO: filter by checked true/false
+   */
+  tasksSync() {
+    return this.db
+      .select({ from: task.from, start: task.start })
+      .from(task)
+      .all()
+      .map(({ from, start }) => new Task(this.db, from, start));
+  }
+
+  async tasks() {
+    await this.ready();
+    return this.tasksSync();
   }
 }

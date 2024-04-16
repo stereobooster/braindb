@@ -48,9 +48,9 @@ export const document = sqliteTable(
     revision: integer("revision").default(0).notNull(),
   },
   (t) => ({
-    path: unique("path").on(t.path),
-    slug: index("slug").on(t.slug),
-    url: index("url").on(t.url),
+    path: unique("documents_path").on(t.path),
+    slug: index("documents_slug").on(t.slug),
+    url: index("documents_url").on(t.url),
   })
 );
 
@@ -80,11 +80,36 @@ export const link = sqliteTable(
     column: integer("column").notNull(),
   },
   (t) => ({
-    from_start: unique("from_start").on(t.from, t.start),
-    to_slug: index("to_slug").on(t.to_slug),
-    to_url: index("to_url").on(t.to_url),
-    to_path: index("to_path").on(t.to_path),
+    from_start: unique("links_from_start").on(t.from, t.start),
+    to_slug: index("links_to_slug").on(t.to_slug),
+    to_url: index("links_to_url").on(t.to_url),
+    to_path: index("links_to_path").on(t.to_path),
   })
 );
 
 export type LinkProps = typeof link.$inferSelect;
+
+export const task = sqliteTable(
+  "tasks",
+  {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    from: text("from").notNull(),
+    /**
+     * Options to uniqlly identify link in the document
+     * - **path + start.offset**
+     * - autoincrement
+     * - uuid-like (random)
+     * - path + start.column + start.line
+     */
+    start: integer("start").notNull(),
+    ast: text("ast", { mode: "json" }).notNull(),
+    checked: integer("checked", { mode: "boolean" }).notNull(),
+    line: integer("line").notNull(),
+    column: integer("column").notNull(),
+  },
+  (t) => ({
+    from_start: unique("tasks_from_start").on(t.from, t.start),
+  })
+);
+
+export type TaskProps = typeof task.$inferSelect;
