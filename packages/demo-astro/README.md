@@ -1,33 +1,36 @@
-# Demo: Astro integration with CLI
+# Demo: Astro integration
 
-## concept
+## Build fails
 
-- CLI watches files and writes processed files to `src/content/notes`
-- Astro content collection takes files from `src/content/notes`
+```sh
+pnpm build
+Build failed in 970ms
+[commonjs--resolver] ../../node_modules/.pnpm/@node-rs+xxhash-darwin-x64@1.7.0/node_modules/@node-rs/xxhash-darwin-x64/xxhash.darwin-x64.node (1:0): Unexpected character '�' (Note that you need plugins to import files that are not JavaScript)
+file: /node_modules/.pnpm/@node-rs+xxhash@1.7.0/node_modules/@node-rs/xxhash/index.js:1:0
+1: �������__TEXT�__text...
+```
+
+There are several related issues reported in Vite:
+
+- https://github.com/vitejs/vite/issues/5688
+- https://github.com/vitejs/vite/issues/14289
+- https://github.com/vitejs/vite/issues/16293
+
+**Workaround** use `@braindb/core` from npm instead of local version (`"@braindb/core": "workspace:*"`)
 
 ## TODO
+
+Those are old TODOs. A lot of them covered in https://astro-digital-garden.stereobooster.com/
 
 - Layout: navbar, footer, main, sidebar
 - navbar
   - [dark mode switcher](https://www.kevinzunigacuellar.com/blog/dark-mode-in-astro/)
   - [pagefind component](https://blog.otterlord.dev/posts/astro-search/)
-- sidebar
-  - [ToC component](https://kld.dev/building-table-of-contents/)
-    - [toc-animation](https://kld.dev/toc-animation/)
-  - backlinks component
-- markdown
-  - [Add last modified time](https://docs.astro.build/en/recipes/modified-time/)
-  - [Anchor Links for Headings](https://github.com/withastro/starlight/discussions/1239)
-  - [Add icons to external links](https://docs.astro.build/en/recipes/external-links/) ↗
-  - page bundles (image path resolution)
 - other
   - @astrojs/sitemap
   - seo
 	- https://www.npmjs.com/package/@astrolib/seo
 	- https://www.npmjs.com/package/astro-seo
-  - image optimization
-    - https://github.com/ChrisOh431/astro-remark-eleventy-image
-    - astro image asset
 - components
 - https://github.com/natemoo-re/astro-icon
   - https://github.com/markteekman/accessible-astro-components#usage
