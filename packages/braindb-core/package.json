@@ -1,6 +1,6 @@
 {
   "name": "@braindb/core",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "markdown-graph-content-layer-database",
   "homepage": "https://github.com/stereobooster/braindb",
   "author": "stereobooster",
@@ -37,19 +37,20 @@
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.9",
     "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.3",
     "@types/serialize-javascript": "^5.0.4",
+    "@types/unist": "^3.0.2",
     "drizzle-kit": "^0.20.14"
   },
   "dependencies": {
     "@napi-rs/simple-git": "^0.1.16",
     "@node-rs/xxhash": "^1.7.0",
     "@stereobooster/remark-wiki-link": "^2.1.0",
-    "@types/mdast": "^4.0.3",
-    "@types/unist": "^3.0.2",
     "better-sqlite3": "^9.4.5",
     "chokidar": "^3.6.0",
     "deterministic-object-hash": "^2.0.2",
     "drizzle-orm": "^0.30.7",
+    "mdast-util-to-string": "^4.0.0",
     "mitt": "^3.0.1",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.0",

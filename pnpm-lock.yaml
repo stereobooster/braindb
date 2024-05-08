@@ -38,12 +38,6 @@ importers:
       '@stereobooster/remark-wiki-link':
         specifier: ^2.1.0
         version: 2.1.0
-      '@types/mdast':
-        specifier: ^4.0.3
-        version: 4.0.3
-      '@types/unist':
-        specifier: ^3.0.2
-        version: 3.0.2
       better-sqlite3:
         specifier: ^9.4.5
         version: 9.4.5
@@ -56,6 +50,9 @@ importers:
       drizzle-orm:
         specifier: ^0.30.7
         version: 0.30.7(@types/better-sqlite3@7.6.9)(better-sqlite3@9.4.5)
+      mdast-util-to-string:
+        specifier: ^4.0.0
+        version: 4.0.0
       mitt:
         specifier: ^3.0.1
         version: 3.0.1
@@ -93,9 +90,15 @@ importers:
       '@types/hast':
         specifier: ^3.0.4
         version: 3.0.4
+      '@types/mdast':
+        specifier: ^4.0.3
+        version: 4.0.3
       '@types/serialize-javascript':
         specifier: ^5.0.4
         version: 5.0.4
+      '@types/unist':
+        specifier: ^3.0.2
+        version: 3.0.2
       drizzle-kit:
         specifier: ^0.20.14
         version: 0.20.14
@@ -1704,7 +1707,6 @@ packages:
     resolution: {integrity: sha512-LsjtqsyF+d2/yFOYaN22dHZI1Cpwkrj+g06G8+qtUKlhovPW89YhqSnfKtMbkgmEtYpH2gydRNULd6y8mciAFg==}
     dependencies:
       '@types/unist': 3.0.2
-    dev: false
 
   /@types/mdx@2.0.12:
     resolution: {integrity: sha512-H9VZ9YqE+H28FQVchC83RCs5xQ2J7mAAv6qdDEaWmXEVl3OpdH+xfrSUzQ1lp7U7oSTRZ0RvW08ASPJsYBi7Cw==}

@@ -10,12 +10,20 @@
 import { unified } from "unified";
 import stripMarkdown from "strip-markdown";
 import remarkStringify from "remark-stringify";
+import { toString } from "mdast-util-to-string";
 
 const processor = unified()
   .use(stripMarkdown)
   .use(remarkStringify, { resourceLink: false });
 
+// TODO: I'm not sure about this one, need to test it more
 export function toText(ast: any) {
-  const root = processor.runSync(ast);
-  return processor.stringify(root) as string;
+  try {
+    const root = processor.runSync(ast);
+    return processor.stringify(root) as string;
+  } catch (e) {
+    // sometimes doesn't preserve "readable" formating
+    // but works for all extensions
+    return toString(ast);
+  }
 }

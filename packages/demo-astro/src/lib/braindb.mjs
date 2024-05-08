@@ -60,3 +60,6 @@ bdb.on("*", (action, opts) => {
       );
   }
 });
+
+// await bdb.ready();
+// console.log((await bdb.tasks()).map(x => x.text() ))
