@@ -16,6 +16,7 @@ BrainDB docs are not ready. For now it's a bunch of notes
   - [ ] allow to pass remark/rehype plugins?
 - [ ] remark-wiki-link
   - need to move it to this monorepo
+  - https://github.com/wikibonsai/wikirefs
 - [ ] remark-dataview
   - there is PoC, need to move to this repo and extend with full DQL parser
 - [ ] CLI

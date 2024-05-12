@@ -3,6 +3,8 @@ title: unsorted notes
 draft: true
 ---
 
+- https://github.com/wikibonsai/wikibonsai
+
 ### Test with real life example
 
 - Dataview
