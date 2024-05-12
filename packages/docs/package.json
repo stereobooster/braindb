@@ -10,10 +10,12 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/check": "^0.6.0",
     "@astrojs/starlight": "^0.22.2",
+    "@beoe/cache": "^0.0.1",
+    "@beoe/rehype-mermaid": "^0.0.1",
     "astro": "^4.3.5",
     "sharp": "^0.32.5",
-    "@astrojs/check": "^0.6.0",
     "typescript": "^5.4.5"
   }
 }
