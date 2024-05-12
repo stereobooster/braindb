@@ -1,4 +1,7 @@
-# Architecture notes
+---
+title: Architecture notes
+draft: true
+---
 
 ## Overview
 

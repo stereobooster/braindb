@@ -1,4 +1,7 @@
-# Astro integration
+---
+title: Astro integration
+draft: true
+---
 
 > [!WARNING]
 > This is outdated article.

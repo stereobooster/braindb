@@ -1,4 +1,7 @@
-# Schema
+---
+title: Schema
+draft: true
+---
 
 Main source of inspiration - [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/)
 

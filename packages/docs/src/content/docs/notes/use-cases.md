@@ -1,4 +1,7 @@
-# Usecases
+---
+title: Usecases
+draft: true
+---
 
 ## Obvious cases
 

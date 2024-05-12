@@ -1,4 +1,7 @@
-# Content query
+---
+title: Content query
+draft: true
+---
 
 I think to expose querying interface similar to [facets](https://github.com/stereobooster/facets/blob/05e9b0811d5c4ca35fc83fab1c8d2f60e8918599/packages/facets/src/Facets.ts#L138-L150). It is to some extent is limited. But if people need more they can use generated DB directly.
 
