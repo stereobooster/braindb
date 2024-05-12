@@ -1,4 +1,2 @@
-import { fromMarkdown } from './from-markdown'
-import { toMarkdown } from './to-markdown'
-
-export { fromMarkdown, toMarkdown }
+export { fromMarkdown } from "./from-markdown.js";
+export { toMarkdown } from "./to-markdown.js";

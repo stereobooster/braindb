@@ -6,8 +6,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "turbo": "^1.10.16",
-    "typescript": "^5.2.2"
+    "turbo": "^1.13.3",
+    "typescript": "^5.4.5"
   },
   "scripts": {
     "test": "turbo run test",

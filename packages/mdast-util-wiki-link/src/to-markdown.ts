@@ -1,47 +1,49 @@
-import safe from 'mdast-util-to-markdown/lib/util/safe'
+import { type Unsafe, type Handle } from "mdast-util-to-markdown";
 
 interface ToMarkdownOptions {
   aliasDivider?: string;
 }
 
-function toMarkdown (opts: ToMarkdownOptions = {}) {
-  const aliasDivider = opts.aliasDivider || ':'
+export function toMarkdown(opts: ToMarkdownOptions = {}) {
+  const aliasDivider = opts.aliasDivider || ":";
 
   const unsafe = [
     {
-      character: '[',
-      inConstruct: ['phrasing', 'label', 'reference']
+      character: "[",
+      inConstruct: ["phrasing", "label", "reference"],
     },
     {
-      character: ']',
-      inConstruct: ['label', 'reference']
-    }
-  ]
+      character: "]",
+      inConstruct: ["label", "reference"],
+    },
+  ] satisfies Unsafe[];
 
-  function handler (node: any, _: any, context: any) {
-    const exit = context.enter('wikiLink')
+  const wikiLink: Handle = (node, _parent, state, _info) => {
+    // @ts-expect-error
+    const exit = state.enter("wikiLink");
 
-    const nodeValue = safe(context, node.value, { before: '[', after: ']' })
-    const nodeAlias = safe(context, node.data.alias, { before: '[', after: ']' })
+    const nodeValue = state.safe(node.value, { before: "[", after: "]" });
+    const nodeAlias = state.safe(node.data.alias, {
+      before: "[",
+      after: "]",
+    });
 
-    let value
+    let value;
     if (nodeAlias !== nodeValue) {
-      value = `[[${nodeValue}${aliasDivider}${nodeAlias}]]`
+      value = `[[${nodeValue}${aliasDivider}${nodeAlias}]]`;
     } else {
-      value = `[[${nodeValue}]]`
+      value = `[[${nodeValue}]]`;
     }
 
-    exit()
+    exit();
 
-    return value
-  }
+    return value;
+  };
 
   return {
     unsafe: unsafe,
     handlers: {
-      wikiLink: handler
-    }
-  }
+      wikiLink,
+    },
+  };
 }
-
-export { toMarkdown }
