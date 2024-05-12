@@ -6,6 +6,44 @@ draft: true
 > [!WARNING]
 > This is outdated article.
 
+## Options
+
+### Option 1: (`@braindb/cli`)
+
+In this case `BrainDB` acts as [obsidian-export](https://nick.groenen.me/projects/obsidian-export/).
+
+```mermaid
+flowchart LR
+a(some/folder) --> BrainDB --> c(src/content)
+subgraph Astro
+  c --> d[Astro] --> e(dist)
+end
+```
+
+### Option 2: augment though Astro components
+
+In this case `Astro` is repsonsible for rendering and `BrainDB` used to add features on top, for example, backlinks. Basically BrainDB and Astro Content Collections run in parallel and fully independent.
+
+```mermaid
+flowchart LR
+c(src/content) --> Astro --> e(dist)
+c  --> BrainDB --> f[Astro components]
+f --> Astro
+```
+
+### Option 3: augment though Remark plugins
+
+In this case `Astro` is repsonsible for rendering and `BrainDB` hooked in through remark plugins. BrainDB in this case responsible, for example, for wikilinks, datview.
+
+```mermaid
+flowchart LR
+c(src/content) --> Astro --> e(dist)
+c  --> BrainDB --> f[remark plugins]
+f --- Astro
+```
+
+## Old links
+
 Ideas from discussions:
 
 - https://github.com/withastro/roadmap/discussions/424
