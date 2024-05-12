@@ -9,150 +9,82 @@ import * as wikiLink from "../src/index.js";
 import { type WikiLinkNode } from "../src/index.js";
 
 function assertWikiLink(obj: any): asserts obj is WikiLinkNode {
-  if (
-    !obj.data ||
-    obj.data.exists === undefined ||
-    obj.data.permalink === undefined
-  ) {
+  if (!obj.data || !("alias" in obj.data) || !("permalink" in obj.data)) {
     throw new Error("Not a wiki link");
   }
 }
 
 describe("mdast-util-wiki-link", () => {
   describe("fromMarkdown", () => {
-    it("parses a wiki link that has a matching permalink", () => {
+    it("parses a wiki link", () => {
       const ast = fromMarkdown("[[Wiki Link]]", {
         extensions: [syntax()],
-        mdastExtensions: [
-          wikiLink.fromMarkdown({
-            permalinks: ["wiki_link"],
-          }),
-        ],
+        mdastExtensions: [wikiLink.fromMarkdown()],
       });
 
       visit(ast, "wikiLink", (node: WikiLinkNode) => {
         assertWikiLink(node);
-        expect(node.data.exists).toEqual(true);
-        expect(node.data.permalink).toEqual("wiki_link");
+        expect(node.data.permalink).toEqual(undefined);
         expect(node.data.hName).toEqual("a");
-        expect(node.data.hProperties.className).toEqual("internal");
-        expect(node.data.hProperties.href).toEqual("#/page/wiki_link");
+        expect(node.data.hProperties.href).toEqual("Wiki Link");
         expect(node.data.hChildren[0].value).toEqual("Wiki Link");
-      });
-    });
-
-    it("parses a wiki link that has no matching permalink", () => {
-      const ast = fromMarkdown("[[New Page]]", {
-        extensions: [syntax()],
-        mdastExtensions: [
-          wikiLink.fromMarkdown({
-            permalinks: [],
-          }),
-        ],
-      });
-
-      visit(ast, "wikiLink", (node: WikiLinkNode) => {
-        assertWikiLink(node);
-        expect(node.data.exists).toEqual(false);
-        expect(node.data.permalink).toEqual("new_page");
-        expect(node.data.hName).toEqual("a");
-        expect(node.data.hProperties.className).toEqual("internal new");
-        expect(node.data.hProperties.href).toEqual("#/page/new_page");
-        expect(node.data.hChildren[0].value).toEqual("New Page");
       });
     });
 
     it("handles wiki links with aliases", () => {
       const ast = fromMarkdown("[[Real Page:Page Alias]]", {
         extensions: [syntax()],
-        mdastExtensions: [
-          wikiLink.fromMarkdown({
-            permalinks: [],
-          }),
-        ],
+        mdastExtensions: [wikiLink.fromMarkdown()],
       });
 
       visit(ast, "wikiLink", (node: WikiLinkNode) => {
         assertWikiLink(node);
-        expect(node.data.exists).toEqual(false);
-        expect(node.data.permalink).toEqual("real_page");
-        expect(node.data.hName).toEqual("a");
         expect(node.data.alias).toEqual("Page Alias");
+        expect(node.data.permalink).toEqual(undefined);
         expect(node.value).toEqual("Real Page");
-        expect(node.data.hProperties.className).toEqual("internal new");
-        expect(node.data.hProperties.href).toEqual("#/page/real_page");
+        expect(node.data.hName).toEqual("a");
+        expect(node.data.hProperties.href).toEqual("Real Page");
         expect(node.data.hChildren[0].value).toEqual("Page Alias");
       });
     });
 
     describe("configuration options", () => {
-      it("uses pageResolver", () => {
-        const identity = (name: string) => [name];
-
+      it("uses linkResolver", () => {
         const ast = fromMarkdown("[[A Page]]", {
           extensions: [syntax()],
           mdastExtensions: [
             wikiLink.fromMarkdown({
-              pageResolver: identity,
-              permalinks: ["A Page"],
+              linkResolver: (x) => x.toLowerCase().replace(" ", "_"),
             }),
           ],
         });
 
         visit(ast, "wikiLink", (node: WikiLinkNode) => {
           assertWikiLink(node);
-          expect(node.data.exists).toEqual(true);
-          expect(node.data.permalink).toEqual("A Page");
-          expect(node.data.hProperties.href).toEqual("#/page/A Page");
-        });
-      });
-
-      it("uses newClassName", () => {
-        const ast = fromMarkdown("[[A Page]]", {
-          extensions: [syntax()],
-          mdastExtensions: [
-            wikiLink.fromMarkdown({
-              newClassName: "new_page",
-            }),
-          ],
-        });
-
-        visit(ast, "wikiLink", (node: WikiLinkNode) => {
-          assertWikiLink(node);
-          expect(node.data.hProperties.className).toEqual("internal new_page");
-        });
-      });
-
-      it("uses hrefTemplate", () => {
-        const ast = fromMarkdown("[[A Page]]", {
-          extensions: [syntax()],
-          mdastExtensions: [
-            wikiLink.fromMarkdown({
-              hrefTemplate: (permalink: string | undefined) => permalink || "",
-            }),
-          ],
-        });
-
-        visit(ast, "wikiLink", (node: WikiLinkNode) => {
-          assertWikiLink(node);
+          expect(node.data.permalink).toEqual("a_page");
           expect(node.data.hProperties.href).toEqual("a_page");
         });
       });
 
-      it("uses wikiLinkClassName", () => {
+      it("uses linkTemplate", () => {
         const ast = fromMarkdown("[[A Page]]", {
           extensions: [syntax()],
           mdastExtensions: [
             wikiLink.fromMarkdown({
-              wikiLinkClassName: "wiki_link",
-              permalinks: ["a_page"],
+              linkTemplate: ({ slug, permalink, alias }) => ({
+                hName: "span",
+                hProperties: { "data-href": permalink || slug },
+                hChildren: [{ type: "text", value: alias || slug }],
+              }),
             }),
           ],
         });
 
         visit(ast, "wikiLink", (node: WikiLinkNode) => {
           assertWikiLink(node);
-          expect(node.data.hProperties.className).toEqual("wiki_link");
+          expect(node.data.hName).toEqual("span");
+          expect(node.data.hProperties["data-href"]).toEqual("A Page");
+          expect(node.data.hChildren[0].value).toEqual("A Page");
         });
       });
     });
@@ -185,6 +117,20 @@ describe("mdast-util-wiki-link", () => {
       }).trim();
 
       expect(stringified).toEqual("[[Real Page:Page Alias]]");
+    });
+
+    it("stringifies aliased wiki links when alias is the same as slug", () => {
+      const ast = fromMarkdown("[[Real Page:Real Page]]", {
+        extensions: [syntax()],
+        mdastExtensions: [wikiLink.fromMarkdown()],
+      });
+
+      const stringified = toMarkdown(ast, {
+        // @ts-expect-error
+        extensions: [wikiLink.toMarkdown()],
+      }).trim();
+
+      expect(stringified).toEqual("[[Real Page:Real Page]]");
     });
 
     describe("configuration options", () => {

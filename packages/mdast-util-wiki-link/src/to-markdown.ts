@@ -23,13 +23,13 @@ export function toMarkdown(opts: ToMarkdownOptions = {}) {
     const exit = state.enter("wikiLink");
 
     const nodeValue = state.safe(node.value, { before: "[", after: "]" });
-    const nodeAlias = state.safe(node.data.alias, {
-      before: "[",
-      after: "]",
-    });
 
-    let value;
-    if (nodeAlias !== nodeValue) {
+    let value: string;
+    if (node.data.alias != null) {
+      const nodeAlias = state.safe(node.data.alias, {
+        before: "[",
+        after: "]",
+      });
       value = `[[${nodeValue}${aliasDivider}${nodeAlias}]]`;
     } else {
       value = `[[${nodeValue}]]`;

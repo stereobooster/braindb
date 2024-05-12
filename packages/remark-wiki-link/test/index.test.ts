@@ -4,86 +4,52 @@ import remarkParse from "remark-parse";
 import { visit } from "unist-util-visit";
 import remarkStringify from "remark-stringify";
 
-import wikiLinkPlugin from "../src";
+import wikiLinkPlugin, { type RemarkWikiLinkOptions } from "../src";
 import { select } from "unist-util-select";
 
 import { type WikiLinkNode } from "@braindb/mdast-util-wiki-link";
 
 function assertWikiLink(obj: any): asserts obj is WikiLinkNode {
-  if (
-    !obj.data ||
-    obj.data.exists === undefined ||
-    obj.data.permalink === undefined
-  ) {
+  if (!obj.data || !("alias" in obj.data) || !("permalink" in obj.data)) {
     throw new Error("Not a wiki link");
   }
 }
 
 describe("remark-wiki-link", () => {
-  it("parses a wiki link that has a matching permalink", () => {
-    const processor = unified()
-      .use(remarkParse)
-      .use(wikiLinkPlugin, {
-        permalinks: ["wiki_link"],
-      });
+  it("parses a wiki link", () => {
+    const processor = unified().use(remarkParse).use(wikiLinkPlugin);
 
     let ast = processor.runSync(processor.parse("[[Wiki Link]]"));
 
     visit(ast, "wikiLink", (node: WikiLinkNode) => {
       assertWikiLink(node);
 
-      expect(node.data.exists).toEqual(true);
-      expect(node.data.permalink).toEqual("wiki_link");
+      expect(node.data.permalink).toEqual(undefined);
       expect(node.data.hName).toEqual("a");
-      expect(node.data.hProperties.className).toEqual("internal");
-      expect(node.data.hProperties.href).toEqual("#/page/wiki_link");
+      expect(node.data.hProperties.href).toEqual("Wiki Link");
       expect(node.data.hChildren[0].value).toEqual("Wiki Link");
     });
   });
 
-  it("parses a wiki link that has no matching permalink", () => {
-    const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-      permalinks: [],
-    });
-
-    let ast = processor.runSync(processor.parse("[[New Page]]"));
-
-    visit(ast, "wikiLink", (node: WikiLinkNode) => {
-      assertWikiLink(node);
-
-      expect(node.data.exists).toEqual(false);
-      expect(node.data.permalink).toEqual("new_page");
-      expect(node.data.hName).toEqual("a");
-      expect(node.data.hProperties.className).toEqual("internal new");
-      expect(node.data.hProperties.href).toEqual("#/page/new_page");
-      expect(node.data.hChildren[0].value).toEqual("New Page");
-    });
-  });
-
   it("handles wiki links with aliases", () => {
-    const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-      permalinks: [],
-    });
+    const processor = unified().use(remarkParse).use(wikiLinkPlugin);
 
     let ast = processor.runSync(processor.parse("[[Real Page:Page Alias]]"));
 
     visit(ast, "wikiLink", (node: WikiLinkNode) => {
       assertWikiLink(node);
 
-      expect(node.data.exists).toEqual(false);
-      expect(node.data.permalink).toEqual("real_page");
+      expect(node.data.permalink).toEqual(undefined);
       expect(node.data.hName).toEqual("a");
       expect(node.data.alias).toEqual("Page Alias");
       expect(node.value).toEqual("Real Page");
-      expect(node.data.hProperties.className).toEqual("internal new");
-      expect(node.data.hProperties.href).toEqual("#/page/real_page");
+      expect(node.data.hProperties.href).toEqual("Real Page");
       expect(node.data.hChildren[0].value).toEqual("Page Alias");
     });
   });
 
   it("handles wiki alias links with custom divider", () => {
     const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-      permalinks: [],
       aliasDivider: "|",
     });
 
@@ -92,13 +58,11 @@ describe("remark-wiki-link", () => {
     visit(ast, "wikiLink", (node: WikiLinkNode) => {
       assertWikiLink(node);
 
-      expect(node.data.exists).toEqual(false);
-      expect(node.data.permalink).toEqual("real_page");
+      expect(node.data.permalink).toEqual(undefined);
       expect(node.data.hName).toEqual("a");
       expect(node.data.alias).toEqual("Page Alias");
       expect(node.value).toEqual("Real Page");
-      expect(node.data.hProperties.className).toEqual("internal new");
-      expect(node.data.hProperties.href).toEqual("#/page/real_page");
+      expect(node.data.hProperties.href).toEqual("Real Page");
       expect(node.data.hChildren[0].value).toEqual("Page Alias");
     });
   });
@@ -107,7 +71,7 @@ describe("remark-wiki-link", () => {
     const processor = unified()
       .use(remarkParse)
       .use(remarkStringify)
-      .use(wikiLinkPlugin, { permalinks: ["wiki_link"] });
+      .use(wikiLinkPlugin);
 
     const stringified = processor
       .processSync("[[Wiki Link]]")
@@ -130,76 +94,46 @@ describe("remark-wiki-link", () => {
   });
 
   describe("configuration options", () => {
-    it("uses pageResolver", () => {
-      const identity = (name: string) => [name];
+    it("uses linkResolver", () => {
+      const opts: RemarkWikiLinkOptions = {
+        linkResolver: (x: string) => x.toLowerCase().replace(" ", "_"),
+      };
 
-      const processor = unified()
-        .use(remarkParse)
-        .use(wikiLinkPlugin, {
-          pageResolver: identity,
-          permalinks: ["A Page"],
-        });
+      const processor = unified().use(remarkParse).use(wikiLinkPlugin, opts);
 
       let ast = processor.runSync(processor.parse("[[A Page]]"));
 
       visit(ast, "wikiLink", (node: WikiLinkNode) => {
         assertWikiLink(node);
-        expect(node.data.exists).toEqual(true);
-        expect(node.data.permalink).toEqual("A Page");
-        expect(node.data.hProperties.href).toEqual("#/page/A Page");
-      });
-    });
-
-    it("uses newClassName", () => {
-      const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-        newClassName: "new_page",
-      });
-
-      let ast = processor.runSync(processor.parse("[[A Page]]"));
-
-      visit(ast, "wikiLink", (node: WikiLinkNode) => {
-        assertWikiLink(node);
-        expect(node.data.hProperties.className).toEqual("internal new_page");
-      });
-    });
-
-    it("uses hrefTemplate", () => {
-      const processor = unified()
-        .use(remarkParse)
-        .use(wikiLinkPlugin, {
-          hrefTemplate: (permalink: string) => permalink,
-        });
-
-      let ast = processor.runSync(processor.parse("[[A Page]]"));
-
-      visit(ast, "wikiLink", (node: WikiLinkNode) => {
-        assertWikiLink(node);
+        expect(node.data.permalink).toEqual("a_page");
         expect(node.data.hProperties.href).toEqual("a_page");
       });
     });
 
-    it("uses wikiLinkClassName", () => {
-      const processor = unified()
-        .use(remarkParse)
-        .use(wikiLinkPlugin, {
-          wikiLinkClassName: "wiki_link",
-          permalinks: ["a_page"],
-        });
+    it("uses linkTemplate", () => {
+      const opts: RemarkWikiLinkOptions = {
+        linkTemplate: ({ slug, permalink, alias }) => ({
+          hName: "span",
+          hProperties: { "data-href": permalink || slug },
+          hChildren: [{ type: "text", value: alias || slug }],
+        }),
+      };
+      const processor = unified().use(remarkParse).use(wikiLinkPlugin, opts);
 
       let ast = processor.runSync(processor.parse("[[A Page]]"));
 
       visit(ast, "wikiLink", (node: WikiLinkNode) => {
         assertWikiLink(node);
-        expect(node.data.hProperties.className).toEqual("wiki_link");
+        expect(node.data.hName).toEqual("span");
+        expect(node.data.hProperties["data-href"]).toEqual("A Page");
+        expect(node.data.hChildren[0].value).toEqual("A Page");
       });
     });
   });
 
   describe("open wiki links", () => {
     it("handles open wiki links", () => {
-      const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-        permalinks: [],
-      });
+      const processor = unified().use(remarkParse).use(wikiLinkPlugin);
 
       let ast = processor.runSync(processor.parse("t[[\nt"));
 
@@ -207,9 +141,7 @@ describe("remark-wiki-link", () => {
     });
 
     it("handles open wiki links at end of file", () => {
-      const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-        permalinks: [],
-      });
+      const processor = unified().use(remarkParse).use(wikiLinkPlugin);
 
       let ast = processor.runSync(processor.parse("t [["));
 
@@ -217,9 +149,7 @@ describe("remark-wiki-link", () => {
     });
 
     it("handles open wiki links with partial data", () => {
-      const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-        permalinks: [],
-      });
+      const processor = unified().use(remarkParse).use(wikiLinkPlugin);
 
       let ast = processor.runSync(processor.parse("t [[tt\nt"));
 
@@ -229,7 +159,6 @@ describe("remark-wiki-link", () => {
     it("handles open wiki links with partial alias divider", () => {
       const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
         aliasDivider: "::",
-        permalinks: [],
       });
 
       let ast = processor.runSync(processor.parse("[[t::\n"));
@@ -238,9 +167,7 @@ describe("remark-wiki-link", () => {
     });
 
     it("handles open wiki links with partial alias", () => {
-      const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-        permalinks: [],
-      });
+      const processor = unified().use(remarkParse).use(wikiLinkPlugin);
 
       let ast = processor.runSync(processor.parse("[[t:\n"));
 

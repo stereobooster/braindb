@@ -14,8 +14,7 @@ interface WikiLinkHProperties {
 
 interface WikiLinkData extends Data {
   alias: string;
-  permalink: string;
-  exists: boolean;
+  permalink: string | undefined;
   hName: string;
   hProperties: WikiLinkHProperties;
   hChildren: Array<{ type: string; value: string }>;
@@ -26,24 +25,31 @@ export interface WikiLinkNode extends Node {
   value: string;
 }
 
+type LinkTemplateProps = {
+  slug: string;
+  permalink?: string;
+  alias?: string;
+};
+
+function defaultLinkTemplate({
+  slug,
+  permalink,
+  alias,
+}: LinkTemplateProps): any {
+  return {
+    hName: "a",
+    hProperties: { href: permalink == null ? slug : permalink },
+    hChildren: [{ type: "text", value: alias == null ? slug : alias }],
+  };
+}
+
 export interface FromMarkdownOptions {
-  permalinks?: string[];
-  pageResolver?: (name: string) => string[];
-  newClassName?: string;
-  wikiLinkClassName?: string;
-  hrefTemplate?: (permalink: string) => string;
+  linkResolver?: (x: string) => string;
+  linkTemplate?: typeof defaultLinkTemplate;
 }
 
 export function fromMarkdown(opts: FromMarkdownOptions = {}) {
-  const permalinks = opts.permalinks || [];
-  const defaultPageResolver = (name: string) => [
-    name.replace(/ /g, "_").toLowerCase(),
-  ];
-  const pageResolver = opts.pageResolver || defaultPageResolver;
-  const newClassName = opts.newClassName || "new";
-  const wikiLinkClassName = opts.wikiLinkClassName || "internal";
-  const defaultHrefTemplate = (permalink: string) => `#/page/${permalink}`;
-  const hrefTemplate = opts.hrefTemplate || defaultHrefTemplate;
+  const linkTemplate = opts.linkTemplate || defaultLinkTemplate;
   let node: WikiLinkNode;
 
   function enterWikiLink(this: CompileContext, token: Token) {
@@ -51,9 +57,8 @@ export function fromMarkdown(opts: FromMarkdownOptions = {}) {
       type: "wikiLink",
       value: null,
       data: {
-        alias: null,
-        permalink: null,
-        exists: null,
+        // alias: null,
+        // permalink: null
       },
     } as any;
     // @ts-expect-error
@@ -82,42 +87,20 @@ export function fromMarkdown(opts: FromMarkdownOptions = {}) {
     this.exit(token);
     const wikiLink = node;
 
-    const pagePermalinks = pageResolver(wikiLink.value);
-    const target = pagePermalinks.find((p) => permalinks.indexOf(p) !== -1);
-    const exists = target !== undefined;
-
-    let permalink: string;
-    if (exists) {
-      permalink = target;
-    } else {
-      permalink = pagePermalinks[0] || "";
-    }
-
-    let displayName = wikiLink.value;
-    if (wikiLink.data.alias) {
-      displayName = wikiLink.data.alias;
-    }
-
-    let classNames = wikiLinkClassName;
-    if (!exists) {
-      classNames += " " + newClassName;
-    }
-
-    wikiLink.data.alias = displayName;
-    wikiLink.data.permalink = permalink;
-    wikiLink.data.exists = exists;
-
-    wikiLink.data.hName = "a";
-    wikiLink.data.hProperties = {
-      className: classNames,
-      href: hrefTemplate(permalink),
+    const data = {
+      slug: wikiLink.value,
+      alias: wikiLink.data.alias,
+      permalink: opts.linkResolver
+        ? opts.linkResolver(wikiLink.value)
+        : undefined,
     };
-    wikiLink.data.hChildren = [
-      {
-        type: "text",
-        value: displayName,
-      },
-    ];
+
+    wikiLink.data = {
+      // ...wikiLink.data,
+      alias: data.alias,
+      permalink: data.permalink,
+      ...linkTemplate(data),
+    };
   }
 
   return {
