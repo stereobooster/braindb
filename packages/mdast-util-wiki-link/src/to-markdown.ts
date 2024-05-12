@@ -1,6 +1,6 @@
 import { type Unsafe, type Handle } from "mdast-util-to-markdown";
 
-interface ToMarkdownOptions {
+export interface ToMarkdownOptions {
   aliasDivider?: string;
 }
 

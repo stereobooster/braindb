@@ -4,7 +4,29 @@ import {
   type Token,
 } from "mdast-util-from-markdown";
 
-interface FromMarkdownOptions {
+import { type Node, type Data } from "unist";
+
+interface WikiLinkHProperties {
+  className: string;
+  href: string;
+  [key: string]: unknown;
+}
+
+interface WikiLinkData extends Data {
+  alias: string;
+  permalink: string;
+  exists: boolean;
+  hName: string;
+  hProperties: WikiLinkHProperties;
+  hChildren: Array<{ type: string; value: string }>;
+}
+
+export interface WikiLinkNode extends Node {
+  data: WikiLinkData;
+  value: string;
+}
+
+export interface FromMarkdownOptions {
   permalinks?: string[];
   pageResolver?: (name: string) => string[];
   newClassName?: string;
@@ -22,7 +44,7 @@ export function fromMarkdown(opts: FromMarkdownOptions = {}) {
   const wikiLinkClassName = opts.wikiLinkClassName || "internal";
   const defaultHrefTemplate = (permalink: string) => `#/page/${permalink}`;
   const hrefTemplate = opts.hrefTemplate || defaultHrefTemplate;
-  let node: any;
+  let node: WikiLinkNode;
 
   function enterWikiLink(this: CompileContext, token: Token) {
     node = {
@@ -33,7 +55,8 @@ export function fromMarkdown(opts: FromMarkdownOptions = {}) {
         permalink: null,
         exists: null,
       },
-    };
+    } as any;
+    // @ts-expect-error
     this.enter(node, token);
   }
 

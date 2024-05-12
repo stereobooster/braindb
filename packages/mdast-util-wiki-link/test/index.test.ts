@@ -1,33 +1,14 @@
-import assert from "assert";
-import { describe, it } from "vitest";
+import { describe, it, expect } from "vitest";
 
 import { fromMarkdown } from "mdast-util-from-markdown";
 import { toMarkdown } from "mdast-util-to-markdown";
 import { visit } from "unist-util-visit";
-import { type Node, type Data } from "unist";
-
 import { syntax } from "@braindb/micromark-extension-wiki-link";
 
 import * as wikiLink from "../src/index.js";
+import { type WikiLinkNode } from "../src/index.js";
 
-interface WikiLinkHProperties {
-  className: string;
-  href: string;
-  [key: string]: unknown;
-}
-
-interface WikiLinkData extends Data {
-  exists: boolean;
-  permalink: string;
-  hProperties: WikiLinkHProperties;
-  hChildren: Array<{ value: string }>;
-}
-
-interface WikiLinkNode extends Node {
-  data: WikiLinkData;
-}
-
-function assertWikiLink(obj: Node): asserts obj is WikiLinkNode {
+function assertWikiLink(obj: any): asserts obj is WikiLinkNode {
   if (
     !obj.data ||
     obj.data.exists === undefined ||
@@ -49,14 +30,14 @@ describe("mdast-util-wiki-link", () => {
         ],
       });
 
-      visit(ast, "wikiLink", (node: Node) => {
+      visit(ast, "wikiLink", (node: WikiLinkNode) => {
         assertWikiLink(node);
-        assert.equal(node.data.exists, true);
-        assert.equal(node.data.permalink, "wiki_link");
-        assert.equal(node.data.hName, "a");
-        assert.equal(node.data.hProperties.className, "internal");
-        assert.equal(node.data.hProperties.href, "#/page/wiki_link");
-        assert.equal(node.data.hChildren[0].value, "Wiki Link");
+        expect(node.data.exists).toEqual(true);
+        expect(node.data.permalink).toEqual("wiki_link");
+        expect(node.data.hName).toEqual("a");
+        expect(node.data.hProperties.className).toEqual("internal");
+        expect(node.data.hProperties.href).toEqual("#/page/wiki_link");
+        expect(node.data.hChildren[0].value).toEqual("Wiki Link");
       });
     });
 
@@ -70,14 +51,14 @@ describe("mdast-util-wiki-link", () => {
         ],
       });
 
-      visit(ast, "wikiLink", (node: Node) => {
+      visit(ast, "wikiLink", (node: WikiLinkNode) => {
         assertWikiLink(node);
-        assert.equal(node.data.exists, false);
-        assert.equal(node.data.permalink, "new_page");
-        assert.equal(node.data.hName, "a");
-        assert.equal(node.data.hProperties.className, "internal new");
-        assert.equal(node.data.hProperties.href, "#/page/new_page");
-        assert.equal(node.data.hChildren[0].value, "New Page");
+        expect(node.data.exists).toEqual(false);
+        expect(node.data.permalink).toEqual("new_page");
+        expect(node.data.hName).toEqual("a");
+        expect(node.data.hProperties.className).toEqual("internal new");
+        expect(node.data.hProperties.href).toEqual("#/page/new_page");
+        expect(node.data.hChildren[0].value).toEqual("New Page");
       });
     });
 
@@ -91,16 +72,16 @@ describe("mdast-util-wiki-link", () => {
         ],
       });
 
-      visit(ast, "wikiLink", (node: Node) => {
+      visit(ast, "wikiLink", (node: WikiLinkNode) => {
         assertWikiLink(node);
-        assert.equal(node.data.exists, false);
-        assert.equal(node.data.permalink, "real_page");
-        assert.equal(node.data.hName, "a");
-        assert.equal(node.data.alias, "Page Alias");
-        assert.equal(node.value, "Real Page");
-        assert.equal(node.data.hProperties.className, "internal new");
-        assert.equal(node.data.hProperties.href, "#/page/real_page");
-        assert.equal(node.data.hChildren[0].value, "Page Alias");
+        expect(node.data.exists).toEqual(false);
+        expect(node.data.permalink).toEqual("real_page");
+        expect(node.data.hName).toEqual("a");
+        expect(node.data.alias).toEqual("Page Alias");
+        expect(node.value).toEqual("Real Page");
+        expect(node.data.hProperties.className).toEqual("internal new");
+        expect(node.data.hProperties.href).toEqual("#/page/real_page");
+        expect(node.data.hChildren[0].value).toEqual("Page Alias");
       });
     });
 
@@ -118,11 +99,11 @@ describe("mdast-util-wiki-link", () => {
           ],
         });
 
-        visit(ast, "wikiLink", (node: Node) => {
+        visit(ast, "wikiLink", (node: WikiLinkNode) => {
           assertWikiLink(node);
-          assert.equal(node.data.exists, true);
-          assert.equal(node.data.permalink, "A Page");
-          assert.equal(node.data.hProperties.href, "#/page/A Page");
+          expect(node.data.exists).toEqual(true);
+          expect(node.data.permalink).toEqual("A Page");
+          expect(node.data.hProperties.href).toEqual("#/page/A Page");
         });
       });
 
@@ -136,9 +117,9 @@ describe("mdast-util-wiki-link", () => {
           ],
         });
 
-        visit(ast, "wikiLink", (node: Node) => {
+        visit(ast, "wikiLink", (node: WikiLinkNode) => {
           assertWikiLink(node);
-          assert.equal(node.data.hProperties.className, "internal new_page");
+          expect(node.data.hProperties.className).toEqual("internal new_page");
         });
       });
 
@@ -152,9 +133,9 @@ describe("mdast-util-wiki-link", () => {
           ],
         });
 
-        visit(ast, "wikiLink", (node: Node) => {
+        visit(ast, "wikiLink", (node: WikiLinkNode) => {
           assertWikiLink(node);
-          assert.equal(node.data.hProperties.href, "a_page");
+          expect(node.data.hProperties.href).toEqual("a_page");
         });
       });
 
@@ -169,9 +150,9 @@ describe("mdast-util-wiki-link", () => {
           ],
         });
 
-        visit(ast, "wikiLink", (node: Node) => {
+        visit(ast, "wikiLink", (node: WikiLinkNode) => {
           assertWikiLink(node);
-          assert.equal(node.data.hProperties.className, "wiki_link");
+          expect(node.data.hProperties.className).toEqual("wiki_link");
         });
       });
     });
@@ -185,10 +166,11 @@ describe("mdast-util-wiki-link", () => {
       });
 
       const stringified = toMarkdown(ast, {
+        // @ts-expect-error
         extensions: [wikiLink.toMarkdown()],
       }).trim();
 
-      assert.equal(stringified, "[[Wiki Link]]");
+      expect(stringified).toEqual("[[Wiki Link]]");
     });
 
     it("stringifies aliased wiki links", () => {
@@ -198,10 +180,11 @@ describe("mdast-util-wiki-link", () => {
       });
 
       const stringified = toMarkdown(ast, {
+        // @ts-expect-error
         extensions: [wikiLink.toMarkdown()],
       }).trim();
 
-      assert.equal(stringified, "[[Real Page:Page Alias]]");
+      expect(stringified).toEqual("[[Real Page:Page Alias]]");
     });
 
     describe("configuration options", () => {
@@ -212,10 +195,11 @@ describe("mdast-util-wiki-link", () => {
         });
 
         const stringified = toMarkdown(ast, {
+          // @ts-expect-error
           extensions: [wikiLink.toMarkdown({ aliasDivider: "|" })],
         }).trim();
 
-        assert.equal(stringified, "[[Real Page|Page Alias]]");
+        expect(stringified).toEqual("[[Real Page|Page Alias]]");
       });
     });
   });

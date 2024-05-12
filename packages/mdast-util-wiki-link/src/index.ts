@@ -1,2 +1,6 @@
-export { fromMarkdown } from "./from-markdown.js";
-export { toMarkdown } from "./to-markdown.js";
+export {
+  fromMarkdown,
+  type FromMarkdownOptions,
+  type WikiLinkNode,
+} from "./from-markdown.js";
+export { toMarkdown, type ToMarkdownOptions } from "./to-markdown.js";

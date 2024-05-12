@@ -1,13 +1,26 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "target": "es6",
-    "module": "esnext",
-    "moduleResolution": "node",
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "node16",
+    "lib": ["ES2022"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "Node16",
+    "esModuleInterop": true,
     "declaration": true,
-    "outDir": "./dist",
+
+    /* Linting */
     "strict": true,
-    "esModuleInterop": true
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "types": [],
+
+    "outDir": "./dist"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["./src"]
 }

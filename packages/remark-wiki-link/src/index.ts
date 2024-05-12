@@ -1,33 +1,28 @@
-import { syntax } from 'micromark-extension-wiki-link'
-import { fromMarkdown, toMarkdown } from 'mdast-util-wiki-link'
+import { syntax } from "@braindb/micromark-extension-wiki-link";
+import {
+  fromMarkdown,
+  toMarkdown,
+  FromMarkdownOptions,
+  ToMarkdownOptions,
+} from "@braindb/mdast-util-wiki-link";
 
-let warningIssued: boolean = false
+export type RemarkWikiLinkOptions = FromMarkdownOptions & ToMarkdownOptions;
 
-function wikiLinkPlugin (this: any, opts = {}) {
-  const data = this.data()
+export function wikiLinkPlugin(opts: RemarkWikiLinkOptions = {}) {
+  // @ts-expect-error: TS is wrong about `this`.
+  const self = /** @type {import('unified').Processor<Root>} */ this;
+  const data = self.data();
 
-  function add (field: any, value: any) {
-    if (data[field]) data[field].push(value)
-    else data[field] = [value]
-  }
+  const micromarkExtensions =
+    data.micromarkExtensions || (data.micromarkExtensions = []);
+  const fromMarkdownExtensions =
+    data.fromMarkdownExtensions || (data.fromMarkdownExtensions = []);
+  const toMarkdownExtensions =
+    data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
 
-  if (!warningIssued &&
-      ((this.Parser &&
-        this.Parser.prototype &&
-        this.Parser.prototype.blockTokenizers) ||
-       (this.Compiler &&
-        this.Compiler.prototype &&
-        this.Compiler.prototype.visitors))) {
-    warningIssued = true
-    console.warn(
-      '[remark-wiki-link] Warning: please upgrade to remark 13 to use this plugin'
-    )
-  }
-
-  add('micromarkExtensions', syntax(opts))
-  add('fromMarkdownExtensions', fromMarkdown(opts))
-  add('toMarkdownExtensions', toMarkdown(opts))
+  micromarkExtensions.push(syntax(opts));
+  fromMarkdownExtensions.push(fromMarkdown(opts));
+  toMarkdownExtensions.push(toMarkdown(opts));
 }
 
-export { wikiLinkPlugin }
-export default wikiLinkPlugin
+export default wikiLinkPlugin;
