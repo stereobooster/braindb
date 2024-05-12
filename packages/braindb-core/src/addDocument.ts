@@ -160,7 +160,7 @@ export async function addDocument(
       let to_url, to_path, to_slug, to_anchor, label;
 
       if (node.type === "link") {
-        label = node.children[0].value as string;
+        label = node.children[0]?.value as string;
         [to_url, to_anchor] = decodeURI(node.url).split("#");
         to_path = to_url;
         // resolve local link

@@ -14,7 +14,10 @@
     "@astrojs/starlight": "^0.22.2",
     "@beoe/cache": "^0.0.1",
     "@beoe/rehype-mermaid": "^0.0.1",
+    "@braindb/core": "workspace:^",
+    "@stereobooster/remark-wiki-link": "^2.1.0",
     "astro": "^4.3.5",
+    "github-slugger": "^2.0.0",
     "sharp": "^0.32.5",
     "typescript": "^5.4.5"
   }

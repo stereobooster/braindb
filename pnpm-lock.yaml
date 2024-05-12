@@ -153,9 +153,18 @@ importers:
       '@beoe/rehype-mermaid':
         specifier: ^0.0.1
         version: 0.0.1
+      '@braindb/core':
+        specifier: workspace:^
+        version: link:../braindb-core
+      '@stereobooster/remark-wiki-link':
+        specifier: ^2.1.0
+        version: 2.1.0
       astro:
         specifier: ^4.3.5
         version: 4.5.15(typescript@5.4.5)
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
       sharp:
         specifier: ^0.32.5
         version: 0.32.6
