@@ -26,7 +26,7 @@ describe("micromark-extension-wiki-link", () => {
   });
 
   it("handles wiki links with aliases", () => {
-    let serialized = micromark("[[Real Page:Page Alias]]", {
+    let serialized = micromark("[[Real Page|Page Alias]]", {
       extensions: [syntax()],
       htmlExtensions: [html()],
     });

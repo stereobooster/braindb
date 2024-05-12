@@ -21,7 +21,7 @@ function markdownLineEnding(code: Code) {
 }
 
 export function syntax(opts: WikiLinkSyntaxOptions = {}) {
-  const aliasDivider = opts.aliasDivider || ":";
+  const aliasDivider = opts.aliasDivider || "|";
 
   const aliasMarker = aliasDivider;
   const startMarker = "[[";

@@ -5,7 +5,7 @@ export interface ToMarkdownOptions {
 }
 
 export function toMarkdown(opts: ToMarkdownOptions = {}) {
-  const aliasDivider = opts.aliasDivider || ":";
+  const aliasDivider = opts.aliasDivider || "|";
 
   const unsafe = [
     {

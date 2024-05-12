@@ -32,7 +32,7 @@ describe("mdast-util-wiki-link", () => {
     });
 
     it("handles wiki links with aliases", () => {
-      const ast = fromMarkdown("[[Real Page:Page Alias]]", {
+      const ast = fromMarkdown("[[Real Page|Page Alias]]", {
         extensions: [syntax()],
         mdastExtensions: [wikiLink.fromMarkdown()],
       });
@@ -106,7 +106,7 @@ describe("mdast-util-wiki-link", () => {
     });
 
     it("stringifies aliased wiki links", () => {
-      const ast = fromMarkdown("[[Real Page:Page Alias]]", {
+      const ast = fromMarkdown("[[Real Page|Page Alias]]", {
         extensions: [syntax()],
         mdastExtensions: [wikiLink.fromMarkdown()],
       });
@@ -116,11 +116,11 @@ describe("mdast-util-wiki-link", () => {
         extensions: [wikiLink.toMarkdown()],
       }).trim();
 
-      expect(stringified).toEqual("[[Real Page:Page Alias]]");
+      expect(stringified).toEqual("[[Real Page|Page Alias]]");
     });
 
     it("stringifies aliased wiki links when alias is the same as slug", () => {
-      const ast = fromMarkdown("[[Real Page:Real Page]]", {
+      const ast = fromMarkdown("[[Real Page|Real Page]]", {
         extensions: [syntax()],
         mdastExtensions: [wikiLink.fromMarkdown()],
       });
@@ -130,22 +130,22 @@ describe("mdast-util-wiki-link", () => {
         extensions: [wikiLink.toMarkdown()],
       }).trim();
 
-      expect(stringified).toEqual("[[Real Page:Real Page]]");
+      expect(stringified).toEqual("[[Real Page|Real Page]]");
     });
 
     describe("configuration options", () => {
       it("uses aliasDivider", () => {
-        const ast = fromMarkdown("[[Real Page:Page Alias]]", {
+        const ast = fromMarkdown("[[Real Page|Page Alias]]", {
           extensions: [syntax()],
           mdastExtensions: [wikiLink.fromMarkdown()],
         });
 
         const stringified = toMarkdown(ast, {
           // @ts-expect-error
-          extensions: [wikiLink.toMarkdown({ aliasDivider: "|" })],
+          extensions: [wikiLink.toMarkdown({ aliasDivider: ":" })],
         }).trim();
 
-        expect(stringified).toEqual("[[Real Page|Page Alias]]");
+        expect(stringified).toEqual("[[Real Page:Page Alias]]");
       });
     });
   });

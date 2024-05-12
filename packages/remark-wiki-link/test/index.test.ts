@@ -34,7 +34,7 @@ describe("remark-wiki-link", () => {
   it("handles wiki links with aliases", () => {
     const processor = unified().use(remarkParse).use(wikiLinkPlugin);
 
-    let ast = processor.runSync(processor.parse("[[Real Page:Page Alias]]"));
+    let ast = processor.runSync(processor.parse("[[Real Page|Page Alias]]"));
 
     visit(ast, "wikiLink", (node: WikiLinkNode) => {
       assertWikiLink(node);
@@ -50,10 +50,10 @@ describe("remark-wiki-link", () => {
 
   it("handles wiki alias links with custom divider", () => {
     const processor = unified().use(remarkParse).use(wikiLinkPlugin, {
-      aliasDivider: "|",
+      aliasDivider: ":",
     });
 
-    let ast = processor.runSync(processor.parse("[[Real Page|Page Alias]]"));
+    let ast = processor.runSync(processor.parse("[[Real Page:Page Alias]]"));
 
     visit(ast, "wikiLink", (node: WikiLinkNode) => {
       assertWikiLink(node);
