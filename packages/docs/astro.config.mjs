@@ -3,9 +3,9 @@ import starlight from "@astrojs/starlight";
 
 import { rehypeMermaid } from "@beoe/rehype-mermaid";
 import { getCache } from "@beoe/cache";
-// import { remarkWikiLink } from "./src/lib/remarkWikiLink.mjs";
-// import { bdb } from "./src/lib/braindb.mjs";
-// await bdb.ready();
+import { remarkWikiLink } from "./src/lib/remarkWikiLink.mjs";
+import { bdb } from "./src/lib/braindb.mjs";
+await bdb.ready();
 
 const cache = await getCache();
 
@@ -40,12 +40,7 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [
-      // this.data is not a function
-      // node_modules/.pnpm/@stereobooster+remark-wiki-link@2.1.0/node_modules/@stereobooster/remark-wiki-link/dist/index.js:1:3509)
-      // triggered by empty markdown file in 404.astro
-      // [remarkWikiLink, { bdb }]
-    ],
+    remarkPlugins: [[remarkWikiLink, { bdb }]],
     rehypePlugins: [
       [
         rehypeMermaid,

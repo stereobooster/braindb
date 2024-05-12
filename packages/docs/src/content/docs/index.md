@@ -7,6 +7,8 @@ tableOfContents: false
 BrainDB docs are not ready. For now it's a bunch of notes
 :::
 
+[[architecture]]
+
 ## Components
 
 - [x] core

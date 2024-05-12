@@ -4,7 +4,7 @@ import type { Root } from "mdast";
 import { unified } from "unified";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkParse from "remark-parse";
-import wikiLinkPlugin from "@stereobooster/remark-wiki-link";
+import wikiLinkPlugin from "@braindb/remark-wiki-link";
 import remarkStringify from "remark-stringify";
 import remarkGfm from "remark-gfm";
 // import remarkMdx from "remark-mdx"
@@ -12,6 +12,6 @@ import remarkGfm from "remark-gfm";
 export const mdParser = unified()
   .use(remarkParse)
   .use(remarkFrontmatter)
-  .use(wikiLinkPlugin, { aliasDivider: "|" })
+  .use(wikiLinkPlugin)
   .use(remarkGfm)
   .use(remarkStringify, { resourceLink: false });

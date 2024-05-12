@@ -45,7 +45,7 @@
   "dependencies": {
     "@napi-rs/simple-git": "^0.1.16",
     "@node-rs/xxhash": "^1.7.0",
-    "@stereobooster/remark-wiki-link": "^2.1.0",
+    "@braindb/remark-wiki-link": "workspace:*",
     "better-sqlite3": "^9.4.5",
     "chokidar": "^3.6.0",
     "deterministic-object-hash": "^2.0.2",

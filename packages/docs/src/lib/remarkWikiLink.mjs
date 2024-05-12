@@ -1,9 +1,9 @@
-import { wikiLinkPlugin } from "@stereobooster/remark-wiki-link";
+import wikiLinkPlugin from "@braindb/remark-wiki-link";
 
 export function remarkWikiLink(options) {
   const { bdb } = options;
-  return wikiLinkPlugin({
-    aliasDivider: "|",
+
+  return wikiLinkPlugin.call(this, {
     linkTemplate: ({ slug, alias }) => {
       const [slugWithoutAnchor, anchor] = slug.split("#");
       const doc = bdb.documentsSync({ slug: slugWithoutAnchor })[0];

@@ -8,7 +8,7 @@ import {
 
 export type RemarkWikiLinkOptions = FromMarkdownOptions & ToMarkdownOptions;
 
-export function wikiLinkPlugin(opts: RemarkWikiLinkOptions = {}) {
+export function remarkWikiLink(opts: RemarkWikiLinkOptions = {}) {
   // @ts-expect-error: TS is wrong about `this`.
   const self = /** @type {import('unified').Processor<Root>} */ this;
   const data = self.data();
@@ -25,4 +25,4 @@ export function wikiLinkPlugin(opts: RemarkWikiLinkOptions = {}) {
   toMarkdownExtensions.push(toMarkdown(opts));
 }
 
-export default wikiLinkPlugin;
+export default remarkWikiLink;
