@@ -11,15 +11,6 @@ draft: true
 
 I moved all 3 projects in monorepo - this way it is more convinient to work. Changed all plugins to TypeScript, simplified build process (ES6 only), changed options.
 
-Still need to do:
-
-- [x] update readme files
-- [ ] publish to npm
-- [ ] deprecat old attempts
-  - https://github.com/stereobooster/mdast-util-wiki-link
-  - https://github.com/stereobooster/remark-wiki-link
-- Update [article](https://astro-digital-garden.stereobooster.com/recipes/wikilinks/)
-
 It is also worth to mention: [wikirefs](https://github.com/wikibonsai/wikirefs).
 
 ## Open questions
