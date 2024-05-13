@@ -1,8 +1,12 @@
 {
   "name": "@braindb/core",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "markdown-graph-content-layer-database",
-  "homepage": "https://github.com/stereobooster/braindb",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stereobooster/braindb.git",
+    "directory": "packages/braindb-core"
+  },
   "author": "stereobooster",
   "license": "MIT",
   "keywords": [
