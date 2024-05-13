@@ -1,0 +1,45 @@
+{
+  "name": "@braindb/remark-dataview",
+  "version": "0.0.1",
+  "description": "markdown-graph-content-layer-database",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stereobooster/braindb.git",
+    "directory": "packages/remark-dataview"
+  },
+  "author": "stereobooster",
+  "license": "MIT",
+  "keywords": [
+    "markdown",
+    "database",
+    "content",
+    "obsidian",
+    "graph",
+    "contentlayer"
+  ],
+  "type": "module",
+  "exports": {
+    "types": "./dist/index.d.js",
+    "default": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "files": [
+    "./dist/*"
+  ],
+  "types": "./dist/index.d.js",
+  "scripts": {
+    "test": "vitest",
+    "prepublishOnly": "npm run build",
+    "build": "rm -rf dist && tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist",
+    "tsc": "tsc"
+  },
+  "dependencies": {
+    "@beoe/remark-code-hook": "^0.0.1",
+    "@braindb/core": "workspace:*",
+    "@types/mdast": "^4.0.3",
+    "unified": "^11.0.4"
+  }
+}

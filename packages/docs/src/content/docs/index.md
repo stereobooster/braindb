@@ -9,11 +9,11 @@ BrainDB docs are not ready. For now it's a bunch of notes
 
 ## Components
 
-- [ ] [[remark-wiki-link]]
 - [ ] remark-dataview
   - there is PoC, need to move to this repo and extend with [full DQL parser](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/query/parse.ts)
+- [ ] [[remark-wiki-link]]
 - [ ] notes
-  - write note about metadata (frontmatter) in different SSG
+  - write note about [[metadata]] (frontmatter) in different SSG
   - sort and rewrite old notes
 - [x] core
   - [ ] print warning only once `Warning: Error: Failed to get commit for`

@@ -67,6 +67,7 @@ export function remarkWikiLink(options) {
 
 - make general plugin for all links, like `remark-code-hook`?
   - and based on it resolve both wikilinks and PML
+  - maybe call it `remark-link-resolver`?
 - make another plugin which would take `BrainDB` as option
 - use named exports in `remark-wkik-link` to expose "classic" and "new" versions
   - where "new" is plugin which would take `BrainDB` as option
