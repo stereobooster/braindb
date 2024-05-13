@@ -1,5 +1,5 @@
 ---
-title: Schema
+title: Frontmatter schema
 draft: true
 ---
 

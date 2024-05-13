@@ -15,6 +15,7 @@ draft: true
 - PML is the easiest option, because Hugo can figure out links itself
 - Web-links is the only supported option by Astro
 - Astro doesn't allow `slug` in frontmatter, but it has an algorithm to generate one
+  - **Upd** [Starlight supports `slug`](https://starlight.astro.build/reference/frontmatter/#slug)
 - `X → X`, I assume `source` and `output` directories are **the same**, so no need to write `md` (`mdx`) files. Need to write auxilary files only, for example:
   - `filename-backlinks.json`
   - `filename-graph.json`, `filename-graph.svg` - local graph with distance 1 with outgoing and incoming links

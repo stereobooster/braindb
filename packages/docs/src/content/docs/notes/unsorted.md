@@ -3,8 +3,6 @@ title: unsorted notes
 draft: true
 ---
 
-- https://github.com/wikibonsai/wikibonsai
-
 ### Test with real life example
 
 - Dataview
@@ -16,16 +14,6 @@ draft: true
 - https://github.com/primer/design/tree/main/content (Gatsby, mdx)
 - https://github.com/facebook/docusaurus/tree/main/website (Docuaurus, mdx)
 - https://github.com/reactjs/react.dev/blob/main/src/content/
-
-### GUI
-
-- maybe https://tauri.app/
-  - https://github.com/tauri-apps/tauri-plugin-fs-watch
-
-### LSP
-
-- https://github.com/microsoft/vscode-languageserver-node/tree/main/server
-- https://github.com/ImperiumMaximus/ts-lsp-client
 
 ### Other ideas
 

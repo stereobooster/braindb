@@ -11,7 +11,7 @@ draft: true
   - separate table
   - path to original document, anchor (aka id, aka slug), ast?, text, level
   - use for link resolution
-- [ ] [frontmatter schema](/notes/schema.md)
+- [ ] [[schema]]
 
 ## Performance
 
@@ -28,14 +28,6 @@ draft: true
 - use [`great.db`](https://www.npmjs.com/package/great.db) instead of `better-sqlite3`
 - use [`xxhash-wasm`](https://github.com/jungomi/xxhash-wasm) instead of `@node-rs/xxhash`
 - what about `@napi-rs/simple-git`?
-
-## CLI
-
-- [ ] respect `.gitignore` and output folder
-  - https://www.npmjs.com/package/parse-gitignore
-  - https://git-scm.com/docs/gitignore#_pattern_format
-  - https://github.com/paulmillr/chokidar#path-filtering
-- copy other files (images)
 
 ## Other
 

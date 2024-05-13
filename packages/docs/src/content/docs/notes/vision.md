@@ -140,5 +140,5 @@ Main disadvantage of all solutions mentioned above (maybe exept `Contentlayer`) 
 
 - content layer for Astro (or Next.js, Nuxt etc.)
 - Language Server ([LSP](https://microsoft.github.io/language-server-protocol/))
-- CLI to transfor markdown files, for example, from Obsidian vault to Hugo format
+- CLI to transform markdown files, for example, from Obsidian vault to Hugo format
 - second-brain-note-taking app, like Obsidian or Foam
