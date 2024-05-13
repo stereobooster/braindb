@@ -39,7 +39,12 @@
   "dependencies": {
     "@beoe/remark-code-hook": "^0.0.1",
     "@braindb/core": "workspace:*",
+    "@types/luxon": "^3.4.2",
     "@types/mdast": "^4.0.3",
+    "@types/parsimmon": "^1.10.9",
+    "emoji-regex": "^10.3.0",
+    "luxon": "^3.4.4",
+    "parsimmon": "^1.18.1",
     "unified": "^11.0.4"
   }
 }

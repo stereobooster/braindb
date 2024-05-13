@@ -4,6 +4,9 @@ import starlight from "@astrojs/starlight";
 import { rehypeMermaid } from "@beoe/rehype-mermaid";
 import { getCache } from "@beoe/cache";
 import { remarkWikiLink } from "./src/lib/remarkWikiLink.mjs";
+import { remarkDataView } from "@braindb/remark-dataview";
+console.log(remarkDataView)
+
 import { bdb } from "./src/lib/braindb.mjs";
 await bdb.ready();
 
@@ -40,7 +43,10 @@ export default defineConfig({
     }),
   ],
   markdown: {
-    remarkPlugins: [[remarkWikiLink, { bdb }]],
+    remarkPlugins: [
+      [remarkWikiLink, { bdb }],
+      // [remarkDataView, { bdb }],
+    ],
     rehypePlugins: [
       [
         rehypeMermaid,

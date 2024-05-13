@@ -1,7 +1,10 @@
 import remarkCodeHook from "@beoe/remark-code-hook";
 import { BrainDB, Task } from "@braindb/core";
+// @ts-expect-error
 import type { Root } from "mdast";
+// @ts-expect-error
 import type { Plugin } from "unified";
+import { parseQuery } from "./query/parse.js";
 
 const list = <T>(children: T[]) => ({
   type: "list",
@@ -32,12 +35,13 @@ type RemarkDataviewOptions = {
 export function remarkDataview(options: RemarkDataviewOptions) {
   const { bdb, ...rest } = options;
   // @ts-expect-error
-  return remarkCodeHook.call(this, {
+  return remarkCodeHook({
     ...rest,
     language: "dataview",
     code: ({ code }) => {
-      if (code !== "TASK")
-        throw new Error("PoC of Daview - only TASK supported");
+      console.log(parseQuery(code));
+
+      if (code !== "TASK") return text("PoC of Daview - only TASK supported");
 
       const grouped: Record<string, Task[]> = {};
       bdb.tasksSync().forEach((task) => {
