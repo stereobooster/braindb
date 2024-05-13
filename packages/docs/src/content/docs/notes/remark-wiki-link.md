@@ -13,7 +13,7 @@ I moved all 3 projects in monorepo - this way it is more convinient to work. Cha
 
 Still need to do:
 
-- [ ] update readme files
+- [x] update readme files
 - [ ] publish to npm
 - [ ] deprecat old attempts
   - https://github.com/stereobooster/mdast-util-wiki-link
