@@ -46,6 +46,7 @@ BrainDB docs are not ready. For now it's a bunch of notes
 - [ ] LSP
   - https://github.com/microsoft/vscode-languageserver-node/tree/main/server
   - https://github.com/foambubble/foam/blob/master/packages/foam-vscode/src/core/model/graph.ts
+  - https://github.com/lostintangent/wikilens/blob/main/src/store/actions.ts
   - https://github.com/ImperiumMaximus/ts-lsp-client
 - [ ] GUI aka "studio"
   - maybe https://tauri.app/
