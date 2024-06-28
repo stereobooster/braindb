@@ -23,6 +23,7 @@ import { Repository } from "@napi-rs/simple-git";
 export const emptyAst = {};
 
 const getRepo = memoizeOnce((path: string) => Repository.discover(path));
+const getRepoPath = memoizeOnce((repo: Repository) => dirname(repo.path()));
 
 export async function addDocument(
   db: Db,
@@ -90,20 +91,13 @@ export async function addDocument(
   if (cfg.git) {
     // TODO: maybe, if file is modified use `mtimeMs` instead of git date?
     try {
-      if (cfg.git === true) {
-        const repo = getRepo(cfg.root);
-        updated_at = await repo.getFileLatestModifiedDateAsync(
-          idPath.replace("/", "")
-        );
-      } else {
-        const repo = getRepo(cfg.git);
-        updated_at = await repo.getFileLatestModifiedDateAsync(
-          absolutePath.replace(cfg.git + "/", "")
-        );
-      }
+      const repo = getRepo(cfg.root);
+      updated_at = await repo.getFileLatestModifiedDateAsync(
+        absolutePath.replace(getRepoPath(repo) + "/", "")
+      );
     } catch (e) {
       // TODO: maybe config logger?
-      // TODO: use LRU of Bloom filter to report warning only once
+      // TODO: use LRU or Bloom filter to report warning only once
       console.log(`Warning: ${e}`);
     }
   }

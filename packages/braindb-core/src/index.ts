@@ -54,11 +54,10 @@ export type BrainDBOptionsIn = {
    */
   source?: string;
   /**
-   * if truthy will use git date for `updated_at` field:
-   * - if `true` will use `root` as git folder
-   * - if string will use given string as git folder
+   * if `true` will use git date for `updated_at` field.
+   * It will search for git repo in `root` or any parent directory
    */
-  git?: string | boolean;
+  git?: boolean;
   /**
    * if you never use Document's `markdown` and `text`
    * you can set this to `false` in order to save some memory
