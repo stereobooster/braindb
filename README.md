@@ -17,7 +17,7 @@
 ## Packages
 
 - [braindb-core](/packages/braindb-core) - core package ![NPM Version](https://img.shields.io/npm/v/%40braindb%2Fcore)
-- [braindb-cli](/packages/braindb-cli) - cli package ![NPM Version](https://img.shields.io/npm/v/%40braindb%2Fcli)
+- [remark-wiki-link](/packages/remark-wiki-link) ![NPM Version](https://img.shields.io/npm/v/%40braindb%2Fremark-wiki-link)
 
 Demos:
 
