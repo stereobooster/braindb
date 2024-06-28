@@ -39,7 +39,7 @@
   "dependencies": {
     "@beoe/remark-code-hook": "^0.0.1",
     "@braindb/core": "workspace:*",
-    "@types/mdast": "^4.0.3",
-    "unified": "^11.0.4"
+    "@types/mdast": "^4.0.4",
+    "unified": "^11.0.5"
   }
 }
