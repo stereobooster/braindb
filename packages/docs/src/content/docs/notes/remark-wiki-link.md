@@ -1,6 +1,5 @@
 ---
 title: remark-wiki-link
-draft: true
 ---
 
 `remark-wiki-link` consists of 3 projects:

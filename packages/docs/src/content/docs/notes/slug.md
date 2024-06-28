@@ -1,6 +1,5 @@
 ---
 title: Slug
-draft: true
 ---
 
 ## How to form slug for root pages?

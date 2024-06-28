@@ -11,13 +11,17 @@ draft: true
   - separate table
   - path to original document, anchor (aka id, aka slug), ast?, text, level
   - use for link resolution
-- [ ] [[schema]]
+- [ ] [[frontmatter-schema]]
 
 ## Components
 
+- [ ] Astro integration
+  - Astro plugin that will provide BrainDB instance
+  - maybe will install remark plugins
+  - maybe will provide Astro components
 - [ ] remark-dataview
   - there is PoC, need to move to this repo and extend with [full DQL parser](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/query/parse.ts)
-- [ ] [[remark-wiki-link]]
+- [x] [[remark-wiki-link]]
 - [ ] notes
   - write note about [[metadata]] (frontmatter) in different SSG
   - sort and rewrite old notes
@@ -27,16 +31,11 @@ draft: true
   - [ ] extract headers
   - [ ] frontmatter schema
   - [ ] allow to pass remark/rehype plugins?
-- [ ] Astro integration
-  - Astro plugin that will provide BrainDB instance
-  - maybe will install remark plugins
-  - maybe will provide Astro components
 - [ ] documentation
   - need to clearly describe what is it and how it can be used
   - document options and API
   - provide demos
   - check grammar
-  - publish online
 - [ ] demos
   - obsidian
   - maybe Next.js
@@ -45,7 +44,7 @@ draft: true
 
 - [ ] sql prepared statements
 - [ ] [parallel processing](./parallel.md)
-- [incremental parsing](https://parsing.stereobooster.com/other/incremental-parsers/)
+- [incremental parsing](https://parsing.stereobooster.com/incremental-parsers/)
   - https://github.com/lezer-parser/markdown
   - https://github.com/tree-sitter-grammars/tree-sitter-markdown
   - https://github.com/ikatyang/tree-sitter-markdown

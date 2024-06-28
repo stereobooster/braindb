@@ -1,6 +1,5 @@
 ---
 title: Frontmatter schema
-draft: true
 ---
 
 Main source of inspiration - [Astro Content Collections](https://docs.astro.build/en/guides/content-collections/)
@@ -187,4 +186,4 @@ For inspiration:
 
 One of options for querying data is to expose [Drizzle ORM](https://orm.drizzle.team/docs/rqb). But this exposes implementation details.
 
-[](./content-query.md)
+[[content-query.md]]
