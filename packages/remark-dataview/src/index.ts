@@ -1,6 +1,8 @@
 import remarkCodeHook from "@beoe/remark-code-hook";
 import { BrainDB, Task } from "@braindb/core";
+// @ts-expect-error required for generated types
 import type { Root } from "mdast";
+// @ts-expect-error required for generated types
 import type { Plugin } from "unified";
 
 const list = <T>(children: T[]) => ({

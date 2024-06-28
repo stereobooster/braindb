@@ -1,11 +1,11 @@
 {
-  "name": "demo-astro-cli",
+  "name": "demo-astro",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "dev": "exit 0",
-    "start": "astro dev",
-    "build": "astro build",
+    "dev-test": "astro dev",
+    "build-test": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "braindb": "braindb"

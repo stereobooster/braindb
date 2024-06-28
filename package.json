@@ -6,8 +6,8 @@
     "packages/*"
   ],
   "dependencies": {
-    "turbo": "^1.13.3",
-    "typescript": "^5.4.5"
+    "turbo": "^2.0.5",
+    "typescript": "^5.5.2"
   },
   "scripts": {
     "test": "turbo run test",
@@ -16,5 +16,6 @@
     "clean": "turbo run clean",
     "tsc": "turbo run tsc",
     "graph": "cyto-nodejs -s tmp/graph.json -d tmp/graph.svg"
-  }
+  },
+  "packageManager": "pnpm@9.2.0"
 }

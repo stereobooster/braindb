@@ -2,6 +2,7 @@
   "name": "@braindb/cli",
   "version": "0.0.1",
   "description": "markdown-graph-content-layer-database",
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/stereobooster/braindb.git",
