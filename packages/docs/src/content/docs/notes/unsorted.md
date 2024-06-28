@@ -3,6 +3,8 @@ title: unsorted notes
 draft: true
 ---
 
+https://keystatic.com/docs/installation-astro
+
 ### Test with real life example
 
 - Dataview

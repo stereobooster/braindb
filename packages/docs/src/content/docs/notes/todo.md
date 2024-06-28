@@ -3,6 +3,11 @@ title: TODO
 draft: true
 ---
 
+- [ ] Astro integration
+  - Astro plugin that will provide BrainDB instance
+  - maybe will install remark plugins
+  - maybe will provide Astro components
+
 ## Core
 
 - [ ] Extract Headings
@@ -15,13 +20,8 @@ draft: true
 
 ## Components
 
-- [ ] Astro integration
-  - Astro plugin that will provide BrainDB instance
-  - maybe will install remark plugins
-  - maybe will provide Astro components
 - [ ] remark-dataview
   - there is PoC, need to move to this repo and extend with [full DQL parser](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/query/parse.ts)
-- [x] [[remark-wiki-link]]
 - [ ] notes
   - write note about [[metadata]] (frontmatter) in different SSG
   - sort and rewrite old notes
