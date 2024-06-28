@@ -1,6 +1,5 @@
 ---
-title: Architecture notes
-draft: true
+title: Architecture
 ---
 
 ## Overview

@@ -26,7 +26,7 @@ export default defineConfig({
         github: "https://github.com/stereobooster/braindb",
       },
       editLink: {
-        baseUrl: "https://github.com/stereobooster/braindb/edit/main/",
+        baseUrl: "https://github.com/stereobooster/braindb/edit/main/packages/docs/",
       },
       sidebar: [
         { label: "Introduction", link: "/" },
