@@ -18,6 +18,7 @@
     "@braindb/remark-wiki-link": "workspace:*",
     "astro": "^4.11.3",
     "github-slugger": "^2.0.0",
+    "netlify-plugin-playwright-cache": "^0.0.1",
     "sharp": "^0.33.4",
     "typescript": "^5.5.2"
   }
