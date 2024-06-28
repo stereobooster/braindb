@@ -18,6 +18,7 @@
 
 - [braindb-core](/packages/braindb-core) - core package ![NPM Version](https://img.shields.io/npm/v/%40braindb%2Fcore)
 - [remark-wiki-link](/packages/remark-wiki-link) ![NPM Version](https://img.shields.io/npm/v/%40braindb%2Fremark-wiki-link)
+- [docs](/packages/docs) [![Netlify Status](https://api.netlify.com/api/v1/badges/56dc8e11-4317-4801-b722-15e261ca4353/deploy-status)](https://app.netlify.com/sites/braindb/deploys)
 
 Demos:
 
