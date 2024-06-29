@@ -1,5 +1,6 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
+import robotsTxt from "astro-robots-txt";
 
 import { rehypeMermaid } from "@beoe/rehype-mermaid";
 import { getCache } from "@beoe/cache";
@@ -26,7 +27,8 @@ export default defineConfig({
         github: "https://github.com/stereobooster/braindb",
       },
       editLink: {
-        baseUrl: "https://github.com/stereobooster/braindb/edit/main/packages/docs/",
+        baseUrl:
+          "https://github.com/stereobooster/braindb/edit/main/packages/docs/",
       },
       sidebar: [
         { label: "Introduction", link: "/" },
@@ -38,6 +40,7 @@ export default defineConfig({
         },
       ],
     }),
+    robotsTxt(),
   ],
   markdown: {
     remarkPlugins: [[remarkWikiLink, { bdb }]],

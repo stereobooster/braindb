@@ -17,6 +17,7 @@
     "@braindb/core": "workspace:^",
     "@braindb/remark-wiki-link": "workspace:*",
     "astro": "^4.11.3",
+    "astro-robots-txt": "^1.0.0",
     "github-slugger": "^2.0.0",
     "netlify-plugin-playwright-cache": "^0.0.1",
     "playwright": "^1.45.0",
