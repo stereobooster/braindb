@@ -50,7 +50,7 @@ There are built-in fields: `path`, `url`, `updated_at` (will be added `type`). T
 
 What to do if we have same fields in frontmatter? We can explicitly target those fields with prefix `frontmatter` or `fm`.
 
-- `sort: ["updated_at", "asc"]` will sort by built if field
+- `sort: ["updated_at", "asc"]` will sort by built-in field
 - `sort: ["fm.updated_at", "asc"]` will sort by field in frontmatter
 - `sort: ["something", "asc"]` will sort by field in frontmatter (because there is no such built-in field)
 - `sort: ["something.else", "asc"]` will sort by field `else` nested in object `something` in frontmatter

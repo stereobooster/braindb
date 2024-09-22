@@ -121,7 +121,10 @@ draft: true
   - can I fork [it](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/index.ts) and replace obsidian vault with braindb?
   - parsers
     - https://github.com/kristianmandrup/chevrotain-mini-sql-lang
+      - https://chevrotain.io/docs/tutorial/step3b_adding_actions_embedded.html#sql-grammar
     - https://nanosql.io/welcome.html
     - https://github.com/JavaScriptor/js-sql-parser
     - https://github.com/forward/sql-parser
     - https://alasql.org/
+    - https://github.com/TypeFox/langium-sql/blob/main/packages/langium-sql/src/sql.langium
+    - https://github.com/taozhi8833998/node-sql-parser
