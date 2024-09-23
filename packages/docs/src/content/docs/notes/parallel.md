@@ -18,7 +18,7 @@ Need to profile before jumping to threads:
 - sqlite is single threaded
   - either execute all db operations in main thread
     - but passing data between threads is expensive
-      - zero-copy exists only form of "Transferable objects"
+      - zero-copy - "Transferable objects"
   - or use some kind of mutex
   - **upd** it seems [to work with thread](https://github.com/WiseLibs/better-sqlite3/blob/master/docs/threads.md)
 - parallelism would not help with IO operations, but it will help with

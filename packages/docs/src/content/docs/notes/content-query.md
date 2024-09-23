@@ -7,7 +7,7 @@ I think to expose querying interface similar to [facets](https://github.com/ster
 Related:
 
 - https://content.nuxt.com/composables/query-content
-- https://github.com/datopian/markdowndb?tab=readme-ov-file#or-using-markdowndb-nodejs-api-in-a-framework-of-your-choice
+- https://github.com/datopian/markdowndb#or-using-markdowndb-nodejs-api-in-a-framework-of-your-choice
 - https://pagefind.app/docs/js-api-filtering/#using-compound-filters
 - https://testing-library.com/docs/react-testing-library/cheatsheet/#queries
 

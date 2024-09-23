@@ -21,7 +21,7 @@ draft: true
 ## Components
 
 - [ ] remark-dataview
-  - there is PoC, need to move to this repo and extend with [full DQL parser](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/query/parse.ts)
+  - there is PoC, need to extend with [full DQL parser](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/query/parse.ts)
 - [ ] notes
   - write note about [[metadata]] (frontmatter) in different SSG
   - sort and rewrite old notes
@@ -43,7 +43,7 @@ draft: true
 ## Performance
 
 - [ ] sql prepared statements
-- [ ] [parallel processing](./parallel.md)
+- [ ] [[parallel|parallel processing]]
 - [incremental parsing](https://parsing.stereobooster.com/incremental-parsers/)
   - https://github.com/lezer-parser/markdown
   - https://github.com/tree-sitter-grammars/tree-sitter-markdown

@@ -186,4 +186,4 @@ For inspiration:
 
 One of options for querying data is to expose [Drizzle ORM](https://orm.drizzle.team/docs/rqb). But this exposes implementation details.
 
-[[content-query.md]]
+[[content-query]]

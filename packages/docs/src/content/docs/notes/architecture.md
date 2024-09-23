@@ -49,6 +49,7 @@ System consists of following parts:
   - Alternatively it can use
     - [`tree-sitter`](https://github.com/tree-sitter/tree-sitter), because it supports incremental parsing
     - [`markdown-rs`](https://github.com/wooorm/markdown-rs), because it is written in Rust
+    - [`lezer-parser/markdown`](https://github.com/lezer-parser/markdown), because it supports incremental parsing
     - [others](https://stereobooster.com/posts/markdown-parsers/).
 - **Storage** - used as cache to avoid reparsing files and as query engine to resolve links, to find backlinks etc.
   - Currently it uses [`sqlite`](https://www.sqlite.org/index.html) plus:
