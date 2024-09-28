@@ -48,7 +48,6 @@ draft: true
   - https://github.com/lezer-parser/markdown
   - https://github.com/tree-sitter-grammars/tree-sitter-markdown
   - https://github.com/ikatyang/tree-sitter-markdown
-  - https://ohmjs.org/ + PEG grammar
 
 ## Support Bun
 
