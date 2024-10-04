@@ -50,16 +50,21 @@ flowchart LR
   - Do I even need custom keywords, like `LIST`, `GRAPH`, `PLOT`?
     - Maybe use functions instead
     - Maybe use keyword after `SELECT`, similar to `FLATTENED`, `DISTINCT`, `TOP`?
-    - Those modifiers make sense only for markdown / html representation. For datastructure it doesn't make much difference
-      - So if I would expose SQL for progrmatic use (intead of _content query_), they would be ignored in that context
+    - Those modifiers make sense only for markdown / html representation. For data queries it doesn't make much difference
+      - So if I would expose SQL for programatic use (intead of _content query_), they would be ignored in that context
+      - For example, `SELECT LIST link` would correspond to data query `SELECT url, title`. And later markdown output would be turned in a list of links
+- Without schema "dynamic" or predefined ([[frontmatter-schema]]) there would be no limit to which columns select
+  - non-existent columns would be accepted, but always would return `NULL`
+  - I can "collect" schema while parsing files
+    - there can be problems with string vs date, integer vs flaot etc.
 
 ### Plan
 
 - start with the simplest option
   - `SELECT column FROM "doesn't matter"`
-    - change SQL to omit `FROM`
+    - change SQL to omit `FROM` (or make it optional)
       - or simply ignore `FROM`, to be compatible with standard SQL
-    - define built-in fields
+    - first support only built-in fields (make a list)
     - what about `frontmatter` fields, shall I use columns names like `fm.something` or `frontmatter.something`, to avoid confusion with built-in fields?
       - but what about fields that user can override in frontmatter?
       - shall I use bare identifiers which can mean frontmatter (if it is present) and built-in otherwise?
