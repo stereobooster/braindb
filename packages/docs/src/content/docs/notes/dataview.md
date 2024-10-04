@@ -42,7 +42,11 @@ flowchart LR
   - `GRAPH` can be alternative to `SELECT` to use network representation
     - can return code block with graphviz or mermaid to MDAST (which later can be compiled to actual graph)
       - won't work for really big graphs
-    - does it need graph-query language syntax to work?
+    - does it need graph-query language syntax to work? See [Graph query language](https://graph.stereobooster.com/notes/Graph-query-language)
+      - example https://playground.memgraph.com/
+    - in order to generate graph I need at least `start`, `finish` e.g. each row is an edge in the graph
+      - it can contain additional properties, like label or color
+      - if one of point is `NULL` it means this is node without edge
   - `PLOT` can be alternative to `SELECT` to use diagram representation
     - `PLOT XYChart(column_x, column_y) FROM ... GROUP BY ...`
   - a lot of SQL functions, like `max`, `concat`
@@ -60,6 +64,10 @@ flowchart LR
 
 ### Plan
 
+- take Langium SQL parser
+  - because it would be possible to modify grammar
+  - because it has typescript signatures for AST
+  - expose parser, because I would need it for remark-dataview
 - start with the simplest option
   - `SELECT column FROM "doesn't matter"`
     - change SQL to omit `FROM` (or make it optional)
