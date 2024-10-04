@@ -5,7 +5,8 @@ draft: true
 
 ```mermaid
 flowchart LR
-    s[SQL parser] --> t[transofrm AST into internal query] --> e[execute and return object] --> tm[transform object into MDAST]
+    s[SQL parser] --> t[transofrm AST into data query] --> e[execute and return object] --> tm[transform object into MDAST]
+    s --> t1[transofrm AST into formatting query] --> tm
 ```
 
 ## Thoughts
@@ -57,6 +58,7 @@ flowchart LR
 - start with the simplest option
   - `SELECT column FROM "doesn't matter"`
     - change SQL to omit `FROM`
+      - or simply ignore `FROM`, to be compatible with standard SQL
     - define built-in fields
     - what about `frontmatter` fields, shall I use columns names like `fm.something` or `frontmatter.something`, to avoid confusion with built-in fields?
       - but what about fields that user can override in frontmatter?
