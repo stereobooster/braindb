@@ -14,10 +14,10 @@ In this case `BrainDB` acts as [obsidian-export](https://nick.groenen.me/project
 
 ```mermaid
 flowchart LR
-a(some/folder) --> BrainDB --> c(src/content)
-subgraph Astro
-  c --> d[Astro] --> e(dist)
-end
+  a(some/folder) --> BrainDB --> c(src/content)
+  subgraph Astro
+    c --> d[Astro] --> e(dist)
+  end
 ```
 
 ### Option 2: augment though Astro components
@@ -26,9 +26,9 @@ In this case `Astro` is repsonsible for rendering and `BrainDB` used to add feat
 
 ```mermaid
 flowchart LR
-c(src/content) --> Astro --> e(dist)
-c  --> BrainDB --> f[Astro components]
-f --> Astro
+  c(src/content) --> Astro --> e(dist)
+  c  --> BrainDB --> f[Astro components]
+  f --> Astro
 ```
 
 ### Option 3: augment though Remark plugins
@@ -37,9 +37,9 @@ In this case `Astro` is repsonsible for rendering and `BrainDB` hooked in throug
 
 ```mermaid
 flowchart LR
-c(src/content) --> Astro --> e(dist)
-c  --> BrainDB --> f[remark plugins]
-f --- Astro
+  c(src/content) --> Astro --> e(dist)
+  c  --> BrainDB --> f[remark plugins]
+  f --- Astro
 ```
 
 ## Old links

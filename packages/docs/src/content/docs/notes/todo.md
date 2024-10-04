@@ -3,6 +3,12 @@ title: TODO
 draft: true
 ---
 
+## Dataview
+
+See [[dataview]]
+
+## Astro integration
+
 - [ ] Astro integration
   - Astro plugin that will provide BrainDB instance
   - maybe will install remark plugins
@@ -20,8 +26,6 @@ draft: true
 
 ## Components
 
-- [ ] remark-dataview
-  - there is PoC, need to extend with [full DQL parser](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/query/parse.ts)
 - [ ] notes
   - write note about [[metadata]] (frontmatter) in different SSG
   - sort and rewrite old notes
@@ -116,14 +120,3 @@ draft: true
   - mark broken links with html class
   - syntax highlighter for code
   - and probably something else
-- [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview):
-  - can I fork [it](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/index.ts) and replace obsidian vault with braindb?
-  - parsers
-    - https://github.com/kristianmandrup/chevrotain-mini-sql-lang
-      - https://chevrotain.io/docs/tutorial/step3b_adding_actions_embedded.html#sql-grammar
-    - https://nanosql.io/welcome.html
-    - https://github.com/JavaScriptor/js-sql-parser
-    - https://github.com/forward/sql-parser
-    - https://alasql.org/
-    - https://github.com/TypeFox/langium-sql/blob/main/packages/langium-sql/src/sql.langium
-    - https://github.com/taozhi8833998/node-sql-parser
