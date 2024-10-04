@@ -6,7 +6,7 @@ draft: true
 ```mermaid
 flowchart LR
     s[SQL parser] --> t[transofrm AST into data query] --> e[execute and return object] --> tm[transform object into MDAST]
-    s --> t1[transofrm AST into formatting query] --> tm
+    s --> t1[transofrm AST into formatting] --> tm
 ```
 
 ## Thoughts
