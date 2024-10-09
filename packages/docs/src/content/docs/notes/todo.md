@@ -10,7 +10,7 @@ See [[dataview]]
 ## Astro integration
 
 - [ ] Astro integration
-  - see packages/braindb-astro/README.md
+  - blocked by https://github.com/vitejs/vite/issues/14289
 - [ ] Starlight plugin?
   - to provide some astro components or/and pages
 

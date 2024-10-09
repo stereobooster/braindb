@@ -2,6 +2,8 @@
 
 This is an [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) for BrainDB
 
+Blocked by https://github.com/vitejs/vite/issues/14289
+
 ## Usage
 
 ### Installation

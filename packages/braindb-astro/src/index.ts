@@ -92,6 +92,7 @@ export default defineIntegration({
               ],
             },
             vite: {
+              // https://github.com/vitejs/vite/issues/14289
               optimizeDeps: {
                 exclude: [
                   ...(config.vite.optimizeDeps?.exclude || []),
