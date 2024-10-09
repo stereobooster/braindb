@@ -1,0 +1,55 @@
+{
+  "name": "@braindb/astro",
+  "version": "0.0.1",
+  "description": "BrainDB Astro integration",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stereobooster/braindb.git",
+    "directory": "packages/braindb-astro"
+  },
+  "author": "stereobooster",
+  "license": "MIT",
+  "keywords": [
+    "markdown",
+    "database",
+    "content",
+    "obsidian",
+    "graph",
+    "contentlayer",
+    "astro-integration",
+    "astro-component",
+    "withastro",
+    "astro"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "astro": "^4.15.11"
+  },
+  "dependencies": {
+    "@braindb/core": "workspace:*",
+    "@braindb/remark-wiki-link": "workspace:*",
+    "astro-integration-kit": "^0.16.1",
+    "github-slugger": "^2.0.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.0"
+  }
+}

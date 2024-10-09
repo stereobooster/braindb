@@ -238,6 +238,7 @@ export class BrainDB {
   }
 
   ready() {
+    if (!this.watcher) console.warn("BraindDB not started");
     return this.initializing
       ? new Promise((resolve) => {
           // @ts-expect-error TS is wrong
