@@ -16,6 +16,7 @@ See [[dataview]]
 
 ## Core
 
+- [ ] maybe rename `documents` to `files`
 - [ ] Extract Headings
   - either need to allow to pass remark plugins (`import { rehypeHeadingIds } from "@astrojs/markdown-remark";`) or pass slug function
     - https://github.com/withastro/astro/blob/main/packages/markdown/remark/src/rehype-collect-headings.ts

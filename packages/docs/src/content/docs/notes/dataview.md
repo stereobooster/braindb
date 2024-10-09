@@ -3,13 +3,44 @@ title: dataview
 draft: true
 ---
 
+- take SQL as is
+  - as the simplest option I can expose raw SQL, which would expose tables structure
+    - [mddb table structure for comaprison](https://github.com/datopian/markdowndb/blob/main/src/lib/schema.ts): files, tags, file_tags, links, tasks
+  - on the other hand I would get all SQLite functions "for free"
+- data formatting comes from meta string
+  ````md
+  ```dataview table
+    SELECT a, b, c FROM nodes;
+  ```
+  ````
+- formatting can be customized from plugin or from meta string
+
+  ````md
+  ```dataview table {css=something}
+
+  ```
+  ````
+
+- simplest views are table, list, list of lists
+- `link` - sql function that does nothing for data, but create a link in the output
+  - to be explicit it can take arguments `link(url, title)`, which will be transformed to data query `url, title`
+- need SQL parser anyway
+  - to process `link`
+  - to change fields from `some.thing` to `frontmatter ->> '$.some.thing'`
+    - this won't work for dates (and arrays?)
+      - would need type-cast function or schema
+
+---
+
+## Old
+
 ```mermaid
 flowchart LR
     s[SQL parser] --> t[transofrm AST into data query] --> e[execute and return object] --> tm[transform object into MDAST]
     s --> t1[transofrm AST into formatting] --> tm
 ```
 
-## Thoughts
+### Thoughts
 
 - SQL-like language can be alternative to [[content-query]]
   - _content query_ can be typesafe and more natural (DSL)
@@ -62,7 +93,7 @@ flowchart LR
   - I can "collect" schema while parsing files
     - there can be problems with string vs date, integer vs flaot etc.
 
-### Plan
+#### Plan
 
 - take Langium SQL parser
   - because it would be possible to modify grammar
@@ -93,7 +124,7 @@ flowchart LR
     - `=`, `!=`, `>`, `<`, `IN`, `LIKE`
   - ...
 
-## SQL parser
+### SQL parser
 
 - https://github.com/TypeFox/langium-sql/blob/main/packages/langium-sql/src/sql.langium
 - https://github.com/kristianmandrup/chevrotain-mini-sql-lang
@@ -104,12 +135,12 @@ flowchart LR
 - https://alasql.org/
 - https://github.com/taozhi8833998/node-sql-parser
 
-## Remark plugin
+### Remark plugin
 
 - [ ] remark-dataview
   - there is PoC, need to extend with [full DQL parser](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/query/parse.ts)
 
-## Other
+### Other
 
 - [obsidian-dataview](https://github.com/blacksmithgu/obsidian-dataview):
   - can I fork [it](https://github.com/blacksmithgu/obsidian-dataview/blob/master/src/index.ts) and replace obsidian vault with braindb?
