@@ -4,6 +4,7 @@ import robotsTxt from "astro-robots-txt";
 
 import { rehypeMermaid } from "@beoe/rehype-mermaid";
 import { getCache } from "@beoe/cache";
+// import process from "node:process";
 
 // import { createResolver } from "astro-integration-kit";
 // import { hmrIntegration } from "astro-integration-kit/dev";
@@ -15,7 +16,10 @@ const cache = await getCache();
 export default defineConfig({
   site: "https://braindb.stereobooster.com/",
   integrations: [
-    braindbAstro(),
+    braindbAstro({
+      // dbPath: process.cwd(),
+      // git: false,
+    }),
     // hmrIntegration({
     // 	directory: createResolver(import.meta.url).resolve("../package/dist"),
     // }),

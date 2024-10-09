@@ -111,8 +111,10 @@ export class BrainDB {
     }
   }
 
-  start() {
-    if (this.watcher) throw new Error("Already started");
+  start(silent?: boolean) {
+    if (this.watcher)
+      if (silent) return this;
+      else throw new Error("Already started");
 
     const revision = new Date().getTime();
 
@@ -221,6 +223,7 @@ export class BrainDB {
 
   async stop() {
     if (this.watcher) await this.watcher.close();
+    this.watcher = undefined;
     this.initQueue = [];
     return this;
   }
@@ -238,7 +241,8 @@ export class BrainDB {
   }
 
   ready() {
-    if (!this.watcher) console.warn("BraindDB not started");
+    if (!this.watcher) return Promise.reject(new Error("BraindDB not started"));
+
     return this.initializing
       ? new Promise((resolve) => {
           // @ts-expect-error TS is wrong

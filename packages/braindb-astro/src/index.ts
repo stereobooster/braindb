@@ -2,12 +2,32 @@ import { defineIntegration } from "astro-integration-kit";
 import { slug as githubSlug } from "github-slugger";
 import path from "node:path";
 import process from "node:process";
-import { BrainDB } from "@braindb/core";
+import { BrainDB, type BrainDBOptionsIn } from "@braindb/core";
 import { remarkWikiLink } from "./remarkWikiLink.js";
+import { z } from "astro/zod";
+
+const brainDBOptionsIn = z
+  .object({
+    dbPath: z.string(),
+    cache: z.boolean(),
+    url: z.function(
+      z.tuple([z.string(), z.record(z.string(), z.any())]),
+      z.string()
+    ),
+    slug: z.function(
+      z.tuple([z.string(), z.record(z.string(), z.any())]),
+      z.string()
+    ),
+    root: z.string(),
+    source: z.string(),
+    git: z.boolean(),
+    storeMarkdown: z.boolean(),
+  })
+  .partial();
 
 // slug implementation according to Astro
 // see astro/packages/astro/src/content/utils.ts
-const generateSlug = (filePath: string) => {
+export const generateSlug = (filePath: string) => {
   const withoutFileExt = filePath.replace(
     new RegExp(path.extname(filePath) + "$"),
     ""
@@ -23,26 +43,41 @@ const generateSlug = (filePath: string) => {
   return slug;
 };
 
-let bdbInstance = new BrainDB({
+const slugToUrl = (slug: string) => {
+  if (!slug.startsWith("/")) slug = `/${slug}`;
+  if (!slug.endsWith("/")) slug = `${slug}/`;
+  return slug;
+};
+
+const defaultBrainDBOptions: BrainDBOptionsIn = {
   root: path.resolve(process.cwd(), "src/content/docs"),
-  url: (filePath, _frontmatter) => `${generateSlug(filePath)}/`,
+  url: (filePath, frontmatter) =>
+    frontmatter.url
+      ? String(frontmatter.url)
+      : slugToUrl(
+          frontmatter.slug ? String(frontmatter.slug) : generateSlug(filePath)
+        ),
   git: true,
-  // dbPath: process.cwd(),
-});
+};
+
+let bdbInstance = new BrainDB(defaultBrainDBOptions);
 
 export function bdb() {
   try {
-    bdbInstance.start();
+    bdbInstance.start(true);
   } catch {}
   return bdbInstance;
 }
 
 export default defineIntegration({
   name: "@braindb/astro",
-  setup() {
-    // we can pass options for bdb here
-    // bdbInstance = new BrainDB(new_options)
-    // bdb.start();
+  optionsSchema: brainDBOptionsIn.optional(),
+  setup({ options }) {
+    if (options) {
+      bdbInstance.stop();
+      // @ts-expect-error tsup is getting on my nerves
+      bdbInstance = new BrainDB({ ...defaultBrainDBOptions, ...options });
+    }
 
     return {
       hooks: {
