@@ -4,11 +4,9 @@ import robotsTxt from "astro-robots-txt";
 
 import { rehypeMermaid } from "@beoe/rehype-mermaid";
 import { getCache } from "@beoe/cache";
-// import process from "node:process";
-
-// import { createResolver } from "astro-integration-kit";
-// import { hmrIntegration } from "astro-integration-kit/dev";
-const { default: braindbAstro } = await import("@braindb/astro");
+import { remarkWikiLink } from "./src/lib/remarkWikiLink.mjs";
+import { bdb } from "./src/lib/braindb.mjs";
+await bdb.ready();
 
 const cache = await getCache();
 
@@ -16,13 +14,6 @@ const cache = await getCache();
 export default defineConfig({
   site: "https://braindb.stereobooster.com/",
   integrations: [
-    braindbAstro({
-      // dbPath: process.cwd(),
-      // git: false,
-    }),
-    // hmrIntegration({
-    // 	directory: createResolver(import.meta.url).resolve("../package/dist"),
-    // }),
     starlight({
       pagination: false,
       lastUpdated: true,
@@ -48,18 +39,21 @@ export default defineConfig({
           },
         },
       ],
-      components: {
-        TableOfContents: "./src/components/TableOfContents.astro",
-      },
     }),
     robotsTxt(),
   ],
   markdown: {
+    remarkPlugins: [[remarkWikiLink, { bdb }]],
     rehypePlugins: [
       [
         rehypeMermaid,
         { class: "not-content", strategy: "img-class-dark-mode", cache },
       ],
     ],
+  },
+  vite: {
+    optimizeDeps: {
+      exclude: ["fsevents", "@node-rs", "@napi-rs"],
+    },
   },
 });

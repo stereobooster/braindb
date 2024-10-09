@@ -10,9 +10,14 @@ See [[dataview]]
 ## Astro integration
 
 - [ ] Astro integration
-  - blocked by https://github.com/vitejs/vite/issues/14289
-- [ ] Starlight plugin?
-  - to provide some astro components or/and pages
+  - Astro plugin that will provide BrainDB instance
+    - config for instance should be provided through plugin, which means that this instance can be exposed only as [virtual module](https://astro-integration-kit.netlify.app/utilities/add-virtual-imports/) (?)
+    - if it exposed as virtual module it can't be used for other plugins
+      - but I need this instnce for wikilink and for dataview
+    - maybe some kind of hack with lazy instantiation?
+  - maybe will install remark plugins
+  - maybe will provide Astro components
+  - https://github.com/florian-lefebvre/astro-integration-template
 
 ## Core
 
