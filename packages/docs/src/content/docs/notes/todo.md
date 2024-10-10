@@ -10,18 +10,14 @@ See [[dataview]]
 ## Astro integration
 
 - [ ] Astro integration
-  - Astro plugin that will provide BrainDB instance
-    - config for instance should be provided through plugin, which means that this instance can be exposed only as [virtual module](https://astro-integration-kit.netlify.app/utilities/add-virtual-imports/) (?)
-    - if it exposed as virtual module it can't be used for other plugins
-      - but I need this instnce for wikilink and for dataview
-    - maybe some kind of hack with lazy instantiation?
-  - maybe will install remark plugins
-  - maybe will provide Astro components
-  - https://github.com/florian-lefebvre/astro-integration-template
+  - blocked by https://github.com/vitejs/vite/issues/14289
+- [ ] Starlight plugin?
+  - to provide some astro components or/and pages
 
 ## Core
 
 - [ ] maybe rename `documents` to `files`
+  - `slug` to `name`?
 - [ ] Extract Headings
   - either need to allow to pass remark plugins (`import { rehypeHeadingIds } from "@astrojs/markdown-remark";`) or pass slug function
     - https://github.com/withastro/astro/blob/main/packages/markdown/remark/src/rehype-collect-headings.ts
@@ -29,6 +25,8 @@ See [[dataview]]
   - path to original document, anchor (aka id, aka slug), ast?, text, level
   - use for link resolution
 - [ ] [[frontmatter-schema]]
+- [ ] Extract tags?
+  - what about other taxonomies?
 
 ## Components
 
