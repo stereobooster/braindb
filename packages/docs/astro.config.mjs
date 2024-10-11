@@ -4,6 +4,7 @@ import robotsTxt from "astro-robots-txt";
 
 import { rehypeMermaid } from "@beoe/rehype-mermaid";
 import { getCache } from "@beoe/cache";
+import { remarkDataview } from "@braindb/remark-dataview";
 import { remarkWikiLink } from "./src/lib/remarkWikiLink.mjs";
 import { bdb } from "./src/lib/braindb.mjs";
 await bdb.ready();
@@ -43,7 +44,10 @@ export default defineConfig({
     robotsTxt(),
   ],
   markdown: {
-    remarkPlugins: [[remarkWikiLink, { bdb }]],
+    remarkPlugins: [
+      [remarkDataview, { bdb }],
+      [remarkWikiLink, { bdb }],
+    ],
     rehypePlugins: [
       [
         rehypeMermaid,

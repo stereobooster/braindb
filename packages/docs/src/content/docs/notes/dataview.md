@@ -3,6 +3,12 @@ title: dataview
 draft: true
 ---
 
+- [x] test
+
+```dataview table
+SELECT "from", checked, ast FROM tasks;
+```
+
 - take SQL as is
   - as the simplest option I can expose raw SQL, which would expose tables structure
     - [mddb table structure for comaprison](https://github.com/datopian/markdowndb/blob/main/src/lib/schema.ts): files, tags, file_tags, links, tasks

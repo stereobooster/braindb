@@ -178,6 +178,9 @@ importers:
       '@braindb/core':
         specifier: workspace:^
         version: link:../braindb-core
+      '@braindb/remark-dataview':
+        specifier: workspace:*
+        version: link:../remark-dataview
       '@braindb/remark-wiki-link':
         specifier: workspace:*
         version: link:../remark-wiki-link

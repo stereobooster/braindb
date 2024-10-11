@@ -9,7 +9,7 @@ import { symmetricDifference } from "./utils.js";
 import { deleteDocument, deleteOldRevision } from "./deleteDocument.js";
 import { Document } from "./Document.js";
 import { document, link, task } from "./schema.js";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { Link } from "./Link.js";
@@ -301,5 +301,10 @@ export class BrainDB {
   async tasks() {
     await this.ready();
     return this.tasksSync();
+  }
+
+  // this is experimental - do not use it
+  __rawQuery(query: string) {
+    return this.db.all(sql.raw(query))
   }
 }

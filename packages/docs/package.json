@@ -16,6 +16,7 @@
     "@beoe/rehype-mermaid": "^0.0.1",
     "@braindb/core": "workspace:^",
     "@braindb/remark-wiki-link": "workspace:*",
+    "@braindb/remark-dataview": "workspace:*",
     "astro": "^4.11.3",
     "astro-robots-txt": "^1.0.0",
     "github-slugger": "^2.0.0",
