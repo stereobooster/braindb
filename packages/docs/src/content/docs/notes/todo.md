@@ -18,6 +18,8 @@ See [[dataview]]
 
 - [ ] maybe rename `documents` to `files`
   - `slug` to `name`?
+  - [mddb table structure for comaprison](https://github.com/datopian/markdowndb/blob/main/src/lib/schema.ts): files, tags, file_tags, links, tasks
+  - `from` column name is conflicting with SQL. Maybe rename to `start`/`end`?
 - [ ] Extract Headings
   - either need to allow to pass remark plugins (`import { rehypeHeadingIds } from "@astrojs/markdown-remark";`) or pass slug function
     - https://github.com/withastro/astro/blob/main/packages/markdown/remark/src/rehype-collect-headings.ts

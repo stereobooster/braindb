@@ -9,10 +9,14 @@ draft: true
 SELECT "from", checked, ast FROM tasks;
 ```
 
-- take SQL as is
+- [x] take SQL as is
   - as the simplest option I can expose raw SQL, which would expose tables structure
-    - [mddb table structure for comaprison](https://github.com/datopian/markdowndb/blob/main/src/lib/schema.ts): files, tags, file_tags, links, tasks
   - on the other hand I would get all SQLite functions "for free"
+- [ ] need SQL parser anyway
+  - to process `link`
+  - to change fields from `some.thing` to `frontmatter ->> '$.some.thing'`
+    - this won't work for dates (and arrays?)
+      - would need type-cast function or schema
 - data formatting comes from meta string
   ````md
   ```dataview table
@@ -30,11 +34,6 @@ SELECT "from", checked, ast FROM tasks;
 - simplest views are table, list, list of lists
 - `link` - sql function that does nothing for data, but create a link in the output
   - to be explicit it can take arguments `link(url, title)`, which will be transformed to data query `url, title`
-- need SQL parser anyway
-  - to process `link`
-  - to change fields from `some.thing` to `frontmatter ->> '$.some.thing'`
-    - this won't work for dates (and arrays?)
-      - would need type-cast function or schema
 
 ---
 
