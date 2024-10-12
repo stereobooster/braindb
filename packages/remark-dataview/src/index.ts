@@ -4,7 +4,7 @@ import { BrainDB } from "@braindb/core";
 import type { Root } from "mdast";
 // @ts-expect-error required for generated types
 import type { Plugin } from "unified";
-import { generateTable, parse, transform } from "./sqlUtils.js";
+import { generateList, generateTable, parse, transform } from "./sqlUtils.js";
 
 type RemarkDataviewOptions = {
   bdb: BrainDB;
@@ -16,10 +16,12 @@ export function remarkDataview(options: RemarkDataviewOptions) {
   return remarkCodeHook.call(this, {
     ...rest,
     language: "dataview",
-    code: ({ code }) => {
+    code: ({ code, meta }) => {
       try {
         const { query, columns } = transform(parse(code));
-        // TODO: handle *
+        if (meta === "list") {
+          return generateList(columns, bdb.__rawQuery(query));
+        }
         return generateTable(columns, bdb.__rawQuery(query));
       } catch (e) {
         return String(e);

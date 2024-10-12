@@ -101,11 +101,8 @@ This is **another bonus** of this architecture - it is modular and can be combin
 
 #### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/):
 
-- [ ] need to show as list
-- [ ] need to pass css class
-
 ```dataview list
-SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(frontmatter ->> '$.title', url) as link
+SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(url, frontmatter ->> '$.title') as link
 FROM documents
 ORDER BY frontmatter ->> '$.title'
 LIMIT 2;
@@ -114,7 +111,7 @@ LIMIT 2;
 #### [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
 
 ```dataview list
-SELECT date(updated_at / 1000, 'unixepoch') as date, dv_link(frontmatter ->> '$.title', url) as link
+SELECT date(updated_at / 1000, 'unixepoch') as date, dv_link(url, frontmatter ->> '$.title') as link
 FROM documents
 ORDER BY updated_at DESC
 LIMIT 2;
@@ -122,10 +119,8 @@ LIMIT 2;
 
 #### [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
 
-- [ ] `dv_list_item`
-
 ```dataview list
-SELECT dv_link(frontmatter ->> '$.title', url) as link, checked, dv_ast(tasks.ast) as "description"
+SELECT dv_link(url, frontmatter ->> '$.title') as link, dv_ast(tasks.ast) as "description"
 FROM tasks JOIN documents ON documents.path = tasks.from
 ORDER BY updated_at, path DESC
 LIMIT 2;
@@ -136,11 +131,14 @@ LIMIT 2;
 - simplest views are
   - [x] table (any number of columns)
     - [ ] align columns based on type (string left, numbers right)
-  - [ ] [list](https://astro-digital-garden.stereobooster.com/recipes/obsidian-dataview/) (one or two columns)
+  - [x] list
+    - [ ] need to pass css class
+    - [ ] `dv_list_item` checked,
   - [ ] nested-list (any number of columns)
 - view comes from meta string
   - https://github.com/Microflash/fenceparser
   - https://github.com/frencojobs/fenceparser
+- need to handle `*`
 - to confirm it works implement
   - [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
   - Backlinks?

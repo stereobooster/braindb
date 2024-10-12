@@ -3,7 +3,18 @@ const parser = new nodeSql.Parser();
 const opt = { database: "Sqlite" };
 // https://sqlite.org/lang_corefunc.html
 
-import { Link, PhrasingContent, Text } from "mdast";
+import {
+  BlockContent,
+  DefinitionContent,
+  Link,
+  List,
+  ListItem,
+  Paragraph,
+  PhrasingContent,
+  Root,
+  RootContent,
+  Text,
+} from "mdast";
 
 export function parse(query: string) {
   const ast = parser.astify(query, opt);
@@ -102,48 +113,51 @@ export function transform(query: nodeSql.Select) {
   };
 }
 
-// const list = <T>(children: T[]) => ({
-//   type: "list",
-//   ordered: false,
-//   start: null,
-//   spread: false,
-//   children,
-// });
+const text = (value: string): Text => ({ type: "text", value });
 
-// const paragraph = <T>(children: T[]) => ({ type: "paragraph", children });
-const link = (children: PhrasingContent[], url: string): Link => ({
+const paragraph = (children: PhrasingContent[]): Paragraph => ({
+  type: "paragraph",
+  children,
+});
+
+const link = (url: string, children: PhrasingContent[]): Link => ({
   type: "link",
   title: null,
   url: url,
   children,
 });
 
-// const checkbox = (checked: boolean) => ({
-//   type: "element",
-//   tagName: "input",
-//   properties: {
-//     type: "checkbox",
-//     checked,
-//   },
-// });
+const list = (children: ListItem[]): List => ({
+  type: "list",
+  ordered: false,
+  start: null,
+  spread: false,
+  children,
+});
 
-// const listItem = <T>(children: T[], checked: boolean | null = null) => ({
-//     type: "listItem",
-//     spread: false,
-//     checked,
-//     children,
-// });
+const listItem = (
+  children: Array<BlockContent | DefinitionContent>,
+  checked: boolean | null = null
+): ListItem => ({
+  type: "listItem",
+  spread: false,
+  checked,
+  children,
+});
 
-const text = (value: string): Text => ({ type: "text", value });
+const root = (children: RootContent[]): Root => ({
+  type: "root",
+  children,
+});
 
-const serializeColumn = (column: Column, row: any) => {
+const columnToMdast = (column: Column, row: any) => {
   if (column.dv === false) return [text(String(row[column.name]))];
 
   switch (column.func) {
     case "dv_ast":
       return JSON.parse(row[column.args[0]])?.children || [];
     case "dv_link":
-      return [link([text(row[column.args[0]])], row[column.args[1]])];
+      return [link(row[column.args[0]], [text(row[column.args[1]])])];
     default:
       throw new Error(`Unknown function ${column.name}`);
   }
@@ -171,9 +185,37 @@ export const generateTable = (columns: Column[], rows: unknown[]) => {
         type: "tableRow",
         children: columns.map((column) => ({
           type: "tableCell",
-          children: serializeColumn(column, row),
+          children: columnToMdast(column, row),
         })),
       })),
     ],
   };
+};
+
+export const generateList = (columns: Column[], rows: any[]) => {
+  if (columns.length === 1)
+    return list(rows.map((row) => listItem(columnToMdast(columns[0], row))));
+
+  if (columns.length === 2) {
+    const grouped: Record<string, any> = {};
+    rows.forEach((row) => {
+      const first = row[columns[0].name] as string;
+      grouped[first] = grouped[first] || [];
+      grouped[first].push(row);
+    });
+
+    return root(
+      Object.values(grouped).flatMap((group) => {
+        const first = columnToMdast(columns[0], group[0]);
+        return [
+          paragraph(first),
+          list(
+            group.map((row: any) => listItem(columnToMdast(columns[1], row)))
+          ),
+        ];
+      })
+    );
+  }
+
+  throw new Error("List expects 1 or 2 columns");
 };
