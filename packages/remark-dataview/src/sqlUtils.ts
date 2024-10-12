@@ -219,7 +219,25 @@ const columnToMdast = (column: Column, row: any) => {
   }
 };
 
-export const generateTable = (columns: Column[], rows: unknown[]) => {
+const handleStar = (columns: Column[], rows: any[]) => {
+  const sqlCols = new Set(
+    columns.flatMap((col) => (col.dv === false ? col.name : col.args))
+  );
+  if (sqlCols.has("*")) {
+    const resCols = Object.keys(rows[0]).filter((col) => !sqlCols.has(col));
+    const starPos = columns.findIndex((col) => col.name === "*");
+    return [
+      ...columns.slice(0, starPos),
+      ...resCols.map((name) => ({ dv: false, name } as Column)),
+      ...columns.slice(starPos + 1),
+    ];
+  }
+  return columns;
+};
+
+export const generateTable = (columns: Column[], rows: any[]) => {
+  columns = handleStar(columns, rows);
+
   if (rows.length === 0) return "empty";
   const first = rows[0];
   if (first === null || typeof first !== "object") return "wrong result";
@@ -257,6 +275,8 @@ export const generateList = (
   rows: any[],
   options: GenerateListOptions = {}
 ) => {
+  columns = handleStar(columns, rows);
+
   if (columns.length === 1)
     return list(rows.map((row) => listItem(columnToMdast(columns[0], row))));
 

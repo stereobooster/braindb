@@ -136,27 +136,32 @@ SELECT tags.value as tag, dv_link(url, frontmatter ->> '$.title') as link
 FROM documents, json_each(frontmatter, '$.tags') tags
 WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
 ORDER BY tag
+LIMIT 2;
 ```
 
+```dataview
+SELECT *
+FROM documents
+WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
+LIMIT 2;
+```
 #### Other
 
 - simplest views are
   - [x] table (any number of columns)
     - [ ] align columns based on type (string left, numbers right)
   - [x] list
-    - [x] option to pass css class
-      - https://github.com/Microflash/fenceparser
-      - https://github.com/frencojobs/fenceparser
     - [x] `dv_task`
       - is it ok that it depends on `ast`?
         - [ ] if it depends on `tasks` table I can as well put default columns `tasks.ast`, `tasks.checked`
     - [ ] potential issue with first column used for grouping
   - [ ] nested-list (any number of columns)
-- [ ] handle `*`
+- [x] handle `*`
 - [ ] maybe shortcut like `dv('updated_at')` - if `updated_at` exists in frontmatter than take it, otherwise use built-in value
   - problem: how to guess table from which frontmatter should be taken?
     - on the other hand there is only one table which it could be
 - [ ] add tests
+- [ ] update readme
 - [ ] shall I rename tables and columns before publishing?
 - [ ] Backlinks?
   - I would need special function which would return path of current page `dv_path()`
