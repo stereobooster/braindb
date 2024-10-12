@@ -40,6 +40,7 @@
     "@beoe/remark-code-hook": "^0.0.1",
     "@braindb/core": "workspace:*",
     "@types/mdast": "^4.0.4",
+    "node-sql-parser": "^5.3.2",
     "unified": "^11.0.5"
   }
 }
