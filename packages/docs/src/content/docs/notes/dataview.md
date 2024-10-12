@@ -3,85 +3,78 @@ title: dataview
 draft: true
 ---
 
-#### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/):
+## Idea
 
-- [ ] need to show as list
-- [ ] need to pass css class
+### Concept
 
-```dataview list
-SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(frontmatter ->> '$.title', url) as link
-FROM documents
-ORDER BY frontmatter ->> '$.title'
-LIMIT 2;
+Project inspired by Obsidian DataView, but there are some differences.
+
+First of all I decided to use real SQL instead of custom dialect used by Dataview.
+
+**Pros**:
+
+- it is easy to learn, because there is huge community and a lot of documentation
+- it is easy to implement, because project already uses relational database (SQLite)
+
+**Cons**:
+
+- it exposes data structure, so every time model changed it will break downstream projects
+- it locks-in project to use relational database. I had idea to try graph database
+
+Having real SQL would allow to show data at least as table (all SQL clients output result as tables, even if there is only one cell). Other templates can be, for example:
+
+- list, if there is only one column
+- nested list
+- etc.
+
+Template be customized through meta string ("fence meta"):
+
+````md
+```dataview <template> <other options>
+  SELECT a, b, c FROM nodes;
 ```
+````
 
-#### [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
+Plus I can add custom function which can format output, for example:
 
-```dataview list
-SELECT date(updated_at / 1000, 'unixepoch'), dv_link(frontmatter ->> '$.title', url) as link
-FROM documents
-ORDER BY updated_at DESC
-LIMIT 2;
-```
+- `dv_link(text, url)` would output markdown link `[text](url)`
 
-#### [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
+### Implementation
 
-- [ ] `dv_list_item`
+This will be remark plugin. It will find all code blocks ("fence blocks") with language "dataview", will take content as query, execute query using BrainDB, transform result to MDAST and replace given code block. So result can be post-processed by other remark/rehype plugins.
 
-```dataview list
-SELECT dv_link(frontmatter ->> '$.title', url) as link, checked, dv_ast(tasks.ast) as "description" 
-FROM tasks JOIN documents ON documents.path = tasks.from
-ORDER BY updated_at, path DESC
-LIMIT 2;
-```
-
-- [x] take SQL as is
-  - as the simplest option I can expose raw SQL, which would expose tables structure
-  - on the other hand I would get all SQLite functions "for free"
-- [x] need SQL parser anyway
-  - [x] to process `link`
-  - [ ] to change fields from `some.thing` to `frontmatter ->> '$.some.thing'`
-    - this won't work for dates (and arrays?)
-      - would need type-cast function or schema
-- data formatting comes from meta string
-  ````md
-  ```dataview table
-    SELECT a, b, c FROM nodes;
-  ```
-  ````
-- formatting can be customized from plugin or from meta string
-
-  ````md
-  ```dataview table {css=something}
-
-  ```
-  ````
-
-- simplest views are table, list, list of lists
-- to confirm it works implement
-  - [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
-  - Backlinks?
-  - Content graph?
-
----
-
-## Old
+In order to implement custom functions, I would use SQL parser which will remove custom function from SQL before it is executed. But those functions would be used to format resulting data before transforming it into MDAST.
 
 ```mermaid
 flowchart LR
-    s[SQL parser] --> t[transofrm AST into data query] --> e[execute and return object] --> tm[transform object into MDAST]
-    s --> t1[transofrm AST into formatting] --> tm
+    s[SQL parser] --> t[data query] --> e[fetch data] --> tm[transform into MDAST]
+    s --> t1[formatting config] --> tm
 ```
 
-### Thoughts
+That's it.
 
-- Without schema "dynamic" or predefined ([[frontmatter-schema]]) there would be no limit to which columns select
-  - non-existent columns would be accepted, but always would return `NULL`
-  - I can "collect" schema while parsing files
-    - there can be problems with string vs date, integer vs flaot etc.
-- does it need graph-query language syntax to work? See [Graph query language](https://graph.stereobooster.com/notes/Graph-query-language)
-  - example https://playground.memgraph.com/
-  
+### Future
+
+#### Extension
+
+As an improvement one can implement VSCode extension which would highlight syntax and propose autocompletition. I think this should be possible with [langium-sql](https://github.com/TypeFox/langium-sql/blob/main/packages/langium-sql/).
+
+Related:
+
+[VSCode Markdown Fenced Code Block Grammar Injection Example](https://github.com/mjbvz/vscode-fenced-code-block-grammar-injection-example)
+
+#### Improved tables
+
+Maybe table template can be combined with [sortable tables](https://astro-digital-garden.stereobooster.com/recipes/sortable-tables/)?
+
+#### Graph template
+
+For example, select data from links table. Convert it to dot format. Output as code block, which would be consequently processed by `@beoe/rehype-graphviz`.
+
+Or for example, one can use `@beoe/rehype-gnuplot` to produce plots based on data.
+
+This is **another bonus** of this architecture - it is modular and can be combined with other solutions.
+
 ### SQL parser
 
 - https://github.com/taozhi8833998/node-sql-parser
@@ -103,3 +96,57 @@ flowchart LR
   - last commit 9 years ago
 - https://github.com/DerekStride/tree-sitter-sql
   - https://github.com/lezer-parser/import-tree-sitter
+
+## Examples
+
+#### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/):
+
+- [ ] need to show as list
+- [ ] need to pass css class
+
+```dataview list
+SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(frontmatter ->> '$.title', url) as link
+FROM documents
+ORDER BY frontmatter ->> '$.title'
+LIMIT 2;
+```
+
+#### [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
+
+```dataview list
+SELECT date(updated_at / 1000, 'unixepoch') as date, dv_link(frontmatter ->> '$.title', url) as link
+FROM documents
+ORDER BY updated_at DESC
+LIMIT 2;
+```
+
+#### [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
+
+- [ ] `dv_list_item`
+
+```dataview list
+SELECT dv_link(frontmatter ->> '$.title', url) as link, checked, dv_ast(tasks.ast) as "description"
+FROM tasks JOIN documents ON documents.path = tasks.from
+ORDER BY updated_at, path DESC
+LIMIT 2;
+```
+
+#### Other
+
+- simplest views are
+  - [x] table (any number of columns)
+    - [ ] align columns based on type (string left, numbers right)
+  - [ ] [list](https://astro-digital-garden.stereobooster.com/recipes/obsidian-dataview/) (one or two columns)
+  - [ ] nested-list (any number of columns)
+- view comes from meta string
+  - https://github.com/Microflash/fenceparser
+  - https://github.com/frencojobs/fenceparser
+- to confirm it works implement
+  - [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
+  - Backlinks?
+    - I would need special function which would return value of current page
+- [ ] change fields from `some.thing` to `frontmatter ->> '$.some.thing'`, except built-in fields
+  - this won't work for dates (and arrays?)
+    - would need type-cast function or schema ([[frontmatter-schema]])
+- does it need graph-query language syntax? See [Graph query language](https://graph.stereobooster.com/notes/Graph-query-language)
+  - example https://playground.memgraph.com/

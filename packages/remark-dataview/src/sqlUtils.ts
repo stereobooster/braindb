@@ -3,7 +3,7 @@ const parser = new nodeSql.Parser();
 const opt = { database: "Sqlite" };
 // https://sqlite.org/lang_corefunc.html
 
-import {Link, PhrasingContent, Text, } from "mdast";
+import { Link, PhrasingContent, Text } from "mdast";
 
 export function parse(query: string) {
   const ast = parser.astify(query, opt);
@@ -177,12 +177,3 @@ export const generateTable = (columns: Column[], rows: unknown[]) => {
     ],
   };
 };
-// idea:
-// take SQL
-// extract list of columns
-// if there are special functions, like dv_ast, dv_link...
-// replace them with arguments, but remember where thry were originally
-// get new SQL (without special functions)
-// run query and get data
-// transform data according to columns
-// if there were special
