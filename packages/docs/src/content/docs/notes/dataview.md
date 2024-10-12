@@ -99,7 +99,7 @@ This is **another bonus** of this architecture - it is modular and can be combin
 
 ## Examples
 
-#### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/):
+#### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/)
 
 ```dataview list root_class=column-list
 SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(url, frontmatter ->> '$.title') as link
@@ -120,10 +120,9 @@ LIMIT 2;
 #### [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
 
 ```dataview list
-SELECT dv_link(url, frontmatter ->> '$.title') as link, dv_ast(tasks.ast) as "description"
+SELECT dv_link(url, frontmatter ->> '$.title') as link, dv_task(tasks.ast, tasks.checked) as "description"
 FROM tasks JOIN documents ON documents.path = tasks.from
-ORDER BY updated_at, path DESC
-LIMIT 2;
+ORDER BY updated_at DESC, path, tasks.start;
 ```
 
 #### Other
@@ -135,15 +134,18 @@ LIMIT 2;
     - [x] option to pass css class
       - https://github.com/Microflash/fenceparser
       - https://github.com/frencojobs/fenceparser
-    - [ ] `dv_list_item` checked,
+    - [x] `dv_task`
+      - is it ok that it depends on `ast`?
+        - [ ] if it depends on `tasks` table I can as well put default columns `tasks.ast`, `tasks.checked`
+    - [ ] potential issue with first column used for grouping
   - [ ] nested-list (any number of columns)
 - [ ] handle `*`
+- [ ] maybe shortcut like `dv('updated_at')` - if `updated_at` exists in frontmatter than take it, otherwise use built-in value
+- [ ] add tests
+- [ ] shall I rename tables and columns before publishing?
+  - problem: how to guess table from which frontmatter should be taken?
+    - on the other hand there is only one table which it could be
 - to confirm it works implement
   - [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
   - Backlinks?
-    - I would need special function which would return value of current page
-- [ ] change fields from `some.thing` to `frontmatter ->> '$.some.thing'`, except built-in fields
-  - this won't work for dates (and arrays?)
-    - would need type-cast function or schema ([[frontmatter-schema]])
-- does it need graph-query language syntax? See [Graph query language](https://graph.stereobooster.com/notes/Graph-query-language)
-  - example https://playground.memgraph.com/
+    - I would need special function which would return path of current page

@@ -66,12 +66,12 @@ export function transform(query: nodeSql.Select) {
       const func: nodeSql.Function = col.expr as any;
       if (
         func.name.name[0].type === "default" &&
-        func.name.name[0].value === "dv_ast"
+        func.name.name[0].value === "dv_md"
       ) {
         if (
           func.args?.type === "expr_list" &&
           Array.isArray(func.args?.value) &&
-          func.args?.value.length === 1
+          func.args.value.length === 1
         ) {
           columns.push({
             dv: true,
@@ -79,10 +79,12 @@ export function transform(query: nodeSql.Select) {
             func: func.name.name[0].value,
             args: func.args.value.map((arg) => columnNameExpr(arg)),
           });
-          newQueryColumns.push({ as: null, expr: func.args?.value[0] });
+          func.args.value.forEach((value) =>
+            newQueryColumns.push({ as: null, expr: value })
+          );
           return;
         } else {
-          throw new Error("dv_ast requires exactly one param");
+          throw new Error("dv_md requires exactly one param");
         }
       }
 
@@ -93,7 +95,7 @@ export function transform(query: nodeSql.Select) {
         if (
           func.args?.type === "expr_list" &&
           Array.isArray(func.args?.value) &&
-          func.args?.value.length === 2
+          func.args.value.length === 2
         ) {
           columns.push({
             dv: true,
@@ -101,11 +103,36 @@ export function transform(query: nodeSql.Select) {
             func: func.name.name[0].value,
             args: func.args.value.map((arg) => columnNameExpr(arg)),
           });
-          newQueryColumns.push({ as: null, expr: func.args?.value[0] });
-          newQueryColumns.push({ as: null, expr: func.args?.value[1] });
+          func.args.value.forEach((value) =>
+            newQueryColumns.push({ as: null, expr: value })
+          );
           return;
         } else {
           throw new Error("dv_link requires exactly two params");
+        }
+      }
+
+      if (
+        func.name.name[0].type === "default" &&
+        func.name.name[0].value === "dv_task"
+      ) {
+        if (
+          func.args?.type === "expr_list" &&
+          Array.isArray(func.args?.value) &&
+          func.args.value.length === 2
+        ) {
+          columns.push({
+            dv: true,
+            name: columnName(col),
+            func: func.name.name[0].value,
+            args: func.args.value.map((arg) => columnNameExpr(arg)),
+          });
+          func.args.value.forEach((value) =>
+            newQueryColumns.push({ as: null, expr: value })
+          );
+          return;
+        } else {
+          throw new Error("dv_task requires exactly two params");
         }
       }
     }
@@ -176,10 +203,17 @@ const columnToMdast = (column: Column, row: any) => {
   if (column.dv === false) return [text(String(row[column.name]))];
 
   switch (column.func) {
-    case "dv_ast":
+    case "dv_md":
       return JSON.parse(row[column.args[0]])?.children || [];
     case "dv_link":
       return [link(row[column.args[0]], [text(row[column.args[1]])])];
+    case "dv_task":
+      return [
+        listItem(
+          JSON.parse(row[column.args[0]])?.children || [],
+          Boolean(row[column.args[1]])
+        ),
+      ];
     default:
       throw new Error(`Unknown function ${column.name}`);
   }
@@ -228,8 +262,10 @@ export const generateList = (
 
   if (columns.length === 2) {
     const grouped: Record<string, any> = {};
+    const firstName =
+      columns[0].dv == true ? columns[0].args[0] : columns[0].name;
     rows.forEach((row) => {
-      const first = row[columns[0].name] as string;
+      const first = row[firstName] as string;
       grouped[first] = grouped[first] || [];
       grouped[first].push(row);
     });
@@ -240,7 +276,10 @@ export const generateList = (
         return [
           paragraph([strong(first)]),
           list(
-            group.map((row: any) => listItem(columnToMdast(columns[1], row)))
+            group.map((row: any) => {
+              const val = columnToMdast(columns[1], row);
+              return val[0].type === "listItem" ? val[0] : listItem(val);
+            })
           ),
         ];
       }),

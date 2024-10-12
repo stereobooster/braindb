@@ -41,7 +41,7 @@ describe("transform", () => {
   it("removes custom functions", () => {
     expect(() =>
       transform(
-        parse(`SELECT "from", tasks.ast, length("from") - 1, checked as t, dv_ast(ast) FROM tasks;`)
+        parse(`SELECT "from", tasks.ast, length("from") - 1, checked as t, dv_md(ast) FROM tasks;`)
       )
     ).to.not.throw();
   });
