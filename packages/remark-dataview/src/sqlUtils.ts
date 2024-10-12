@@ -13,8 +13,14 @@ import {
   PhrasingContent,
   Root,
   RootContent,
+  Strong,
   Text,
 } from "mdast";
+
+import { lex as lexMeta, parse as parseMeta } from "fenceparser";
+
+export const processMeta = (meta?: string): Record<string, any> =>
+  meta ? parseMeta(lexMeta(meta)) : {};
 
 export function parse(query: string) {
   const ast = parser.astify(query, opt);
@@ -115,6 +121,16 @@ export function transform(query: nodeSql.Select) {
 
 const text = (value: string): Text => ({ type: "text", value });
 
+// const emphasis = (children: PhrasingContent[]): Emphasis => ({
+//   type: "emphasis",
+//   children,
+// });
+
+const strong = (children: PhrasingContent[]): Strong => ({
+  type: "strong",
+  children,
+});
+
 const paragraph = (children: PhrasingContent[]): Paragraph => ({
   type: "paragraph",
   children,
@@ -145,9 +161,15 @@ const listItem = (
   children,
 });
 
-const root = (children: RootContent[]): Root => ({
+const root = (children: RootContent[], className?: string): Root => ({
   type: "root",
   children,
+  data: {
+    hName: "div",
+    hProperties: {
+      className,
+    },
+  },
 });
 
 const columnToMdast = (column: Column, row: any) => {
@@ -192,7 +214,15 @@ export const generateTable = (columns: Column[], rows: unknown[]) => {
   };
 };
 
-export const generateList = (columns: Column[], rows: any[]) => {
+type GenerateListOptions = {
+  root_class?: string;
+};
+
+export const generateList = (
+  columns: Column[],
+  rows: any[],
+  options: GenerateListOptions = {}
+) => {
   if (columns.length === 1)
     return list(rows.map((row) => listItem(columnToMdast(columns[0], row))));
 
@@ -208,12 +238,13 @@ export const generateList = (columns: Column[], rows: any[]) => {
       Object.values(grouped).flatMap((group) => {
         const first = columnToMdast(columns[0], group[0]);
         return [
-          paragraph(first),
+          paragraph([strong(first)]),
           list(
             group.map((row: any) => listItem(columnToMdast(columns[1], row)))
           ),
         ];
-      })
+      }),
+      options.root_class
     );
   }
 

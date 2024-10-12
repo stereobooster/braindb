@@ -101,7 +101,7 @@ This is **another bonus** of this architecture - it is modular and can be combin
 
 #### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/):
 
-```dataview list
+```dataview list root_class=column-list
 SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(url, frontmatter ->> '$.title') as link
 FROM documents
 ORDER BY frontmatter ->> '$.title'
@@ -110,7 +110,7 @@ LIMIT 2;
 
 #### [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
 
-```dataview list
+```dataview list root_class=column-list
 SELECT date(updated_at / 1000, 'unixepoch') as date, dv_link(url, frontmatter ->> '$.title') as link
 FROM documents
 ORDER BY updated_at DESC
@@ -132,13 +132,12 @@ LIMIT 2;
   - [x] table (any number of columns)
     - [ ] align columns based on type (string left, numbers right)
   - [x] list
-    - [ ] need to pass css class
+    - [x] option to pass css class
+      - https://github.com/Microflash/fenceparser
+      - https://github.com/frencojobs/fenceparser
     - [ ] `dv_list_item` checked,
   - [ ] nested-list (any number of columns)
-- view comes from meta string
-  - https://github.com/Microflash/fenceparser
-  - https://github.com/frencojobs/fenceparser
-- need to handle `*`
+- [ ] handle `*`
 - to confirm it works implement
   - [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
   - Backlinks?
