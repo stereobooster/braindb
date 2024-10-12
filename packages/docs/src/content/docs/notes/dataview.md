@@ -9,7 +9,7 @@ draft: true
 
 Project inspired by Obsidian DataView, but there are some differences.
 
-First of all I decided to use real SQL instead of custom dialect used by Dataview.
+First of all I decided to use real SQL instead of custom dialect used by DataView.
 
 **Pros**:
 

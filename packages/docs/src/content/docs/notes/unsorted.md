@@ -4,11 +4,11 @@ draft: true
 ---
 
 https://keystatic.com/docs/installation-astro
+https://github.com/sveltia/sveltia-cms
+https://pagescms.org/
 
 ### Test with real life example
 
-- Dataview
-  - https://github.com/migueltorrescosta/collapsedwave/blob/main/content/Meta/%F0%9F%A6%85%20Core%20Dashboard.md
 - https://github.com/gohugoio/hugoDocs/tree/master/content/en (Hugo)
 - https://github.com/obsidianmd/obsidian-help (Obsidian)
 - https://github.com/mdn/content/tree/main/files/en-us (Custom)
