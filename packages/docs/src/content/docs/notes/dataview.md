@@ -3,8 +3,6 @@ title: dataview
 draft: true
 ---
 
-- [x] test
-
 ```dataview table
 SELECT "from", checked, ast FROM tasks;
 ```
@@ -34,6 +32,11 @@ SELECT "from", checked, ast FROM tasks;
 - simplest views are table, list, list of lists
 - `link` - sql function that does nothing for data, but create a link in the output
   - to be explicit it can take arguments `link(url, title)`, which will be transformed to data query `url, title`
+- to confirm it works implement
+  - [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/)
+  - [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
+  - [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
+  - [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
 
 ---
 
