@@ -95,20 +95,41 @@ export function transform(query: nodeSql.Select) {
         if (
           func.args?.type === "expr_list" &&
           Array.isArray(func.args?.value) &&
-          func.args.value.length === 2
+          (func.args.value.length === 2 || func.args.value.length === 0)
         ) {
+          const args: nodeSql.ExpressionValue[] =
+            func.args.value.length === 2
+              ? func.args.value
+              : [
+                  {
+                    type: "column_ref",
+                    column: "url",
+                    table: "documents",
+                  },
+                  {
+                    type: "binary_expr",
+                    operator: "->>",
+                    left: {
+                      type: "column_ref",
+                      table: "documents",
+                      column: "frontmatter",
+                    },
+                    right: { type: "single_quote_string", value: "$.title" },
+                  } as any,
+                ];
+
           columns.push({
             dv: true,
             name: columnName(col),
             func: func.name.name[0].value,
-            args: func.args.value.map((arg) => columnNameExpr(arg)),
+            args: args.map((arg) => columnNameExpr(arg)),
           });
-          func.args.value.forEach((value) =>
+          args.forEach((value) =>
             newQueryColumns.push({ as: null, expr: value })
           );
           return;
         } else {
-          throw new Error("dv_link requires exactly two params");
+          throw new Error("dv_link requires 0 or 2 params");
         }
       }
 
@@ -119,20 +140,36 @@ export function transform(query: nodeSql.Select) {
         if (
           func.args?.type === "expr_list" &&
           Array.isArray(func.args?.value) &&
-          func.args.value.length === 2
+          (func.args.value.length === 2 || func.args.value.length === 0)
         ) {
+          const args: nodeSql.ExpressionValue[] =
+            func.args.value.length === 2
+              ? func.args.value
+              : [
+                  {
+                    type: "column_ref",
+                    column: "ast",
+                    table: "tasks",
+                  },
+                  {
+                    type: "column_ref",
+                    column: "checked",
+                    table: "tasks",
+                  },
+                ];
+
           columns.push({
             dv: true,
             name: columnName(col),
             func: func.name.name[0].value,
-            args: func.args.value.map((arg) => columnNameExpr(arg)),
+            args: args.map((arg) => columnNameExpr(arg)),
           });
-          func.args.value.forEach((value) =>
+          args.forEach((value) =>
             newQueryColumns.push({ as: null, expr: value })
           );
           return;
         } else {
-          throw new Error("dv_task requires exactly two params");
+          throw new Error("dv_task requires 0 or 2 params");
         }
       }
     }

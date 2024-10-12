@@ -102,7 +102,7 @@ This is **another bonus** of this architecture - it is modular and can be combin
 #### ✅ [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/)
 
 ```dataview list root_class=column-list
-SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(url, frontmatter ->> '$.title') as link
+SELECT upper(substr(frontmatter ->> '$.title', 1, 1)), dv_link()
 FROM documents
 WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
 ORDER BY frontmatter ->> '$.title'
@@ -112,7 +112,7 @@ LIMIT 2;
 #### ✅ [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
 
 ```dataview list root_class=column-list
-SELECT date(updated_at / 1000, 'unixepoch') as date, dv_link(url, frontmatter ->> '$.title') as link
+SELECT date(updated_at / 1000, 'unixepoch'), dv_link()
 FROM documents
 WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
 ORDER BY updated_at DESC
@@ -122,7 +122,7 @@ LIMIT 2;
 #### ✅ [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
 
 ```dataview list
-SELECT dv_link(url, frontmatter ->> '$.title') as link, dv_task(tasks.ast, tasks.checked) as "description"
+SELECT dv_link(), dv_task()
 FROM tasks JOIN documents ON documents.path = tasks.from
 WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
 ORDER BY updated_at DESC, path, tasks.start
@@ -132,19 +132,13 @@ LIMIT 2;
 #### ✅ [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
 
 ```dataview list root_class=column-list
-SELECT tags.value as tag, dv_link(url, frontmatter ->> '$.title') as link
+SELECT tags.value as tag, dv_link()
 FROM documents, json_each(frontmatter, '$.tags') tags
 WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
 ORDER BY tag
 LIMIT 2;
 ```
 
-```dataview
-SELECT *
-FROM documents
-WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
-LIMIT 2;
-```
 #### Other
 
 - simplest views are
@@ -153,13 +147,13 @@ LIMIT 2;
   - [x] list
     - [x] `dv_task`
       - is it ok that it depends on `ast`?
-        - [ ] if it depends on `tasks` table I can as well put default columns `tasks.ast`, `tasks.checked`
+        - [x] if it depends on `tasks` table I can as well put default columns `tasks.ast`, `tasks.checked`
     - [ ] potential issue with first column used for grouping
   - [ ] nested-list (any number of columns)
 - [x] handle `*`
 - [ ] maybe shortcut like `dv('updated_at')` - if `updated_at` exists in frontmatter than take it, otherwise use built-in value
-  - problem: how to guess table from which frontmatter should be taken?
-    - on the other hand there is only one table which it could be
+  - I would need to replace this in `WHERE`, `ORDER` and other places
+- [ ] maybe rename `dv_link` to `dv_anchor` or `dv_id` ... because there is table `links` which may be confusing
 - [ ] add tests
 - [ ] update readme
 - [ ] shall I rename tables and columns before publishing?
