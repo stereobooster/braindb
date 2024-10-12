@@ -99,30 +99,43 @@ This is **another bonus** of this architecture - it is modular and can be combin
 
 ## Examples
 
-#### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/)
+#### ✅ [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/)
 
 ```dataview list root_class=column-list
 SELECT upper(substr(frontmatter ->> '$.title', 1, 1)) as letter, dv_link(url, frontmatter ->> '$.title') as link
 FROM documents
+WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
 ORDER BY frontmatter ->> '$.title'
 LIMIT 2;
 ```
 
-#### [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
+#### ✅ [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
 
 ```dataview list root_class=column-list
 SELECT date(updated_at / 1000, 'unixepoch') as date, dv_link(url, frontmatter ->> '$.title') as link
 FROM documents
+WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
 ORDER BY updated_at DESC
 LIMIT 2;
 ```
 
-#### [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
+#### ✅ [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
 
 ```dataview list
 SELECT dv_link(url, frontmatter ->> '$.title') as link, dv_task(tasks.ast, tasks.checked) as "description"
 FROM tasks JOIN documents ON documents.path = tasks.from
-ORDER BY updated_at DESC, path, tasks.start;
+WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
+ORDER BY updated_at DESC, path, tasks.start
+LIMIT 2;
+```
+
+#### ✅ [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
+
+```dataview list root_class=column-list
+SELECT tags.value as tag, dv_link(url, frontmatter ->> '$.title') as link
+FROM documents, json_each(frontmatter, '$.tags') tags
+WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
+ORDER BY tag
 ```
 
 #### Other
@@ -141,11 +154,9 @@ ORDER BY updated_at DESC, path, tasks.start;
   - [ ] nested-list (any number of columns)
 - [ ] handle `*`
 - [ ] maybe shortcut like `dv('updated_at')` - if `updated_at` exists in frontmatter than take it, otherwise use built-in value
-- [ ] add tests
-- [ ] shall I rename tables and columns before publishing?
   - problem: how to guess table from which frontmatter should be taken?
     - on the other hand there is only one table which it could be
-- to confirm it works implement
-  - [Tags page](https://astro-digital-garden.stereobooster.com/tags/)
-  - Backlinks?
-    - I would need special function which would return path of current page
+- [ ] add tests
+- [ ] shall I rename tables and columns before publishing?
+- [ ] Backlinks?
+  - I would need special function which would return path of current page `dv_path()`

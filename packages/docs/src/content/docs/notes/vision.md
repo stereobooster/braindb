@@ -2,6 +2,7 @@
 title: Vision
 sidebar:
   order: 1
+tags: [idea]
 ---
 
 If I would need to describe what this is about in one sentence, I would say - database for your content. But this doesn't really help to grasp the whole concept. Let's take a closer look.

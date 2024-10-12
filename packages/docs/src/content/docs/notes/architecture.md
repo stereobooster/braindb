@@ -2,6 +2,7 @@
 title: Architecture
 sidebar:
   order: 2
+tags: [idea, architecture]
 ---
 
 ## Overview
