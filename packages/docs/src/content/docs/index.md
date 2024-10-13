@@ -4,9 +4,9 @@ tableOfContents: false
 ---
 
 :::caution
-BrainDB docs are not ready. For now it's a bunch of notes
+BrainDB docs are not ready. For now, it's just a bunch of notes.
 :::
 
-- Main demo is here [astro-digital-garden](https://astro-digital-garden.stereobooster.com/recipes/braindb/), it probably would be better than this documentation
+- The main demo is here: [astro-digital-garden](https://astro-digital-garden.stereobooster.com/recipes/braindb/). It is probably better than this documentation.
 - [[vision]]
 - [[architecture]]
