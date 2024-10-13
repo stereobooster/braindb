@@ -1,7 +1,7 @@
 # @braindb/remark-dataview
 
 > [!WARNING]
-> This is an experimental extension. It may break unpredictably.
+> Work in progress. Expect breaking changes.
 
 ## Idea
 

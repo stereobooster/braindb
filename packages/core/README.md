@@ -5,18 +5,20 @@
 
 ## What is this?
 
-**TL;DR** markdown-graph-content-layer-database.
+**TL;DR:** A markdown graph content layer database.
 
-## What it does?
+Read more [here](https://astro-digital-garden.stereobooster.com/recipes/braindb/)
 
-- watches folder
-- each markdown file is parsed to extract links and frontmatter
-- each markdown file is saved in the database
-- links resolved to form a graph
+## What does it do?
 
-## What it can?
+- Watches a folder.
+- Each Markdown file is parsed to extract links and frontmatter.
+- Each Markdown file is saved in the database.
+- Links are resolved to form a graph.
 
-- find (internal) broken links
-- show (internal) backlinks
-- resolve wiki links
-- etc.
+## What can it do?
+
+- Find (internal) broken links.
+- Show (internal) backlinks.
+- Resolve wiki links.
+- Etc.
