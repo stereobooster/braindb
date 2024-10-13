@@ -51,19 +51,19 @@ flowchart LR
 
 That's it.
 
-### Future
+## Future
 
-#### Extension
+### Extension
 
 As an improvement, a VSCode extension could be implemented to highlight syntax and provide autocompletion. I believe this should be possible with [langium-sql](https://github.com/TypeFox/langium-sql/blob/main/packages/langium-sql/).
 
 Related: [VSCode Markdown Fenced Code Block Grammar Injection Example](https://github.com/mjbvz/vscode-fenced-code-block-grammar-injection-example)
 
-#### Improved Tables
+### Improved Tables
 
 Perhaps the table template could be combined with [sortable tables](https://astro-digital-garden.stereobooster.com/recipes/sortable-tables/)?
 
-#### Graph Template
+### Graph Template
 
 For example, one could select data from the links table, convert it to DOT format, and output it as a code block, which would then be processed by `@beoe/rehype-graphviz`.
 
@@ -71,7 +71,9 @@ Alternatively, one could use `@beoe/rehype-gnuplot` to generate plots based on t
 
 This is **another bonus** of this architecture — it is modular and can be integrated with other solutions.
 
-#### ✅ [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/)
+## Examples
+
+### [Alphabetical index](https://astro-digital-garden.stereobooster.com/alphabetical/)
 
 ````md
 ```dataview list root_class=column-list
@@ -83,7 +85,7 @@ LIMIT 2;
 ```
 ````
 
-#### ✅ [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
+### [Recently changed](https://astro-digital-garden.stereobooster.com/recent/)
 
 ````md
 ```dataview list root_class=column-list
@@ -95,7 +97,7 @@ LIMIT 2;
 ```
 ````
 
-#### ✅ [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
+### [Task list](https://astro-digital-garden.stereobooster.com/recipes/task-extraction/)
 
 ````md
 ```dataview list
@@ -107,7 +109,7 @@ LIMIT 2;
 ```
 ````
 
-#### ✅ [Tags list](https://astro-digital-garden.stereobooster.com/tags/)
+### [Tags list](https://astro-digital-garden.stereobooster.com/tags/)
 
 ````md
 ```dataview list root_class=column-list
@@ -118,3 +120,17 @@ ORDER BY tag
 LIMIT 2;
 ```
 ````
+
+## Usage
+
+```javascript
+import unified from "unified";
+import markdown from "remark-parse";
+import remarkDataview from "@braindb/remark-dataview";
+
+// bdb is an instnce of BrainDB
+
+let processor = unified()
+  .use(markdown, { gfm: true })
+  .use(remarkDataview, { bdb });
+```

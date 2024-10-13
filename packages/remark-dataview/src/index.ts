@@ -16,7 +16,7 @@ type RemarkDataviewOptions = {
   bdb: BrainDB;
 };
 
-export function remarkDataview(options: RemarkDataviewOptions) {
+export default function remarkDataview(options: RemarkDataviewOptions) {
   const { bdb, ...rest } = options;
   // @ts-expect-error
   return remarkCodeHook.call(this, {
