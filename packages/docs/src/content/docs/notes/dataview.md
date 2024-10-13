@@ -7,27 +7,27 @@ draft: true
 
 ### Concept
 
-Project inspired by Obsidian DataView, but there are some differences.
+The project is inspired by Obsidian DataView, but there are some differences.
 
-First of all I decided to use real SQL instead of custom dialect used by DataView.
+First, I decided to use real SQL instead of the custom dialect used by DataView.
 
 **Pros**:
 
-- it is easy to learn, because there is huge community and a lot of documentation
-- it is easy to implement, because project already uses relational database (SQLite)
+- It is easy to learn due to the large community and extensive documentation.
+- It is easy to implement since the project already uses a relational database (SQLite).
 
 **Cons**:
 
-- it exposes data structure, so every time model changed it will break downstream projects
-- it locks-in project to use relational database. I had idea to try graph database
+- It exposes the data structure, so any changes to the model will break downstream projects.
+- It locks the project into using a relational database, though I had considered experimenting with a graph database.
 
-Having real SQL would allow to show data at least as table (all SQL clients output result as tables, even if there is only one cell). Other templates can be, for example:
+Real SQL would at least allow the data to be displayed as a table (since all SQL clients output results in tables, even if there's only one cell). Other templates could include:
 
-- list, if there is only one column
-- nested list
-- etc.
+- A list, if there's only one column.
+- A nested list.
+- Etc.
 
-Template be customized through meta string ("fence meta"):
+The template can be customized through a meta string (the “fence meta”):
 
 ````md
 ```dataview <template> <other options>
@@ -35,15 +35,13 @@ Template be customized through meta string ("fence meta"):
 ```
 ````
 
-Plus I can add custom function which can format output, for example:
-
-- `dv_link(text, url)` would output markdown link `[text](url)`
+Additionally, I can add a custom function to format output. For example, `dv_link(text, url)` would output a Markdown link: `[text](url)`.
 
 ### Implementation
 
-This will be remark plugin. It will find all code blocks ("fence blocks") with language "dataview", will take content as query, execute query using BrainDB, transform result to MDAST and replace given code block. So result can be post-processed by other remark/rehype plugins.
+This will be a Remark plugin. It will find all code blocks (or “fence blocks”) with the language “dataview,” treat the content as a query, execute the query using BrainDB, transform the result into MDAST, and replace the original code block. This way, the result can be post-processed by other Remark/Rehype plugins.
 
-In order to implement custom functions, I would use SQL parser which will remove custom function from SQL before it is executed. But those functions would be used to format resulting data before transforming it into MDAST.
+To implement custom functions, I would use an SQL parser to remove custom functions from the SQL before executing it. These functions would then be used to format the resulting data before transforming it into MDAST.
 
 ```mermaid
 flowchart LR
@@ -57,23 +55,21 @@ That's it.
 
 #### Extension
 
-As an improvement one can implement VSCode extension which would highlight syntax and propose autocompletition. I think this should be possible with [langium-sql](https://github.com/TypeFox/langium-sql/blob/main/packages/langium-sql/).
+As an improvement, a VSCode extension could be implemented to highlight syntax and provide autocompletion. I believe this should be possible with [langium-sql](https://github.com/TypeFox/langium-sql/blob/main/packages/langium-sql/).
 
-Related:
+Related: [VSCode Markdown Fenced Code Block Grammar Injection Example](https://github.com/mjbvz/vscode-fenced-code-block-grammar-injection-example)
 
-[VSCode Markdown Fenced Code Block Grammar Injection Example](https://github.com/mjbvz/vscode-fenced-code-block-grammar-injection-example)
+#### Improved Tables
 
-#### Improved tables
+Perhaps the table template could be combined with [sortable tables](https://astro-digital-garden.stereobooster.com/recipes/sortable-tables/)?
 
-Maybe table template can be combined with [sortable tables](https://astro-digital-garden.stereobooster.com/recipes/sortable-tables/)?
+#### Graph Template
 
-#### Graph template
+For example, one could select data from the links table, convert it to DOT format, and output it as a code block, which would then be processed by `@beoe/rehype-graphviz`.
 
-For example, select data from links table. Convert it to dot format. Output as code block, which would be consequently processed by `@beoe/rehype-graphviz`.
+Alternatively, one could use `@beoe/rehype-gnuplot` to generate plots based on the data.
 
-Or for example, one can use `@beoe/rehype-gnuplot` to produce plots based on data.
-
-This is **another bonus** of this architecture - it is modular and can be combined with other solutions.
+This is **another bonus** of this architecture — it is modular and can be integrated with other solutions.
 
 ### SQL parser
 
