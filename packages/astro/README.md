@@ -1,8 +1,9 @@
 # `@braindb/astro`
 
-This is an [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) for BrainDB
+> [!WARNING]
+> Blocked by https://github.com/vitejs/vite/issues/14289
 
-Blocked by https://github.com/vitejs/vite/issues/14289
+This is an [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) for BrainDB
 
 ## Usage
 
