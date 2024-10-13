@@ -7,9 +7,13 @@
 
 ### Concept
 
+> Dataview is a live index and query engine over your personal knowledge base. You can add metadata to your notes and query them with the Dataview Query Language to list, filter, sort or group your data. Dataview keeps your queries always up to date and makes data aggregation a breeze.
+>
+> -- [Obsidian Dataview](https://blacksmithgu.github.io/obsidian-dataview/)
+
 The project is inspired by Obsidian DataView, but there are some differences.
 
-First, I decided to use real SQL instead of the custom dialect used by DataView.
+First, I decided to use real SQL instead of the custom query language by DataView ([DQL](https://blacksmithgu.github.io/obsidian-dataview/queries/dql-js-inline/)).
 
 **Pros**:
 
