@@ -142,15 +142,12 @@ importers:
       '@beoe/rehype-mermaid':
         specifier: ^0.0.1
         version: 0.0.1
-      '@braindb/core':
+      '@braindb/astro':
         specifier: workspace:^
-        version: link:../core
+        version: link:../astro
       '@braindb/remark-dataview':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../remark-dataview
-      '@braindb/remark-wiki-link':
-        specifier: workspace:*
-        version: link:../remark-wiki-link
       astro:
         specifier: ^4.11.3
         version: 4.11.3(@types/node@22.7.5)(typescript@5.5.2)

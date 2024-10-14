@@ -9,8 +9,7 @@ See [[dataview]]
 
 ## Astro integration
 
-- [ ] Astro integration
-  - blocked by https://github.com/vitejs/vite/issues/14289
+- [x] Astro integration
 - [ ] Starlight plugin?
   - to provide some astro components or/and pages
 

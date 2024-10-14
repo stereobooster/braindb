@@ -4,9 +4,11 @@ import robotsTxt from "astro-robots-txt";
 
 import { rehypeMermaid } from "@beoe/rehype-mermaid";
 import { getCache } from "@beoe/cache";
+
+import { brainDbAstro, getBrainDb } from "@braindb/astro";
 import remarkDataview from "@braindb/remark-dataview";
-import { remarkWikiLink } from "./src/lib/remarkWikiLink.mjs";
-import { bdb } from "./src/lib/braindb.mjs";
+
+const bdb = getBrainDb();
 await bdb.ready();
 
 const cache = await getCache();
@@ -42,11 +44,11 @@ export default defineConfig({
       ],
     }),
     robotsTxt(),
+    brainDbAstro(),
   ],
   markdown: {
     remarkPlugins: [
       [remarkDataview, { bdb }],
-      [remarkWikiLink, { bdb }],
     ],
     rehypePlugins: [
       [

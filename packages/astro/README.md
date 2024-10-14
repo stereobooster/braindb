@@ -1,8 +1,5 @@
 # `@braindb/astro`
 
-> [!WARNING]
-> Blocked by https://github.com/vitejs/vite/issues/14289
-
 This is an [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) for BrainDB
 
 ## Usage
@@ -50,3 +47,7 @@ export default defineConfig({
   ],
 });
 ```
+
+## TODO
+
+- [ ] add `@braindb/remark-dataview` when it will be stable

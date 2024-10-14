@@ -22,6 +22,8 @@ const brainDBOptionsIn = z
     source: z.string(),
     git: z.boolean(),
     storeMarkdown: z.boolean(),
+    // need to pass false in order to disable built-in remarkWikiLink plugin
+    remarkWikiLink: z.boolean(),
   })
   .partial();
 
@@ -62,14 +64,14 @@ const defaultBrainDBOptions: BrainDBOptionsIn = {
 
 let bdbInstance = new BrainDB(defaultBrainDBOptions);
 
-export function bdb() {
+export function getBrainDb() {
   try {
     bdbInstance.start(true);
   } catch {}
   return bdbInstance;
 }
 
-export default defineIntegration({
+export const brainDbAstro = defineIntegration({
   name: "@braindb/astro",
   optionsSchema: brainDBOptionsIn.optional(),
   setup({ options }) {
@@ -82,23 +84,28 @@ export default defineIntegration({
     return {
       hooks: {
         "astro:config:setup": async ({ config, updateConfig }) => {
-          await bdb().ready();
+          await getBrainDb().ready();
 
           const newConfig = {
             markdown: {
-              remarkPlugins: [
-                ...(config.markdown.remarkPlugins || []),
-                [remarkWikiLink, { bdb: bdb() }],
-              ],
+              remarkPlugins:
+                options?.remarkWikiLink === false
+                  ? config.markdown.remarkPlugins
+                  : [
+                      ...(config.markdown.remarkPlugins || []),
+                      [remarkWikiLink, { bdb: getBrainDb() }],
+                    ],
             },
             vite: {
               // https://github.com/vitejs/vite/issues/14289
               optimizeDeps: {
                 exclude: [
                   ...(config.vite.optimizeDeps?.exclude || []),
-                  "fsevents",
-                  "@node-rs",
-                  "@napi-rs",
+                  // "fsevents",
+                  // "@node-rs",
+                  // "@napi-rs",
+                  "@braindb/core",
+                  // "@braindb/astro",
                 ],
               },
             },
@@ -109,3 +116,5 @@ export default defineIntegration({
     };
   },
 });
+
+export default brainDbAstro;

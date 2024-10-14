@@ -11,18 +11,21 @@ export function remarkWikiLink(options: { bdb: BrainDB }) {
       if (slugWithoutAnchor) {
         const doc = bdb.documentsSync({ slug: slugWithoutAnchor })[0];
         if (doc) {
-          return {
-            hName: "a",
-            hProperties: {
-              href: anchor ? `${doc.url()}#${anchor}` : doc.url(),
-            },
-            hChildren: [
-              {
-                type: "text",
-                value: alias == null ? doc.frontmatter().title : alias,
+          if (!doc.frontmatter().draft || import.meta.env.DEV) {
+            return {
+              hName: "a",
+              hProperties: {
+                href: anchor ? `${doc.url()}#${anchor}` : doc.url(),
+                class: doc.frontmatter().draft ? "draft-link" : "",
               },
-            ],
-          };
+              hChildren: [
+                {
+                  type: "text",
+                  value: alias == null ? doc.frontmatter().title : alias,
+                },
+              ],
+            };
+          }
         }
       }
 
