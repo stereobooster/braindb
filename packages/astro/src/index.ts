@@ -101,11 +101,10 @@ export const brainDbAstro = defineIntegration({
               optimizeDeps: {
                 exclude: [
                   ...(config.vite.optimizeDeps?.exclude || []),
+                  "@braindb",
                   // "fsevents",
                   // "@node-rs",
                   // "@napi-rs",
-                  "@braindb/core",
-                  // "@braindb/astro",
                 ],
               },
             },

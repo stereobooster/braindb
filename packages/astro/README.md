@@ -1,5 +1,8 @@
 # `@braindb/astro`
 
+> [!WARNING]
+> It doesn't work when used as npm package
+
 This is an [Astro integration](https://docs.astro.build/en/guides/integrations-guide/) for BrainDB
 
 ## Usage

@@ -56,10 +56,5 @@ export default defineConfig({
         { class: "not-content", strategy: "img-class-dark-mode", cache },
       ],
     ],
-  },
-  vite: {
-    optimizeDeps: {
-      exclude: ["fsevents", "@node-rs", "@napi-rs"],
-    },
-  },
+  }
 });
