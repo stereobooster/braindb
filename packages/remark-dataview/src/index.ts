@@ -29,7 +29,7 @@ export function remarkDataview(options: RemarkDataviewOptions) {
     code: async ({ code, meta }) => {
       if (getBrainDb == null) {
         console.warn(
-          `[remark-wiki-link]: "bdb" option is deprecated. Use "getBrainDb" instead`
+          `[remark-dataview]: "bdb" option is deprecated. Use "getBrainDb" instead`
         );
       }
       const bdbInstance = getBrainDb == null ? bdb! : getBrainDb();

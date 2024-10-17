@@ -1,6 +1,6 @@
 {
   "name": "@braindb/remark-dataview",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "markdown-graph-content-layer-database",
   "repository": {
     "type": "git",
