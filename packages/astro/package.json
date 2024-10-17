@@ -45,8 +45,11 @@
   "dependencies": {
     "@braindb/core": "workspace:*",
     "@braindb/remark-wiki-link": "workspace:*",
+    "@types/mdast": "^4.0.4",
     "astro-integration-kit": "^0.16.1",
-    "github-slugger": "^2.0.0"
+    "github-slugger": "^2.0.0",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.0.0"
   },
   "devDependencies": {
     "tsup": "^8.3.0"

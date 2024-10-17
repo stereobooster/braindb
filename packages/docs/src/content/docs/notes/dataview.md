@@ -48,12 +48,13 @@ LIMIT 2;
 
 ### Task list
 
-```dataview list
+- [ ] testing wikilinks in tasks [[architecture|some]]
+
+```dataview
 SELECT dv_link(), dv_task()
 FROM tasks JOIN documents ON documents.path = tasks.from
-WHERE frontmatter ->> '$.draft' IS NULL OR frontmatter ->> '$.draft' = false
-ORDER BY updated_at DESC, path, tasks.start
-LIMIT 2;
+WHERE start = 1537
+ORDER BY updated_at DESC, path, tasks.start;
 ```
 
 ### Tags list

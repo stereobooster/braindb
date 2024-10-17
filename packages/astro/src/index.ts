@@ -5,6 +5,7 @@ import process from "node:process";
 import { BrainDB, type BrainDBOptionsIn } from "@braindb/core";
 import { remarkWikiLink } from "./remarkWikiLink.js";
 import { z } from "astro/zod";
+import wikiLinkPlugin from "@braindb/remark-wiki-link";
 
 const brainDBOptionsIn = z
   .object({
@@ -93,6 +94,10 @@ export const brainDbAstro = defineIntegration({
                   ? config.markdown.remarkPlugins
                   : [
                       ...(config.markdown.remarkPlugins || []),
+                      // I had to use wikiLinkPlugin without resolver
+                      // and puted resolver in separate plugin using visit
+                      // to support wikilinks in remark-dataview output
+                      wikiLinkPlugin,
                       [remarkWikiLink, { bdb: getBrainDb() }],
                     ],
             },

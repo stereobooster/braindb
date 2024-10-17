@@ -8,9 +8,6 @@ import { getCache } from "@beoe/cache";
 import { brainDbAstro, getBrainDb } from "@braindb/astro";
 import remarkDataview from "@braindb/remark-dataview";
 
-const bdb = getBrainDb();
-await bdb.ready();
-
 const cache = await getCache();
 
 // https://astro.build/config
@@ -48,7 +45,7 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [
-      [remarkDataview, { bdb }],
+      [remarkDataview, { getBrainDb }],
     ],
     rehypePlugins: [
       [

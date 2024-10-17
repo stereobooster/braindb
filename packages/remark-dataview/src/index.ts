@@ -13,26 +13,40 @@ import {
 } from "./sqlUtils.js";
 
 type RemarkDataviewOptions = {
-  bdb: BrainDB;
+  getBrainDb: () => BrainDB;
+  /**
+   * @deprecated
+   */
+  bdb?: BrainDB;
 };
 
-export default function remarkDataview(options: RemarkDataviewOptions) {
-  const { bdb, ...rest } = options;
+export function remarkDataview(options: RemarkDataviewOptions) {
+  const { getBrainDb, bdb, ...rest } = options;
   // @ts-expect-error
   return remarkCodeHook.call(this, {
     ...rest,
     language: "dataview",
-    code: ({ code, meta }) => {
+    code: async ({ code, meta }) => {
+      if (getBrainDb == null) {
+        console.warn(
+          `[remark-wiki-link]: "bdb" option is deprecated. Use "getBrainDb" instead`
+        );
+      }
+      const bdbInstance = getBrainDb == null ? bdb! : getBrainDb();
+      await bdbInstance.ready();
+
       try {
         const options = processMeta(meta);
         const { query, columns } = transform(parse(code));
         if (options.list)
-          return generateList(columns, bdb.__rawQuery(query), options);
+          return generateList(columns, bdbInstance.__rawQuery(query), options);
 
-        return generateTable(columns, bdb.__rawQuery(query));
+        return generateTable(columns, bdbInstance.__rawQuery(query));
       } catch (e) {
         return String(e);
       }
     },
   });
 }
+
+export default remarkDataview;

@@ -1,18 +1,31 @@
-import wikiLinkPlugin from "@braindb/remark-wiki-link";
 import { BrainDB } from "@braindb/core";
+import { visit, SKIP } from "unist-util-visit";
+import type { Plugin } from "unified";
+import type { Root } from "mdast";
 
-export function remarkWikiLink(options: { bdb: BrainDB }) {
-  const { bdb } = options;
+type WikiLinkNode = {
+  type: "wikiLink";
+  value: string;
+  data: {
+    alias?: string;
+    hName: string;
+    hProperties: Record<string, string>;
+    hChildren: any[];
+  };
+};
 
-  // @ts-expect-error how to type this?
-  return wikiLinkPlugin.call(this, {
-    linkTemplate: ({ slug, alias }) => {
+export const remarkWikiLink: Plugin<[{ bdb: BrainDB }], Root> = ({ bdb }) => {
+  return (ast, _file) => {
+    visit(ast, "wikiLink", (node: WikiLinkNode) => {
+      const slug = node.value;
+      const alias = node.data.alias;
+
       const [slugWithoutAnchor, anchor] = slug.split("#");
       if (slugWithoutAnchor) {
         const doc = bdb.documentsSync({ slug: slugWithoutAnchor })[0];
         if (doc) {
           if (!doc.frontmatter().draft || import.meta.env.DEV) {
-            return {
+            node.data = {
               hName: "a",
               hProperties: {
                 href: anchor ? `${doc.url()}#${anchor}` : doc.url(),
@@ -26,10 +39,11 @@ export function remarkWikiLink(options: { bdb: BrainDB }) {
               ],
             };
           }
+          return SKIP;
         }
       }
 
-      return {
+      node.data = {
         hName: "span",
         hProperties: {
           class: "broken-link",
@@ -37,6 +51,7 @@ export function remarkWikiLink(options: { bdb: BrainDB }) {
         },
         hChildren: [{ type: "text", value: alias || slug }],
       };
-    },
-  });
-}
+      return SKIP;
+    });
+  };
+};
