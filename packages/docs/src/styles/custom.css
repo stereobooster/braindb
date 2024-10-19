@@ -1,11 +1,3 @@
-html[data-theme="light"] .beoe-dark {
-  display: none;
-}
-
-html[data-theme="dark"] .beoe-light {
-  display: none;
-}
-
 .column-list {
   column-width: calc(var(--sl-content-width) / 2 - 1.5rem);
 
@@ -19,5 +11,27 @@ html[data-theme="dark"] .beoe-light {
 @media (min-width: 72rem) {
   .sl-container {
     margin-inline: var(--sl-content-margin-inline, 0) !important;
+  }
+}
+
+.vizdom {
+  :not([fill]) {
+    fill: var(--sl-color-white);
+  }
+  [fill="black"],
+  [fill="#000"] {
+    fill: var(--sl-color-white);
+  }
+  [stroke="black"],
+  [stroke="#000"] {
+    stroke: var(--sl-color-white);
+  }
+  [fill="white"],
+  [fill="#fff"] {
+    fill: var(--sl-color-black);
+  }
+  [stroke="white"],
+  [stroke="#fff"] {
+    stroke: var(--sl-color-black);
   }
 }
