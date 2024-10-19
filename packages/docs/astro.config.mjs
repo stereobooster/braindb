@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import robotsTxt from "astro-robots-txt";
 
-import { rehypeMermaid } from "@beoe/rehype-mermaid";
+import { rehypeVizdom } from "@beoe/rehype-vizdom";
 import { getCache } from "@beoe/cache";
 
 import { brainDbAstro, getBrainDb } from "@braindb/astro";
@@ -44,14 +44,7 @@ export default defineConfig({
     brainDbAstro(),
   ],
   markdown: {
-    remarkPlugins: [
-      [remarkDataview, { getBrainDb }],
-    ],
-    rehypePlugins: [
-      [
-        rehypeMermaid,
-        { class: "not-content", strategy: "img-class-dark-mode", cache },
-      ],
-    ],
-  }
+    remarkPlugins: [[remarkDataview, { getBrainDb }]],
+    rehypePlugins: [[rehypeVizdom, { class: "not-content", cache }]],
+  },
 });

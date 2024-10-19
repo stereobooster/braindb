@@ -13,15 +13,11 @@
     "@astrojs/check": "^0.7.0",
     "@astrojs/starlight": "^0.24.4",
     "@beoe/cache": "^0.0.1",
-    "@beoe/rehype-mermaid": "^0.0.1",
+    "@beoe/rehype-vizdom": "^0.0.1",
     "@braindb/astro": "workspace:^",
     "@braindb/remark-dataview": "workspace:^",
     "astro": "^4.11.3",
     "astro-robots-txt": "^1.0.0",
-    "github-slugger": "^2.0.0",
-    "netlify-plugin-playwright-cache": "^0.0.1",
-    "playwright": "^1.45.0",
-    "playwright-chromium": "^1.45.0",
     "sharp": "^0.33.4",
     "typescript": "^5.5.2"
   }

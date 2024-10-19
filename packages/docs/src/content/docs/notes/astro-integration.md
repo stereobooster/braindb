@@ -12,34 +12,56 @@ draft: true
 
 In this case `BrainDB` acts as [obsidian-export](https://nick.groenen.me/projects/obsidian-export/).
 
-```mermaid
-flowchart LR
-  a(some/folder) --> BrainDB --> c(src/content)
-  subgraph Astro
-    c --> d[Astro] --> e(dist)
-  end
+```vizdom
+digraph { 
+  rankdir=LR
+  node[shape=rect]
+  a[label="some/folder"]
+  c[label="src/content"]
+  a -> BrainDB -> c
+  subgraph cluster_0 {
+    label=Astro
+    d[label=Astro]
+    e[label=dist]
+    c -> d -> e
+  }
+}
 ```
 
 ### Option 2: augment though Astro components
 
 In this case `Astro` is repsonsible for rendering and `BrainDB` used to add features on top, for example, backlinks. Basically BrainDB and Astro Content Collections run in parallel and fully independent.
 
-```mermaid
-flowchart LR
-  c(src/content) --> Astro --> e(dist)
-  c  --> BrainDB --> f[Astro components]
-  f --> Astro
+```vizdom
+digraph { 
+  rankdir=LR
+  node[shape=rect]
+  c[label="src/content"]
+  e[label=dist]
+  f[label="Astro components"]
+
+  c -> Astro -> e
+  c -> BrainDB -> f
+  f -> Astro
+}
 ```
 
 ### Option 3: augment though Remark plugins
 
 In this case `Astro` is repsonsible for rendering and `BrainDB` hooked in through remark plugins. BrainDB in this case responsible, for example, for wikilinks, datview.
 
-```mermaid
-flowchart LR
-  c(src/content) --> Astro --> e(dist)
-  c  --> BrainDB --> f[remark plugins]
-  f --- Astro
+```vizdom
+digraph { 
+  rankdir=LR
+  node[shape=rect]
+  c[label="src/content"]
+  e[label=dist]
+  f[label="remark plugins"]
+
+  c -> Astro -> e
+  c -> BrainDB -> f
+  f -> Astro
+}
 ```
 
 ## Old links

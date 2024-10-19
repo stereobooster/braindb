@@ -7,35 +7,41 @@ tags: [idea, architecture]
 
 ## Overview
 
-```mermaid
-flowchart LR
-  subgraph File watcher
-    fwc[Add]
-    fwu[Change]
-    fwd[Unlink]
-    fwr[Ready]
-    fwe[Error]
-  end
+```vizdom
+digraph { 
+  rankdir=LR
+  node[shape=rect]
+  subgraph cluster_0 {
+    label="File watcher"
+    fwc[label=Add]
+    fwu[label=Change]
+    fwd[label=Unlink]
+    fwr[label=Ready]
+    fwe[label=Error]
+  }
 
-  subgraph Storage
-    dbi[Insert]
-    dbu[Update]
-    dbd[Delete]
-  end
+  subgraph cluster_1 {
+    label=Storage
+    dbi[label=Insert]
+    dbu[label=Update]
+    dbd[label=Delete]
+  }
+  
+  rl[label="Resolve links"]
+  
+  subgraph cluster_2 {
+    label="Event emitter"
+    eec[label=Create]
+    eeu[label=Update]
+    eed[label=Delete]
+    eer[label=Ready]
+  }
 
-  rl[Resolve links]
-
-  subgraph Event emitter
-    eec[Create]
-    eeu[Update]
-    eed[Delete]
-    eer[Ready]
-  end
-
-  fwc --> Parse --> dbi --> rl --> eec
-  fwu --> Parse --> dbu --> rl --> eeu
-  fwd ---> dbd --> rl --> eed
-  fwr ----> rl --> eer
+  fwc -> Parse -> dbi -> rl -> eec
+  fwu -> Parse -> dbu -> rl -> eeu
+  fwd -> dbd -> rl -> eed
+  fwr -> rl -> eer
+}
 ```
 
 ### System Overview
