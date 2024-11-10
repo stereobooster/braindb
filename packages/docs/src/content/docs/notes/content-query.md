@@ -10,6 +10,7 @@ Related:
 - https://github.com/datopian/markdowndb#or-using-markdowndb-nodejs-api-in-a-framework-of-your-choice
 - https://pagefind.app/docs/js-api-filtering/#using-compound-filters
 - https://testing-library.com/docs/react-testing-library/cheatsheet/#queries
+- https://payloadcms.com/docs/queries/overview
 
 ## Curently available
 

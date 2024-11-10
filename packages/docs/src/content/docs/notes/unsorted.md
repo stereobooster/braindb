@@ -6,6 +6,7 @@ draft: true
 https://keystatic.com/docs/installation-astro
 https://github.com/sveltia/sveltia-cms
 https://pagescms.org/
+https://payloadcms.com/docs/queries/overview
 
 ### Test with real life example
 
