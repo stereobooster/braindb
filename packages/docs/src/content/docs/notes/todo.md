@@ -10,8 +10,7 @@ See [[dataview]]
 ## Astro integration
 
 - [x] Astro integration
-- [ ] Starlight plugin?
-  - to provide some astro components or/and pages
+- [x] Starlight plugin
 
 ## Core
 
