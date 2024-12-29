@@ -136,6 +136,9 @@ importers:
       '@beoe/cache':
         specifier: ^0.1.0
         version: 0.1.0(typescript@5.8.2)
+      '@beoe/rehype-d2':
+        specifier: ^0.3.0
+        version: 0.3.0
       '@beoe/rehype-vizdom':
         specifier: ^0.4.2
         version: 0.4.2
@@ -357,11 +360,17 @@ packages:
   '@beoe/fenceparser@2.3.0':
     resolution: {integrity: sha512-8BHZ2WoJ+N7kcRzLeXNuNb8v24P9ryZ5ItDpalPTcU91mw8gyv2XqubxVtoPpyssZQWqHZnF3jOCyIwJE3Rdjw==}
 
+  '@beoe/rehype-code-hook-img@0.3.0':
+    resolution: {integrity: sha512-isIZWI/ScfLTbcYJsM48wpq1+F3nplbhQFTEtqG1qUAVa5ZJ9U+MWBkgLM8/H2odzuP9R0MNT8qu5kLtZLw7bQ==}
+
   '@beoe/rehype-code-hook-img@0.4.0':
     resolution: {integrity: sha512-XefXjiR2uIZOcp4IqLMATywob8mThrQGq+QZAQjzOxjvY98e7EyMtauXeLCVtpige33eCSPSC+KfAqkUFY66dw==}
 
   '@beoe/rehype-code-hook@0.1.0':
     resolution: {integrity: sha512-5NH8gLqXRlBk1ZRIf1M0FzlRt6hEs6+MmbNEJMuNTdibw01xYs9HeuPGiRJmo+K1bMGejkbXysmbBP4vvsWE/Q==}
+
+  '@beoe/rehype-d2@0.3.0':
+    resolution: {integrity: sha512-DTz4y/pCPJR3S40ialGFLXTwdRbT3895YOH3if58KVHsBAdBJj1O3Lp+h/Ngh++HCPkM/AEXxACiO93WQf4CkQ==}
 
   '@beoe/rehype-vizdom@0.4.2':
     resolution: {integrity: sha512-RXQH3UxBkTgVKoi4U4tzSuDARHQf0gHjEUGQGCQL6KAOOSJNsoWzfOzL99yrJHAKmY34lIXlGMXrjaD8SQui8A==}
@@ -3831,6 +3840,18 @@ snapshots:
 
   '@beoe/fenceparser@2.3.0': {}
 
+  '@beoe/rehype-code-hook-img@0.3.0':
+    dependencies:
+      '@beoe/fenceparser': 2.3.0
+      '@beoe/rehype-code-hook': 0.1.0
+      '@node-rs/xxhash': 1.7.6
+      '@types/hast': 3.0.4
+      hast-util-from-html-isomorphic: 2.0.0
+      hastscript: 9.0.1
+      mini-svg-data-uri: 1.4.4
+      svgo: 3.3.2
+      unified: 11.0.5
+
   '@beoe/rehype-code-hook-img@0.4.0':
     dependencies:
       '@beoe/fenceparser': 2.3.0
@@ -3850,6 +3871,10 @@ snapshots:
       hast-util-to-text: 4.0.2
       unified: 11.0.5
       unist-util-visit: 5.0.0
+
+  '@beoe/rehype-d2@0.3.0':
+    dependencies:
+      '@beoe/rehype-code-hook-img': 0.3.0
 
   '@beoe/rehype-vizdom@0.4.2':
     dependencies:

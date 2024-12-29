@@ -3,6 +3,7 @@ import starlight from "@astrojs/starlight";
 import robotsTxt from "astro-robots-txt";
 
 import { rehypeVizdom } from "@beoe/rehype-vizdom";
+import { rehypeD2 } from "@beoe/rehype-d2";
 import { getCache } from "@beoe/cache";
 
 import { brainDbAstro, getBrainDb } from "@braindb/astro";
@@ -45,6 +46,22 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [[remarkDataview, { getBrainDb }]],
-    rehypePlugins: [[rehypeVizdom, { class: "not-content", cache }]],
+    rehypePlugins: [
+      [rehypeVizdom, { class: "not-content", cache }],
+      [
+        rehypeD2,
+        {
+          darkScheme: "class",
+          strategy: "file",
+          // where to store files on the disk
+          fsPath: "public/beoe",
+          // path to files in a browser
+          webPath: "/beoe",
+          d2Options: {
+            pad: 20
+          }
+        },
+      ],
+    ],
   },
 });

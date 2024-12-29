@@ -16,7 +16,7 @@ See [[dataview]]
 
 - [ ] maybe rename `documents` to `files`
   - `slug` to `name`?
-  - [mddb table structure for comaprison](https://github.com/datopian/markdowndb/blob/main/src/lib/schema.ts): files, tags, file_tags, links, tasks
+  - [mddb table structure for comparison](https://github.com/datopian/markdowndb/blob/main/src/lib/schema.ts): files, tags, file_tags, links, tasks
   - `from` column name is conflicting with SQL
     - Maybe rename to `start`/`end`?
     - Maybe rename to `source`/`target`?
