@@ -136,6 +136,15 @@ md_header: {
 }
 
 files.path -> md_header.path
+
+files.path -> md_tags?.path
+
+md_tags?: {
+  shape: sql_table
+  id: integer {constraint: primary_key}
+  path: text {constraint: AK}
+  text: text
+}
 ```
 
 - `pos` = `column` + `line`
@@ -150,3 +159,35 @@ ala Single Table Inheritance
 | ----- | ---- | ------------------- |
 | start | from | source              |
 | end   | to   | destination, target |
+
+- `from` column name is conflicting with SQL
+  - Maybe rename to `start`/`end`?
+  - Maybe rename to `source`/`target`?
+- `frontmatter ->> '$.some.thing'` is very long
+  - probably use `data`, because other files also can have metadata
+- maybe rename `slug` to `name`
+  - maybe not, because slug can be path-like (`a/b`)
+  - default - file name without extension, without changing letter-casing. No special treatment for Readme, Index
+    - name can be used as title
+      - maybe use both name and slug. Name for title (if not provided) and slug for wikilink resolution
+    - url, on the other hand, lower-case and remove index
+- rename `documents` to `files`
+  - maybe create `documents` view as fallback
+- maybe rename `path` to `source`
+- maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
+
+## Priority
+
+- new SQL (tables) structure
+- expose query interface (`__rawQuery`). I think about Kysely
+- refactor
+  - probably remove `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
+- change filewatcher to watch all files
+- create first plugin (for markdown)
+  - extract data, ast, (text?). Render to HTML
+  - match file extension (`.md`, `.mdx`)
+- image wikilinks
+- create plugin for images
+  - extract dimensions
+- "rehype-embeddable"
+  - https://github.com/r4ai/remark-embed
