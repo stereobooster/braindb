@@ -172,7 +172,7 @@ ala Single Table Inheritance
       - maybe use both name and slug. Name for title (if not provided) and slug for wikilink resolution
     - url, on the other hand, lower-case and remove index
 - rename `documents` to `files`
-  - maybe create `documents` view as fallback
+  - maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
 - maybe rename `path` to `source`
 - maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
 
@@ -180,6 +180,7 @@ ala Single Table Inheritance
 
 - new SQL (tables) structure
 - expose query interface (`__rawQuery`). I think about Kysely
+  - replace Drizzle with Kysely
 - refactor
   - probably remove `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
 - change filewatcher to watch all files

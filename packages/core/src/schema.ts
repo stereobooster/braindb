@@ -33,7 +33,6 @@ export const document = sqliteTable(
       .$type<JsonObject>()
       .notNull(),
     ast: text("ast", { mode: "json" }).notNull(),
-    // markdown: text("markdown").notNull(),
     // to avoide reparse
     // file modification time https://man7.org/linux/man-pages/man3/stat.3type.html
     mtime: real("mtime").notNull(),
@@ -43,7 +42,6 @@ export const document = sqliteTable(
     // for link resolution
     slug: text("slug").notNull(),
     url: text("url").notNull(),
-    // title: text("title"),
     updated_at: integer("updated_at").default(0).notNull(),
     revision: integer("revision").default(0).notNull(),
   },
