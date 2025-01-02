@@ -14,7 +14,7 @@ import {
   isExternalLink,
   memoizeOnce,
 } from "./utils.js";
-import { deleteDocument } from "./queries.js";
+import { deleteFile } from "./queries.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsIn } from "./index.js";
 import { defaultGetSlug, defaultGetUrl } from "./defaults.js";
@@ -26,14 +26,14 @@ export const emptyAst: Node = {} as any;
 const getRepo = memoizeOnce((path: string) => Repository.discover(path));
 const getRepoPath = memoizeOnce((repo: Repository) => dirname(repo.path()));
 
-export async function addDocument(
+export async function addFile(
   db: Db,
   idPath: string,
   cfg: BrainDBOptionsIn,
   revision: number
 ) {
   // maybe use prepared statement?
-  const [existingDocument] = db
+  const [existingFile] = db
     .select({
       id: file.id,
       path: file.path,
@@ -58,12 +58,12 @@ export async function addDocument(
     cfghash = cheksumConfig(cfg);
     // https://ziglang.org/download/0.4.0/release-notes.html#Build-Artifact-Caching
     const trustedTimestamp =
-      existingDocument && Math.abs(existingDocument.mtime - Date.now()) > 1000;
+      existingFile && Math.abs(existingFile.mtime - Date.now()) > 1000;
     if (
-      existingDocument &&
+      existingFile &&
       trustedTimestamp &&
-      existingDocument.cfghash === cfghash &&
-      existingDocument.mtime === mtime
+      existingFile.cfghash === cfghash &&
+      existingFile.mtime === mtime
     ) {
       await db
         .update(file)
@@ -75,9 +75,9 @@ export async function addDocument(
     content = await readFile(absolutePath);
     checksum = cheksum32(content);
     if (
-      existingDocument &&
-      existingDocument.cfghash === cfghash &&
-      existingDocument.checksum === checksum
+      existingFile &&
+      existingFile.cfghash === cfghash &&
+      existingFile.checksum === checksum
     ) {
       await db
         .update(file)
@@ -118,8 +118,8 @@ export async function addDocument(
   const getUrl = cfg.url || defaultGetUrl;
   const getSlug = cfg.slug || defaultGetSlug;
 
-  const newDocument = {
-    id: existingDocument?.id,
+  const newFile = {
+    id: existingFile?.id,
     data: data,
     path: idPath,
     ast: cfg.storeMarkdown === false ? emptyAst : ast,
@@ -133,11 +133,11 @@ export async function addDocument(
     type,
   } satisfies typeof file.$inferInsert;
 
-  if (existingDocument) deleteDocument(db, idPath);
+  if (existingFile) deleteFile(db, idPath);
 
   db.insert(file)
-    .values(newDocument)
-    .onConflictDoUpdate({ target: file.path, set: newDocument })
+    .values(newFile)
+    .onConflictDoUpdate({ target: file.path, set: newFile })
     .run();
 
   if (ext !== ".md" && ext !== ".mdx") return;
@@ -165,7 +165,7 @@ export async function addDocument(
         target_path = target_url;
         // resolve local link
         if (!target_url.startsWith("/")) {
-          target_url = resolve(newDocument.url, target_url);
+          target_url = resolve(newFile.url, target_url);
         }
         // normalize url
         if (!target_url.endsWith("/")) {

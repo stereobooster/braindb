@@ -39,7 +39,7 @@ export function unresolvedLinks(db: Db, idPath?: string) {
     .all();
 }
 
-type GetDocumentsProps = {
+type GetFilesProps = {
   db: Db;
   idPath: string;
   selfLinks?: boolean;
@@ -48,11 +48,11 @@ type GetDocumentsProps = {
 /**
  * Incoming links
  */
-export function getDocumentsFrom({
+export function getFilesFrom({
   db,
   idPath,
   selfLinks = false,
-}: GetDocumentsProps) {
+}: GetFilesProps) {
   return db
     .selectDistinct({ source: link.source })
     .from(link)
@@ -68,11 +68,11 @@ export function getDocumentsFrom({
 /**
  * Outgoing links
  */
-export function getDocumentsTo({
+export function getFilesTo({
   db,
   idPath,
   selfLinks = false,
-}: GetDocumentsProps) {
+}: GetFilesProps) {
   return db
     .selectDistinct({ to: link.target })
     .from(link)
@@ -91,11 +91,11 @@ export function getDocumentsTo({
 /**
  * Incoming and Outgoing links
  */
-export function getConnectedDocuments(props: GetDocumentsProps) {
-  return [...new Set([...getDocumentsFrom(props), ...getDocumentsTo(props)])];
+export function getConnectedFiles(props: GetFilesProps) {
+  return [...new Set([...getFilesFrom(props), ...getFilesTo(props)])];
 }
 
-export function deleteDocument(db: Db, idPath: string) {
+export function deleteFile(db: Db, idPath: string) {
   db.delete(file).where(eq(file.path, idPath)).run();
   db.delete(link).where(eq(link.source, idPath)).run();
   db.update(link).set({ target: null }).where(eq(link.target, idPath)).run();
@@ -110,6 +110,6 @@ export function deleteOldRevision(db: Db, revision: number) {
     .where(not(eq(file.revision, revision)))
     .all()
     .forEach(({ path }) => {
-      deleteDocument(db, path);
+      deleteFile(db, path);
     });
 }

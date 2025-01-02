@@ -72,7 +72,7 @@ export const link = sqliteTable(
     source: text("source").notNull(),
     target: text("target"),
     /**
-     * Options to uniqlly identify link in the document
+     * Options to uniqlly identify link in the file
      * - **path + start.offset**
      * - autoincrement
      * - uuid-like (random)
@@ -102,7 +102,7 @@ export const task = sqliteTable(
     id: integer("id").primaryKey({ autoIncrement: true }),
     source: text("source").notNull(),
     /**
-     * Options to uniqlly identify link in the document
+     * Options to uniqlly identify link in the file
      * - **path + start.offset**
      * - autoincrement
      * - uuid-like (random)

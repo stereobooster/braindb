@@ -7,12 +7,12 @@ import { sql } from "drizzle-orm";
 
 import { Db, getDb } from "./db.js";
 import {
-  getConnectedDocuments,
+  getConnectedFiles,
   resolveLinks,
-  deleteDocument,
+  deleteFile,
   deleteOldRevision,
 } from "./queries.js";
-import { addDocument } from "./addDocument.js";
+import { addFile } from "./addFile.js";
 import { symmetricDifference } from "./utils.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -35,11 +35,11 @@ export type BrainDBOptionsIn = {
    */
   cache?: boolean;
   /**
-   * function to generate path (URL) a the document
+   * function to generate path (URL) a the file
    */
   url?: (filePath: string, frontmatter: Frontmatter) => string;
   /**
-   * function to generate slug for a document
+   * function to generate slug for a file
    */
   slug?: (filePath: string, frontmatter: Frontmatter) => string;
   /**
@@ -56,7 +56,7 @@ export type BrainDBOptionsIn = {
    */
   git?: boolean;
   /**
-   * if you never use Document's `markdown` and `text`
+   * if you never use File's `markdown` and `text`
    * you can set this to `false` in order to save some memory
    */
   storeMarkdown?: boolean;
@@ -150,7 +150,7 @@ export class BrainDB {
         const idPath = fileToPathId(file);
 
         if (this.initializing) {
-          const p = addDocument(this.db, idPath, this.cfg, revision).then(
+          const p = addFile(this.db, idPath, this.cfg, revision).then(
             () => idPath
           );
           this.initQueue.push(p);
@@ -158,18 +158,18 @@ export class BrainDB {
           return;
         }
 
-        const linksBefore = getConnectedDocuments({
+        const linksBefore = getConnectedFiles({
           db: this.db,
           idPath,
         });
 
-        await addDocument(this.db, idPath, this.cfg, revision);
+        await addFile(this.db, idPath, this.cfg, revision);
         resolveLinks(this.db);
         this.emitter.emit("create", {
           path: idPath,
         });
 
-        const linksAfter = getConnectedDocuments({
+        const linksAfter = getConnectedFiles({
           db: this.db,
           idPath,
         });
@@ -181,12 +181,12 @@ export class BrainDB {
       .on("unlink", (file: string) => {
         const idPath = fileToPathId(file);
 
-        const linksBefore = getConnectedDocuments({
+        const linksBefore = getConnectedFiles({
           db: this.db,
           idPath,
         });
 
-        deleteDocument(this.db, idPath);
+        deleteFile(this.db, idPath);
         this.emitter.emit("delete", {
           path: idPath,
         });
@@ -198,18 +198,18 @@ export class BrainDB {
       .on("change", async (file: string) => {
         const idPath = fileToPathId(file);
 
-        const linksBefore = getConnectedDocuments({
+        const linksBefore = getConnectedFiles({
           db: this.db,
           idPath,
         });
 
-        await addDocument(this.db, idPath, this.cfg, revision);
+        await addFile(this.db, idPath, this.cfg, revision);
         resolveLinks(this.db);
         this.emitter.emit("update", {
           path: idPath,
         });
 
-        const linksAfter = getConnectedDocuments({
+        const linksAfter = getConnectedFiles({
           db: this.db,
           idPath,
         });

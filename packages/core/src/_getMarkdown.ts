@@ -49,13 +49,13 @@ export function getMarkdown(
       let url: string;
 
       if (linkType === "web") {
-        const toDocument = db
+        const toFile = db
           .select()
           .from(file)
           .where(and(eq(file.path, resolvedLink.target)))
           .get();
-        if (!toDocument) return node;
-        url = toDocument.url;
+        if (!toFile) return node;
+        url = toFile.url;
       } else {
         url = resolvedLink.target;
         if (transformPath) url = transformPath(url);

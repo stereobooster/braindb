@@ -167,24 +167,34 @@ ala Single Table Inheritance
 - rename all SQL tables, columns
   - [x] `from` -> `source`, `to` -> `target`
   - [x] `frontmatter` -> `data`
-  - [ ] rename all `Document` to `File` (`addDocument`, `getDocumentsFrom`, ...)
+  - [x] rename all `Document` to `File` (`addDocument`, `getDocumentsFrom`, ...)
   - [ ] maybe `files.path` -> `files.source`?
   - [ ] maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
-  - [ ] maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
 - [x] change filewatcher to watch all files
-- [ ] expose query interface. I think about Kysely
-  - replace Drizzle with Kysely
-    - [migrations](https://kysely.dev/docs/migrations)
+- [x] expose query interface
 - [ ] create first plugin (for markdown)
   - extract data, ast, (text?). Render to HTML
   - match file extension (`.md`, `.mdx`)
+- [ ] replace Drizzle with Kysely
+  - [migrations](https://kysely.dev/docs/migrations)
+- maybe backward compatibility
+  - [ ] maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
+  - [ ] restore deleted classes and methods (from 1-st item)
 - [ ] create plugin for images (to make sure plugin system works)
   - extract dimensions
+- [ ] create plugin for JSON
 
 ### Other
 
+- content-layer documentation
+- schema
 - remark-wiki-img
 - rehype-embeddable
+  - image special tags in URL
   - https://github.com/r4ai/remark-embed
 - remark-dataview (JS eval)
+- remark-dataview (diagram)
+  - probably general graph, like grapviz or vizdom
 - new diagram tool
+- `.gitignore`
+- file-to-table solution (csv, JSONL etc.)
