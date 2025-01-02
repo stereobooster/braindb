@@ -1,7 +1,7 @@
 import { map } from "unist-util-map";
 import { stringify as stringifyYaml } from "yaml";
 import { and, eq } from "drizzle-orm";
-import { DocumentProps, document, link } from "./schema.js";
+import { FileProps, file, link } from "./schema.js";
 import { mdParser } from "./parser.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsOut, Frontmatter } from "./index.js";
@@ -10,7 +10,7 @@ import { isExternalLink } from "./utils.js";
 export function getMarkdown(
   db: Db,
   frontmatter: Frontmatter,
-  d: DocumentProps,
+  d: FileProps,
   options: BrainDBOptionsOut = {}
 ): string | Uint8Array {
   const { transformPath, linkType, transformUnresolvedLink } = options;
@@ -36,11 +36,11 @@ export function getMarkdown(
         .select()
         .from(link)
         .where(
-          and(eq(link.from, d.path), eq(link.start, node.position.start.offset))
+          and(eq(link.source, d.path), eq(link.start, node.position.start.offset))
         )
         .all();
 
-      if (!resolvedLink || !resolvedLink.to)
+      if (!resolvedLink || !resolvedLink.target)
         return (
           (transformUnresolvedLink && transformUnresolvedLink(d.path, node)) ||
           node
@@ -51,19 +51,19 @@ export function getMarkdown(
       if (linkType === "web") {
         const toDocument = db
           .select()
-          .from(document)
-          .where(and(eq(document.path, resolvedLink.to)))
+          .from(file)
+          .where(and(eq(file.path, resolvedLink.target)))
           .get();
         if (!toDocument) return node;
         url = toDocument.url;
       } else {
-        url = resolvedLink.to;
+        url = resolvedLink.target;
         if (transformPath) url = transformPath(url);
       }
 
       if (!url.startsWith("/")) url = "/" + url;
 
-      if (resolvedLink.to_anchor) url = url + "#" + resolvedLink.to_anchor;
+      if (resolvedLink.target_anchor) url = url + "#" + resolvedLink.target_anchor;
       url = encodeURI(url);
 
       return {

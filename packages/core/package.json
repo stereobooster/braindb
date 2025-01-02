@@ -36,7 +36,7 @@
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
     "tsc": "tsc",
-    "generate": "drizzle-kit generate:sqlite"
+    "generate": "drizzle-kit generate"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",

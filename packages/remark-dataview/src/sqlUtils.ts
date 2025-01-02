@@ -104,15 +104,15 @@ export function transform(query: nodeSql.Select) {
                   {
                     type: "column_ref",
                     column: "url",
-                    table: "documents",
+                    table: "files",
                   },
                   {
                     type: "binary_expr",
                     operator: "->>",
                     left: {
                       type: "column_ref",
-                      table: "documents",
-                      column: "frontmatter",
+                      table: "files",
+                      column: "data",
                     },
                     right: { type: "single_quote_string", value: "$.title" },
                   } as any,

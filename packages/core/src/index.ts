@@ -1,30 +1,27 @@
 import mitt, { Emitter, Handler, WildcardHandler } from "mitt";
 // @ts-ignore
 import chokidar, { FSWatcher } from "chokidar";
-
-import { Db, getDb } from "./db.js";
-import { getConnectedDocuments, resolveLinks } from "./resolveLinks.js";
-import { addDocument } from "./addDocument.js";
-import { symmetricDifference } from "./utils.js";
-import { deleteDocument, deleteOldRevision } from "./deleteDocument.js";
-import { Document } from "./Document.js";
-import { document, link, task } from "./schema.js";
-import { eq, sql } from "drizzle-orm";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { Link } from "./Link.js";
-import { DocumentsOtions, documentsSync, SortDirection } from "./query.js";
-import { Task } from "./Task.js";
+import { sql } from "drizzle-orm";
+
+import { Db, getDb } from "./db.js";
+import {
+  getConnectedDocuments,
+  resolveLinks,
+  deleteDocument,
+  deleteOldRevision,
+} from "./queries.js";
+import { addDocument } from "./addDocument.js";
+import { symmetricDifference } from "./utils.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
-  update: { document: Document };
-  delete: { document: Document };
-  create: { document: Document };
+  update: { path: string };
+  delete: { path: string };
+  create: { path: string };
   ready: void;
 };
-
-export { Document, DocumentsOtions, SortDirection, Task, Link };
 
 export type Frontmatter = Record<string, unknown>;
 
@@ -71,7 +68,7 @@ export type BrainDBOptionsOut = {
    * If output use PML, sometimes it may be required to adjust them to the new root
    */
   transformPath?: (path: string) => string;
-  transformFrontmatter?: (doc: Document) => Frontmatter;
+  transformFrontmatter?: (path: string) => Frontmatter;
   /**
    * experimental
    * @param path string
@@ -146,9 +143,7 @@ export class BrainDB {
         resolveLinks(this.db);
         this.initializing = false;
 
-        res.forEach((path) =>
-          this.emitter.emit("create", { document: new Document(this.db, path) })
-        );
+        res.forEach((path) => this.emitter.emit("create", { path }));
         this.emitter.emit("ready");
       })
       .on("add", async (file: string) => {
@@ -171,7 +166,7 @@ export class BrainDB {
         await addDocument(this.db, idPath, this.cfg, revision);
         resolveLinks(this.db);
         this.emitter.emit("create", {
-          document: new Document(this.db, idPath),
+          path: idPath,
         });
 
         const linksAfter = getConnectedDocuments({
@@ -193,11 +188,11 @@ export class BrainDB {
 
         deleteDocument(this.db, idPath);
         this.emitter.emit("delete", {
-          document: new Document(this.db, idPath),
+          path: idPath,
         });
 
         symmetricDifference(linksBefore, []).forEach((path) =>
-          this.emitter.emit("update", { document: new Document(this.db, path) })
+          this.emitter.emit("update", { path })
         );
       })
       .on("change", async (file: string) => {
@@ -211,7 +206,7 @@ export class BrainDB {
         await addDocument(this.db, idPath, this.cfg, revision);
         resolveLinks(this.db);
         this.emitter.emit("update", {
-          document: new Document(this.db, idPath),
+          path: idPath,
         });
 
         const linksAfter = getConnectedDocuments({
@@ -220,7 +215,7 @@ export class BrainDB {
         });
 
         symmetricDifference(linksBefore, linksAfter).forEach((path) =>
-          this.emitter.emit("update", { document: new Document(this.db, path) })
+          this.emitter.emit("update", { path })
         );
       });
 
@@ -257,56 +252,9 @@ export class BrainDB {
       : Promise.resolve();
   }
 
-  documentsSync(options?: DocumentsOtions) {
-    return documentsSync(this.db, options);
-  }
-
-  async documents(options?: DocumentsOtions) {
-    await this.ready();
-    return this.documentsSync(options);
-  }
-
-  findDocumentSync(path: string) {
-    return this.db
-      .select({ path: document.path })
-      .from(document)
-      .where(eq(document.path, path))
-      .all()
-      .map(({ path }) => new Document(this.db, path))[0];
-  }
-
-  async findDocument(path: string) {
-    await this.ready();
-    return this.findDocumentSync(path);
-  }
-
-  linksSync() {
-    return this.db
-      .select({ from: link.from, start: link.start })
-      .from(link)
-      .all()
-      .map(({ from, start }) => new Link(this.db, from, start));
-  }
-
-  async links() {
-    await this.ready();
-    return this.linksSync();
-  }
-
-  /**
-   * TODO: filter by checked true/false
-   */
-  tasksSync() {
-    return this.db
-      .select({ from: task.from, start: task.start })
-      .from(task)
-      .all()
-      .map(({ from, start }) => new Task(this.db, from, start));
-  }
-
-  async tasks() {
-    await this.ready();
-    return this.tasksSync();
+  // TODO: replace with Kysely
+  query() {
+    return this.db.query;
   }
 
   // this is experimental - do not use it

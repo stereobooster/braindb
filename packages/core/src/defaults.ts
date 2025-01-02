@@ -23,5 +23,4 @@ export const defaultGetUrl = (filePath: string, _frontmatter: Frontmatter) => {
 // };
 
 export const defaultGetSlug = (filePath: string, _frontmatter: Frontmatter) =>
-  basename(filePath.replace(/\/_?index\.mdx?$/, "")).replace(/\.mdx?$/, "") ||
-  "/";
+  basename(filePath).replace(/\.mdx?$/, "");

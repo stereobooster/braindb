@@ -160,35 +160,31 @@ ala Single Table Inheritance
 | start | from | source              |
 | end   | to   | destination, target |
 
-- `from` column name is conflicting with SQL
-  - Maybe rename to `start`/`end`?
-  - Maybe rename to `source`/`target`?
-- `frontmatter ->> '$.some.thing'` is very long
-  - probably use `data`, because other files also can have metadata
-- maybe rename `slug` to `name`
-  - maybe not, because slug can be path-like (`a/b`)
-  - default - file name without extension, without changing letter-casing. No special treatment for Readme, Index
-    - name can be used as title
-      - maybe use both name and slug. Name for title (if not provided) and slug for wikilink resolution
-    - url, on the other hand, lower-case and remove index
-- rename `documents` to `files`
-  - maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
-- maybe rename `path` to `source`
-- maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
-
 ## Priority
 
-- new SQL (tables) structure
-- expose query interface (`__rawQuery`). I think about Kysely
+- [x] remove wrapper-classes and related query functions (this breaks compatibility immediately, but easier to refactor)
+  - `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
+- rename all SQL tables, columns
+  - [x] `from` -> `source`, `to` -> `target`
+  - [x] `frontmatter` -> `data`
+  - [ ] rename all `Document` to `File` (`addDocument`, `getDocumentsFrom`, ...)
+  - [ ] maybe `files.path` -> `files.source`?
+  - [ ] maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
+  - [ ] maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
+- [x] change filewatcher to watch all files
+- [ ] expose query interface. I think about Kysely
   - replace Drizzle with Kysely
-- refactor
-  - probably remove `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
-- change filewatcher to watch all files
-- create first plugin (for markdown)
+    - [migrations](https://kysely.dev/docs/migrations)
+- [ ] create first plugin (for markdown)
   - extract data, ast, (text?). Render to HTML
   - match file extension (`.md`, `.mdx`)
-- image wikilinks
-- create plugin for images
+- [ ] create plugin for images (to make sure plugin system works)
   - extract dimensions
-- "rehype-embeddable"
+
+### Other
+
+- remark-wiki-img
+- rehype-embeddable
   - https://github.com/r4ai/remark-embed
+- remark-dataview (JS eval)
+- new diagram tool

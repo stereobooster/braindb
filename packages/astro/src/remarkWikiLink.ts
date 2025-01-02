@@ -22,19 +22,24 @@ export const remarkWikiLink: Plugin<[{ bdb: BrainDB }], Root> = ({ bdb }) => {
 
       const [slugWithoutAnchor, anchor] = slug.split("#");
       if (slugWithoutAnchor) {
-        const doc = bdb.documentsSync({ slug: slugWithoutAnchor })[0];
+        const doc = bdb
+          .query()
+          .file.findFirst({
+            where: (file, { eq }) => eq(file.slug, slugWithoutAnchor),
+          })
+          .sync();
         if (doc) {
-          if (!doc.frontmatter().draft || (import.meta.env && import.meta.env.DEV)) {
+          if (!doc.data.draft || (import.meta.env && import.meta.env.DEV)) {
             node.data = {
               hName: "a",
               hProperties: {
-                href: anchor ? `${doc.url()}#${anchor}` : doc.url(),
-                class: doc.frontmatter().draft ? "draft-link" : "",
+                href: anchor ? `${doc.url}#${anchor}` : doc.url,
+                class: doc.data.draft ? "draft-link" : "",
               },
               hChildren: [
                 {
                   type: "text",
-                  value: alias == null ? doc.frontmatter().title : alias,
+                  value: alias == null ? doc.data.title : alias,
                 },
               ],
             };

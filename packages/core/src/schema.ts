@@ -21,46 +21,56 @@ import { JsonObject } from "./types.js";
 //   },
 // });
 
-// TODO: better types for JSON columns https://github.com/drizzle-team/drizzle-orm/discussions/386
-export const document = sqliteTable(
-  "documents",
+export const file = sqliteTable(
+  "files",
   {
+    // -- private fileds --
     // can use Inode number here
     id: integer("id").primaryKey({ autoIncrement: true }),
-    path: text("path").notNull(),
-    // content
-    frontmatter: text("frontmatter", { mode: "json" })
-      .$type<JsonObject>()
-      .notNull(),
-    ast: text("ast", { mode: "json" }).notNull(),
-    // to avoide reparse
+    // to avoid reparse
     // file modification time https://man7.org/linux/man-pages/man3/stat.3type.html
     mtime: real("mtime").notNull(),
     // file hash
-    checksum: text("checksum").notNull(),
+    checksum: integer("checksum").default(0).notNull(),
     cfghash: integer("cfghash").default(0).notNull(),
+    revision: integer("revision").default(0).notNull(),
+    // maybe enum?
+    type: text("type"),
+    // -- public fileds --
+    path: text("path").notNull(),
     // for link resolution
     slug: text("slug").notNull(),
     url: text("url").notNull(),
     updated_at: integer("updated_at").default(0).notNull(),
-    revision: integer("revision").default(0).notNull(),
+    // content
+    data: text("data", { mode: "json" }).$type<JsonObject>().notNull(),
+    ast: text("ast", { mode: "json" }).notNull(),
   },
   (t) => ({
-    path: unique("documents_path").on(t.path),
-    slug: index("documents_slug").on(t.slug),
-    url: index("documents_url").on(t.url),
+    path: unique("files_path").on(t.path),
+    slug: index("files_slug").on(t.slug),
+    url: index("files_url").on(t.url),
+    type: index("files_type").on(t.type),
   })
 );
 
-export type DocumentProps = typeof document.$inferSelect;
+export type FileProps = typeof file.$inferSelect;
+
+// TODO: better types for JSON columns https://github.com/drizzle-team/drizzle-orm/discussions/386
+// export const document = sqliteView("documents").as((qb) =>
+//   qb.select().from(file).where(eq(file.type, "markdown"))
+// );
+
+// InferSelectModel doesn't work for views
+// export type DocumentProps = typeof file.$inferSelect;
 
 export const link = sqliteTable(
   "links",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
     // edge for directed graph
-    from: text("from").notNull(),
-    to: text("to"),
+    source: text("source").notNull(),
+    target: text("target"),
     /**
      * Options to uniqlly identify link in the document
      * - **path + start.offset**
@@ -69,19 +79,18 @@ export const link = sqliteTable(
      * - path + start.column + start.line
      */
     start: integer("start").notNull(),
-    to_slug: text("to_slug"),
-    to_url: text("to_url"),
-    to_path: text("to_path"),
-    to_anchor: text("to_anchor"),
-    label: text("label"),
+    target_slug: text("target_slug"),
+    target_url: text("target_url"),
+    target_path: text("target_path"),
+    target_anchor: text("target_anchor"),
     line: integer("line").notNull(),
     column: integer("column").notNull(),
   },
   (t) => ({
-    from_start: unique("links_from_start").on(t.from, t.start),
-    to_slug: index("links_to_slug").on(t.to_slug),
-    to_url: index("links_to_url").on(t.to_url),
-    to_path: index("links_to_path").on(t.to_path),
+    source_start: unique("links_source_start").on(t.source, t.start),
+    target_slug: index("links_target_slug").on(t.target_slug),
+    target_url: index("links_target_url").on(t.target_url),
+    target_path: index("links_target_path").on(t.target_path),
   })
 );
 
@@ -91,7 +100,7 @@ export const task = sqliteTable(
   "tasks",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
-    from: text("from").notNull(),
+    source: text("source").notNull(),
     /**
      * Options to uniqlly identify link in the document
      * - **path + start.offset**
@@ -106,7 +115,7 @@ export const task = sqliteTable(
     column: integer("column").notNull(),
   },
   (t) => ({
-    from_start: unique("tasks_from_start").on(t.from, t.start),
+    source_start: unique("tasks_from_start").on(t.source, t.start),
   })
 );
 

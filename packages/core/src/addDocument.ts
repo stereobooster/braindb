@@ -5,22 +5,23 @@ import { parse as parseYaml } from "yaml";
 import { eq } from "drizzle-orm";
 import type { Node } from "unist";
 
-import { document, link, task } from "./schema.js";
+import { file, link, task } from "./schema.js";
 import { JsonObject } from "./types.js";
 import { mdParser } from "./parser.js";
 import {
-  cheksum64str,
+  cheksum32,
   cheksumConfig,
   isExternalLink,
   memoizeOnce,
 } from "./utils.js";
-import { deleteDocument } from "./deleteDocument.js";
+import { deleteDocument } from "./queries.js";
 import { Db } from "./db.js";
 import { BrainDBOptionsIn } from "./index.js";
 import { defaultGetSlug, defaultGetUrl } from "./defaults.js";
 import { Repository } from "@napi-rs/simple-git";
+import path from "node:path";
 
-export const emptyAst = {};
+export const emptyAst: Node = {} as any;
 
 const getRepo = memoizeOnce((path: string) => Repository.discover(path));
 const getRepoPath = memoizeOnce((repo: Repository) => dirname(repo.path()));
@@ -34,22 +35,23 @@ export async function addDocument(
   // maybe use prepared statement?
   const [existingDocument] = db
     .select({
-      id: document.id,
-      path: document.path,
-      mtime: document.mtime,
-      checksum: document.checksum,
-      cfghash: document.cfghash,
+      id: file.id,
+      path: file.path,
+      mtime: file.mtime,
+      checksum: file.checksum,
+      cfghash: file.cfghash,
     })
-    .from(document)
-    .where(eq(document.path, idPath))
+    .from(file)
+    .where(eq(file.path, idPath))
     .all();
+  const { ext, name } = path.parse(idPath);
 
   const absolutePath = cfg.root + idPath;
   // https://nodejs.org/api/fs.html#class-fsstats
   const st = await stat(absolutePath);
   const mtime = st.mtimeMs;
-  let checksum = "";
-  let markdown = "";
+  let checksum = 0;
+  let content: Buffer | null = null;
   let cfghash = 0;
 
   if (cfg.cache) {
@@ -64,27 +66,27 @@ export async function addDocument(
       existingDocument.mtime === mtime
     ) {
       await db
-        .update(document)
+        .update(file)
         .set({ revision /*, updated_at */ })
-        .where(eq(document.path, idPath));
+        .where(eq(file.path, idPath));
       return;
     }
 
-    markdown = await readFile(absolutePath, { encoding: "utf8" });
-    checksum = cheksum64str(markdown);
+    content = await readFile(absolutePath);
+    checksum = cheksum32(content);
     if (
       existingDocument &&
       existingDocument.cfghash === cfghash &&
       existingDocument.checksum === checksum
     ) {
       await db
-        .update(document)
+        .update(file)
         .set({ revision /*, updated_at */ })
-        .where(eq(document.path, idPath));
+        .where(eq(file.path, idPath));
       return;
     }
   } else {
-    markdown = await readFile(absolutePath, { encoding: "utf8" });
+    content = await readFile(absolutePath);
   }
 
   let updated_at = Math.round(mtime);
@@ -102,39 +104,43 @@ export async function addDocument(
     }
   }
 
-  const ast = mdParser.parse(markdown);
-  markdown = "";
-  const frontmatter = getFrontmatter(ast);
+  let ast = emptyAst;
+  let data: JsonObject = {};
+  let type: string | null = null;
+  // TODO: get this data from "plugin"
+  if (ext === ".md" || ext === ".mdx") {
+    ast = mdParser.parse(content.toString("utf8"));
+    data = getFrontmatter(ast);
+    if (!data.title) data.title = name;
+    type = "markdown";
+  }
+
   const getUrl = cfg.url || defaultGetUrl;
   const getSlug = cfg.slug || defaultGetSlug;
 
-  // typeof document.$inferInsert
   const newDocument = {
     id: existingDocument?.id,
-    frontmatter,
+    data: data,
     path: idPath,
     ast: cfg.storeMarkdown === false ? emptyAst : ast,
     mtime,
     checksum,
     cfghash,
-    url: getUrl(idPath, frontmatter),
-    slug: getSlug(idPath, frontmatter),
+    url: getUrl(idPath, data),
+    slug: getSlug(idPath, data),
     updated_at,
     revision,
-  };
+    type,
+  } satisfies typeof file.$inferInsert;
 
   if (existingDocument) deleteDocument(db, idPath);
 
-  // TODO: should not update frontmatter here,
-  // but title may be exception (or not?), because it is required for wikilinks
-  // Alternatively: can use first H1 as title
-  if (!newDocument.frontmatter.title)
-    newDocument.frontmatter.title = newDocument.slug;
-
-  db.insert(document)
+  db.insert(file)
     .values(newDocument)
-    .onConflictDoUpdate({ target: document.path, set: newDocument })
+    .onConflictDoUpdate({ target: file.path, set: newDocument })
     .run();
+
+  if (ext !== ".md" && ext !== ".mdx") return;
 
   visit(ast as any, (node) => {
     if (node.type === "link" || node.type === "wikiLink") {
@@ -151,27 +157,27 @@ export async function addDocument(
         }
       }
 
-      let to_url, to_path, to_slug, to_anchor, label;
+      let target_url, target_path, target_slug, target_anchor;
 
       if (node.type === "link") {
-        label = node.children[0]?.value as string;
-        [to_url, to_anchor] = decodeURI(node.url).split("#");
-        to_path = to_url;
+        // label = node.children[0]?.value as string;
+        [target_url, target_anchor] = decodeURI(node.url).split("#");
+        target_path = target_url;
         // resolve local link
-        if (!to_url.startsWith("/")) {
-          to_url = resolve(newDocument.url, to_url);
+        if (!target_url.startsWith("/")) {
+          target_url = resolve(newDocument.url, target_url);
         }
         // normalize url
-        if (!to_url.endsWith("/")) {
-          to_url = to_url + "/";
+        if (!target_url.endsWith("/")) {
+          target_url = target_url + "/";
         }
         // resolve local path
-        if (!to_path.startsWith("/")) {
-          to_path = resolve(dirname(idPath), to_path);
+        if (!target_path.startsWith("/")) {
+          target_path = resolve(dirname(idPath), target_path);
         }
       } else {
-        label = node.data.alias as string;
-        [to_slug, to_anchor] = node.value.split("#");
+        // label = node.data.alias as string;
+        [target_slug, target_anchor] = node.value.split("#");
       }
 
       const start = node.position.start.offset as number;
@@ -180,13 +186,12 @@ export async function addDocument(
 
       db.insert(link)
         .values({
-          from: idPath,
+          source: idPath,
           start,
-          to_url,
-          to_path,
-          to_slug,
-          to_anchor,
-          label,
+          target_url,
+          target_path,
+          target_slug,
+          target_anchor,
           line,
           column,
         })
@@ -207,7 +212,7 @@ export async function addDocument(
 
       db.insert(task)
         .values({
-          from: idPath,
+          source: idPath,
           start,
           line,
           column,
@@ -227,6 +232,8 @@ export async function addDocument(
 
 export function getFrontmatter(ast: Node) {
   let frontmatter: JsonObject = {};
+  // What about ast.data.matter?
+  // https://github.com/remarkjs/remark-frontmatter?tab=readme-ov-file#example-frontmatter-as-metadata
   visit(ast as any, (node) => {
     if (node.type === "yaml") {
       /**

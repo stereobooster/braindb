@@ -57,6 +57,13 @@
       "when": 1713297143671,
       "tag": "0007_peaceful_stepford_cuckoos",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1735829374304,
+      "tag": "0008_confused_zarek",
+      "breakpoints": true
     }
   ]
 }

@@ -1,9 +1,11 @@
 {
   "version": "6",
   "dialect": "sqlite",
+  "id": "23d2c40f-4f6b-495c-b687-410bb18497c9",
+  "prevId": "d4ac0617-082f-44d1-bae7-beb2a2b4d876",
   "tables": {
-    "documents": {
-      "name": "documents",
+    "files": {
+      "name": "files",
       "columns": {
         "id": {
           "name": "id",
@@ -11,27 +13,6 @@
           "primaryKey": true,
           "notNull": true,
           "autoincrement": true
-        },
-        "path": {
-          "name": "path",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "frontmatter": {
-          "name": "frontmatter",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
-        },
-        "ast": {
-          "name": "ast",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "autoincrement": false
         },
         "mtime": {
           "name": "mtime",
@@ -42,7 +23,7 @@
         },
         "checksum": {
           "name": "checksum",
-          "type": "text",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -54,6 +35,28 @@
           "notNull": true,
           "autoincrement": false,
           "default": 0
+        },
+        "revision": {
+          "name": "revision",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "path": {
+          "name": "path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         },
         "slug": {
           "name": "slug",
@@ -77,32 +80,45 @@
           "autoincrement": false,
           "default": 0
         },
-        "revision": {
-          "name": "revision",
-          "type": "integer",
+        "data": {
+          "name": "data",
+          "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": 0
+          "autoincrement": false
+        },
+        "ast": {
+          "name": "ast",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
         }
       },
       "indexes": {
-        "documents_slug": {
-          "name": "documents_slug",
+        "files_slug": {
+          "name": "files_slug",
           "columns": [
             "slug"
           ],
           "isUnique": false
         },
-        "documents_url": {
-          "name": "documents_url",
+        "files_url": {
+          "name": "files_url",
           "columns": [
             "url"
           ],
           "isUnique": false
         },
-        "documents_path": {
-          "name": "documents_path",
+        "files_type": {
+          "name": "files_type",
+          "columns": [
+            "type"
+          ],
+          "isUnique": false
+        },
+        "files_path": {
+          "name": "files_path",
           "columns": [
             "path"
           ],
@@ -123,15 +139,15 @@
           "notNull": true,
           "autoincrement": true
         },
-        "from": {
-          "name": "from",
+        "source": {
+          "name": "source",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
         },
-        "to": {
-          "name": "to",
+        "target": {
+          "name": "target",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -144,36 +160,29 @@
           "notNull": true,
           "autoincrement": false
         },
-        "to_slug": {
-          "name": "to_slug",
+        "target_slug": {
+          "name": "target_slug",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "to_url": {
-          "name": "to_url",
+        "target_url": {
+          "name": "target_url",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "to_path": {
-          "name": "to_path",
+        "target_path": {
+          "name": "target_path",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false
         },
-        "to_anchor": {
-          "name": "to_anchor",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "label": {
-          "name": "label",
+        "target_anchor": {
+          "name": "target_anchor",
           "type": "text",
           "primaryKey": false,
           "notNull": false,
@@ -195,31 +204,31 @@
         }
       },
       "indexes": {
-        "links_to_slug": {
-          "name": "links_to_slug",
+        "links_target_slug": {
+          "name": "links_target_slug",
           "columns": [
-            "to_slug"
+            "target_slug"
           ],
           "isUnique": false
         },
-        "links_to_url": {
-          "name": "links_to_url",
+        "links_target_url": {
+          "name": "links_target_url",
           "columns": [
-            "to_url"
+            "target_url"
           ],
           "isUnique": false
         },
-        "links_to_path": {
-          "name": "links_to_path",
+        "links_target_path": {
+          "name": "links_target_path",
           "columns": [
-            "to_path"
+            "target_path"
           ],
           "isUnique": false
         },
-        "links_from_start": {
-          "name": "links_from_start",
+        "links_source_start": {
+          "name": "links_source_start",
           "columns": [
-            "from",
+            "source",
             "start"
           ],
           "isUnique": true
@@ -239,8 +248,8 @@
           "notNull": true,
           "autoincrement": true
         },
-        "from": {
-          "name": "from",
+        "source": {
+          "name": "source",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -286,7 +295,7 @@
         "tasks_from_start": {
           "name": "tasks_from_start",
           "columns": [
-            "from",
+            "source",
             "start"
           ],
           "isUnique": true
@@ -299,9 +308,22 @@
   },
   "enums": {},
   "_meta": {
-    "tables": {},
-    "columns": {}
+    "schemas": {},
+    "tables": {
+      "\"documents\"": "\"files\""
+    },
+    "columns": {
+      "\"files\".\"frontmatter\"": "\"files\".\"data\"",
+      "\"links\".\"from\"": "\"links\".\"source\"",
+      "\"links\".\"to\"": "\"links\".\"target\"",
+      "\"links\".\"to_slug\"": "\"links\".\"target_slug\"",
+      "\"links\".\"to_url\"": "\"links\".\"target_url\"",
+      "\"links\".\"to_path\"": "\"links\".\"target_path\"",
+      "\"links\".\"to_anchor\"": "\"links\".\"target_anchor\"",
+      "\"tasks\".\"from\"": "\"tasks\".\"source\""
+    }
   },
-  "id": "d4ac0617-082f-44d1-bae7-beb2a2b4d876",
-  "prevId": "544cb315-a32b-4a6a-9693-f8fc51d21d01"
+  "internal": {
+    "indexes": {}
+  }
 }

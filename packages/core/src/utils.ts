@@ -14,12 +14,15 @@ export const memoizeOnce = <A, B>(f: (x: A) => B) => {
   };
 };
 
-export const cheksumConfig = memoizeOnce((conf: any) => xxh32(deterministicString(conf)));
+export const cheksumConfig = memoizeOnce((conf: any) =>
+  xxh32(deterministicString(conf))
+);
 
-// can use streaming instead of reading whole file
-export const cheksum64str = (str: string) => xxh64(str).toString(36);
+export const cheksum32 = (str: string | Buffer) => xxh32(str);
 
-const externalLinkRegexp = RegExp(`^[a-z]+://`);
+export const cheksum64str = (str: string | Buffer) => xxh64(str).toString(36);
+
+const externalLinkRegexp = RegExp(`^[a-zA-Z0-9+]+://`);
 
 export const isExternalLink = (link: string) => externalLinkRegexp.test(link);
 
