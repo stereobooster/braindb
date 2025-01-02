@@ -32,6 +32,7 @@ export const file = sqliteTable(
     mtime: real("mtime").notNull(),
     // file hash
     checksum: integer("checksum").default(0).notNull(),
+    // config hash
     cfghash: integer("cfghash").default(0).notNull(),
     revision: integer("revision").default(0).notNull(),
     // maybe enum?
@@ -115,7 +116,7 @@ export const task = sqliteTable(
     column: integer("column").notNull(),
   },
   (t) => ({
-    source_start: unique("tasks_from_start").on(t.source, t.start),
+    source_start: unique("tasks_source_start").on(t.source, t.start),
   })
 );
 

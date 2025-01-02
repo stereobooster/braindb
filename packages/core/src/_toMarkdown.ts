@@ -7,7 +7,7 @@ import { Db } from "./db.js";
 import { BrainDBOptionsOut, Frontmatter } from "./index.js";
 import { isExternalLink } from "./utils.js";
 
-export function getMarkdown(
+export function toMarkdown(
   db: Db,
   frontmatter: Frontmatter,
   d: FileProps,

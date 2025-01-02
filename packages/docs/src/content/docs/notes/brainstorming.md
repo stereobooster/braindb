@@ -59,10 +59,6 @@ bdb -- remark-dataview -- remark
 - option to add remark/rehype plugins
 - function to generate html
 
-## Ideas
-
-- refuse from API in favour of SQL (Kysely)
-
 ## New DB structure
 
 ```d2
@@ -70,63 +66,52 @@ files: {
   shape: sql_table
   id: integer {constraint: primary_key}
   path: text {constraint: AK}
-  mtime: real
-  checksum: text
-  cfghash: integer
+  _mtime: real
+  _checksum: integer
+  _cfghash: integer
+  _revision: integer
+  type: text
   updated_at: integer
-  revision: integer
-  file_type: text
   slug: text
   url: text
   data: json
-}
-
-md_files: {
-  shape: sql_table
-  id: int {constraint: primary_key}
-  -frontmatter: json
   ast: json
-  ?text: text
 }
-
-files.id -> md_files.id
 
 links: {
   shape: sql_table
   id: integer {constraint: primary_key}
-  path: text {constraint: AK}
+  source: text {constraint: AK}
   pos: integer {constraint: AK}
-  to: text
-  to_slug: text
-  to_url: text
-  to_path: text
-  to_anchor: text
+  target: text
+  target_slug: text
+  target_url: text
+  target_path: text
+  target_anchor: text
   line: integer
   column: integer
-  ?text: text
 }
 
-files.path -> links.path
-files.path -> links.to
+files.path -> links.source
+files.path -> links.target
 
 md_tasks: {
   shape: sql_table
   id: integer {constraint: primary_key}
-  path: text {constraint: AK}
+  source: text {constraint: AK}
   pos: integer {constraint: AK}
   ast: json
   checked: bool
   line: integer
   column: integer
-  ?text: text
 }
 
-files.path -> md_tasks.path
+files.path -> md_tasks.source
 
-md_header: {
+md_header?: {
   shape: sql_table
   id: integer {constraint: primary_key}
-  path: text {constraint: AK}
+  source: text {constraint: AK}
   pos: integer {constraint: AK}
   ast: json
   line: integer
@@ -135,23 +120,20 @@ md_header: {
   ?anchor: text
 }
 
-files.path -> md_header.path
+files.path -> md_header?.source
 
-files.path -> md_tags?.path
+files.path -> md_tags?.source
 
 md_tags?: {
   shape: sql_table
   id: integer {constraint: primary_key}
-  path: text {constraint: AK}
+  source: text {constraint: AK}
   text: text
 }
 ```
 
-- `pos` = `column` + `line`
-- `text` = `label` for links
-- `checksum` change to number?
 - `text` for full text search
-- `file_type` = `markdown | image | json | diagram | ...`
+- `type` = `markdown | image | json | diagram | ...`
 
 ala Single Table Inheritance
 
@@ -164,17 +146,17 @@ ala Single Table Inheritance
 
 - [x] remove wrapper-classes and related query functions (this breaks compatibility immediately, but easier to refactor)
   - `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
+- [x] change filewatcher to watch all files
+- [x] expose query interface
+- [ ] **create first plugin** (for markdown)
+  - extract data, ast.
+  - Render to HTML
 - rename all SQL tables, columns
   - [x] `from` -> `source`, `to` -> `target`
   - [x] `frontmatter` -> `data`
   - [x] rename all `Document` to `File` (`addDocument`, `getDocumentsFrom`, ...)
-  - [ ] maybe `files.path` -> `files.source`?
+  - [ ] maybe `files.path` -> `files.source`? or `*.source` -> `*.path`
   - [ ] maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
-- [x] change filewatcher to watch all files
-- [x] expose query interface
-- [ ] create first plugin (for markdown)
-  - extract data, ast, (text?). Render to HTML
-  - match file extension (`.md`, `.mdx`)
 - [ ] replace Drizzle with Kysely
   - [migrations](https://kysely.dev/docs/migrations)
 - maybe backward compatibility
@@ -195,6 +177,13 @@ ala Single Table Inheritance
 - remark-dataview (JS eval)
 - remark-dataview (diagram)
   - probably general graph, like grapviz or vizdom
+- website (aka astro theme)
+- LSP
 - new diagram tool
+  - general graph
+    - shape, icon, link, color
+  - ERD
+  - Sequence diagram
 - `.gitignore`
 - file-to-table solution (csv, JSONL etc.)
+  - do I have use-case for it? I can read file directly from fs

@@ -9,12 +9,6 @@ sidebar:
    1. scans all files
       1. maybe except `.gitignore`
    2. **files** table
-      1. `path` _unique_
-      2. `slug` may be not unqiue
-      3. `updated_at`, `created_at` (preferably from git)
-      4. other system data, like `checksum`, `mtime`
-      5. `data`
-      6. `text` (maybe?) for FTS
 2. **plugins** for each file type, for example
    1. **markdown**
       1. frontmatter
