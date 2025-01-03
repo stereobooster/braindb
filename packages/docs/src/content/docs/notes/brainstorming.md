@@ -148,27 +148,27 @@ ala Single Table Inheritance
   - `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
 - [x] change filewatcher to watch all files
 - [x] expose query interface
-- [ ] **create first plugin** (for markdown)
-  - extract data, ast.
-  - Render to HTML
+- [ ] replace Drizzle with Kysely
+  - [migrations](https://kysely.dev/docs/migrations)
+- plugin for markdown
+  - [x] extract data, ast
+  - [ ] Render to HTML
+- [ ] content-layer documentation
+- [ ] create plugin for images (to make sure plugin system works)
+  - extract dimensions
+- [ ] create plugin for JSON
 - rename all SQL tables, columns
   - [x] `from` -> `source`, `to` -> `target`
   - [x] `frontmatter` -> `data`
   - [x] rename all `Document` to `File` (`addDocument`, `getDocumentsFrom`, ...)
   - [ ] maybe `files.path` -> `files.source`? or `*.source` -> `*.path`
   - [ ] maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
-- [ ] replace Drizzle with Kysely
-  - [migrations](https://kysely.dev/docs/migrations)
 - maybe backward compatibility
   - [ ] maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
   - [ ] restore deleted classes and methods (from 1-st item)
-- [ ] create plugin for images (to make sure plugin system works)
-  - extract dimensions
-- [ ] create plugin for JSON
 
 ### Other
 
-- content-layer documentation
 - schema
 - remark-wiki-img
 - rehype-embeddable

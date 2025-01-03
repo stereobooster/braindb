@@ -1,11 +1,11 @@
 import { map } from "unist-util-map";
 import { stringify as stringifyYaml } from "yaml";
 import { and, eq } from "drizzle-orm";
-import { FileProps, file, link } from "./schema.js";
-import { mdParser } from "./parser.js";
-import { Db } from "./db.js";
-import { BrainDBOptionsOut, Frontmatter } from "./index.js";
-import { isExternalLink } from "./utils.js";
+import { FileProps, file, link } from "../../schema.js";
+import { mdParser } from "../../parser.js";
+import { Db } from "../../db.js";
+import { BrainDBOptionsOut, Frontmatter } from "../../index.js";
+import { isExternalLink } from "../../utils.js";
 
 export function toMarkdown(
   db: Db,

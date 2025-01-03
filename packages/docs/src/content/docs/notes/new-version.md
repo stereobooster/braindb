@@ -16,8 +16,8 @@ sidebar:
    2. **JSON**
       1. data itself
    3. **image**
-      1. `width`, `height`
-      2. `exif`, `iptc`, `xmp`
+      1. [`width`, `height`](https://www.npmjs.com/package/image-size)
+      2. [`exif`, `iptc`, `xmp`](https://www.npmjs.com/package/exifreader)
       3. [OCR](https://tesseract.projectnaptha.com/) (text, box coordinates)
    4. **audio**
       1. `duration`
