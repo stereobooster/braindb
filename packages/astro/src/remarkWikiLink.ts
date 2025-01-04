@@ -16,36 +16,46 @@ type WikiLinkNode = {
 
 export const remarkWikiLink: Plugin<[{ bdb: BrainDB }], Root> = ({ bdb }) => {
   return (ast, _file) => {
+    const promises: Promise<any>[] = [];
+
     visit(ast, "wikiLink", (node: WikiLinkNode) => {
       const slug = node.value;
       const alias = node.data.alias;
 
       const [slugWithoutAnchor, anchor] = slug.split("#");
       if (slugWithoutAnchor) {
-        const doc = bdb
-          .drizzle()
-          .files.findFirst({
-            where: (file, { eq }) => eq(file.slug, slugWithoutAnchor),
-          })
-          .sync();
-        if (doc) {
-          if (!doc.data.draft || (import.meta.env && import.meta.env.DEV)) {
-            node.data = {
-              hName: "a",
-              hProperties: {
-                href: anchor ? `${doc.url}#${anchor}` : doc.url,
-                class: doc.data.draft ? "draft-link" : "",
-              },
-              hChildren: [
-                {
-                  type: "text",
-                  value: alias == null ? doc.data.title : alias,
-                },
-              ],
-            };
-          }
-          return SKIP;
-        }
+        promises.push(
+          bdb
+            .kysely()
+            .selectFrom("files")
+            .select(["files.url", "files.data"])
+            .where("files.slug", "=", slugWithoutAnchor)
+            .limit(1) // can use 2 to check that there is only one
+            .execute()
+            .then(([doc]) => {
+              if (doc) {
+                if (
+                  !doc.data.draft ||
+                  (import.meta.env && import.meta.env.DEV)
+                ) {
+                  node.data = {
+                    hName: "a",
+                    hProperties: {
+                      href: anchor ? `${doc.url}#${anchor}` : doc.url,
+                      class: doc.data.draft ? "draft-link" : "",
+                    },
+                    hChildren: [
+                      {
+                        type: "text",
+                        value: alias == null ? doc.data.title : alias,
+                      },
+                    ],
+                  };
+                }
+              }
+            })
+        );
+        return SKIP;
       }
 
       node.data = {
@@ -58,5 +68,8 @@ export const remarkWikiLink: Plugin<[{ bdb: BrainDB }], Root> = ({ bdb }) => {
       };
       return SKIP;
     });
+
+    if (promises.length === 0) return;
+    return Promise.all(promises).then(() => {});
   };
 };

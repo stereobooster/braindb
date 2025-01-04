@@ -75,7 +75,7 @@ files: {
   slug: text
   url: text
   data: json
-  ast: json
+  _ast: json
 }
 
 links: {
@@ -84,12 +84,12 @@ links: {
   source: text {constraint: AK}
   pos: integer {constraint: AK}
   target: text
-  target_slug: text
-  target_url: text
-  target_path: text
+  _target_slug: text
+  _target_url: text
+  _target_path: text
   target_anchor: text
-  line: integer
-  column: integer
+  _line: integer
+  _column: integer
 }
 
 files.path -> links.source
@@ -100,10 +100,10 @@ md_tasks: {
   id: integer {constraint: primary_key}
   source: text {constraint: AK}
   pos: integer {constraint: AK}
-  ast: json
+  _ast: json
   checked: bool
-  line: integer
-  column: integer
+  _line: integer
+  _column: integer
 }
 
 files.path -> md_tasks.source
@@ -113,9 +113,9 @@ md_header?: {
   id: integer {constraint: primary_key}
   source: text {constraint: AK}
   pos: integer {constraint: AK}
-  ast: json
-  line: integer
-  column: integer
+  _ast: json
+  _line: integer
+  _column: integer
   ?text: text
   ?anchor: text
 }
@@ -150,7 +150,7 @@ ala Single Table Inheritance
 - [x] expose query interface
 - replace Drizzle with Kysely
   - [x] create scheme
-  - [ ] Kysely doesn't support `sync` execution, so I would need to change [remarkWikiLink](packages/astro/src/remarkWikiLink.ts)
+  - [x] Kysely doesn't support `sync` execution, so I would need to change [remarkWikiLink](packages/astro/src/remarkWikiLink.ts)
   - [ ] [migrations](https://kysely.dev/docs/migrations)
   - [ ] SQLite type issues: `boolean` represented as `number`, `date` represented as `number`
 - plugin for markdown

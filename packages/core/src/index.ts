@@ -256,11 +256,6 @@ export class BrainDB {
       : Promise.resolve();
   }
 
-  // TODO: deprecate
-  drizzle() {
-    return this.db.query;
-  }
-
   kysely() {
     return this.kyselyDb;
   }
