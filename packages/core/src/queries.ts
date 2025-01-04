@@ -1,6 +1,6 @@
 import { and, eq, isNull, ne, sql, isNotNull, not } from "drizzle-orm";
-import { file, link, task } from "./schema.js";
-import { Db } from "./db.js";
+import { files, links, tasks } from "./schema_drizzle.js";
+import { Db } from "./db_drizzle.js";
 
 export function resolveLinks(db: Db) {
   // TODO: check for ambiguous: slugs, urls
@@ -29,12 +29,12 @@ export function resolveLinks(db: Db) {
 
 export function unresolvedLinks(db: Db, idPath?: string) {
   return db
-    .select({ source: link.source, start: link.start })
-    .from(link)
+    .select({ source: links.source, start: links.start })
+    .from(links)
     .where(
       idPath === undefined
-        ? isNull(link.target)
-        : and(isNull(link.target), eq(link.source, idPath))
+        ? isNull(links.target)
+        : and(isNull(links.target), eq(links.source, idPath))
     )
     .all();
 }
@@ -54,12 +54,12 @@ export function getFilesFrom({
   selfLinks = false,
 }: GetFilesProps) {
   return db
-    .selectDistinct({ source: link.source })
-    .from(link)
+    .selectDistinct({ source: links.source })
+    .from(links)
     .where(
       selfLinks
-        ? eq(link.target, idPath)
-        : and(eq(link.target, idPath), ne(link.source, idPath))
+        ? eq(links.target, idPath)
+        : and(eq(links.target, idPath), ne(links.source, idPath))
     )
     .all()
     .map((x) => x.source);
@@ -74,14 +74,14 @@ export function getFilesTo({
   selfLinks = false,
 }: GetFilesProps) {
   return db
-    .selectDistinct({ to: link.target })
-    .from(link)
+    .selectDistinct({ to: links.target })
+    .from(links)
     .where(
       and(
-        isNotNull(link.target),
+        isNotNull(links.target),
         selfLinks
-          ? eq(link.source, idPath)
-          : and(eq(link.source, idPath), ne(link.target, idPath))
+          ? eq(links.source, idPath)
+          : and(eq(links.source, idPath), ne(links.target, idPath))
       )
     )
     .all()
@@ -96,18 +96,18 @@ export function getConnectedFiles(props: GetFilesProps) {
 }
 
 export function deleteFile(db: Db, idPath: string) {
-  db.delete(file).where(eq(file.path, idPath)).run();
-  db.delete(link).where(eq(link.source, idPath)).run();
-  db.update(link).set({ target: null }).where(eq(link.target, idPath)).run();
-  db.delete(task).where(eq(task.source, idPath)).run();
+  db.delete(files).where(eq(files.path, idPath)).run();
+  db.delete(links).where(eq(links.source, idPath)).run();
+  db.update(links).set({ target: null }).where(eq(links.target, idPath)).run();
+  db.delete(tasks).where(eq(tasks.source, idPath)).run();
 }
 
 export function deleteOldRevision(db: Db, revision: number) {
   db.select({
-    path: file.path,
+    path: files.path,
   })
-    .from(file)
-    .where(not(eq(file.revision, revision)))
+    .from(files)
+    .where(not(eq(files.revision, revision)))
     .all()
     .forEach(({ path }) => {
       deleteFile(db, path);

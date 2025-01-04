@@ -1,9 +1,9 @@
 import { map } from "unist-util-map";
 import { stringify as stringifyYaml } from "yaml";
 import { and, eq } from "drizzle-orm";
-import { FileProps, file, link } from "../../schema.js";
+import { FileProps, files, links } from "../../schema_drizzle.js";
 import { mdParser } from "../../parser.js";
-import { Db } from "../../db.js";
+import { Db } from "../../db_drizzle.js";
 import { BrainDBOptionsOut, Frontmatter } from "../../index.js";
 import { isExternalLink } from "../../utils.js";
 
@@ -34,9 +34,9 @@ export function toMarkdown(
 
       const [resolvedLink] = db
         .select()
-        .from(link)
+        .from(links)
         .where(
-          and(eq(link.source, d.path), eq(link.start, node.position.start.offset))
+          and(eq(links.source, d.path), eq(links.start, node.position.start.offset))
         )
         .all();
 
@@ -51,8 +51,8 @@ export function toMarkdown(
       if (linkType === "web") {
         const toFile = db
           .select()
-          .from(file)
-          .where(and(eq(file.path, resolvedLink.target)))
+          .from(files)
+          .where(and(eq(files.path, resolvedLink.target)))
           .get();
         if (!toFile) return node;
         url = toFile.url;

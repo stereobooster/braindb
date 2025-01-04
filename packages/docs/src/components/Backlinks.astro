@@ -27,7 +27,21 @@ const links = await bdb
   .distinct()
   .execute();
 
-// TODO: try the same with drizzle, maybe it's easier
+// Drizzle query is kind of clunky
+// const linksDrizzle = bdb.drizzle().links.findMany({
+//   with: {
+//     source: {
+//       columns: {
+//         url: true,
+//         slug: true,
+//         data: true,
+//       },
+//     },
+//   },
+//   columns: {},
+//   where: (links, { eq, and, ne }) =>
+//     and(eq(links.target, `/${entry.id}`), ne(links.source, `/${entry.id}`)),
+// }).sync();
 ---
 
 {

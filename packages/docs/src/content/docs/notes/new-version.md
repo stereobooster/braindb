@@ -55,7 +55,7 @@ sidebar:
          2. wikilink resolution
             1. `draft`
             2. `valid` - but how if schema optional and there can be more than one schema per file
-               1. maybe it is `valid` if there is at least one entry in `validated` table
+               1. maybe it is `valid` if there is at least one entry in `validated` table (most likely there will be only one file per schema)
             3. not unique `slug`?
          3. image wikilink
             1. `![[image]]` - `<img>`

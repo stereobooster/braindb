@@ -23,8 +23,8 @@ export const remarkWikiLink: Plugin<[{ bdb: BrainDB }], Root> = ({ bdb }) => {
       const [slugWithoutAnchor, anchor] = slug.split("#");
       if (slugWithoutAnchor) {
         const doc = bdb
-          .query()
-          .file.findFirst({
+          .drizzle()
+          .files.findFirst({
             where: (file, { eq }) => eq(file.slug, slugWithoutAnchor),
           })
           .sync();

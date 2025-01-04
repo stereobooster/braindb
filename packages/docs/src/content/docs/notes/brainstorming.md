@@ -152,6 +152,7 @@ ala Single Table Inheritance
   - [x] create scheme
   - [ ] Kysely doesn't support `sync` execution, so I would need to change [remarkWikiLink](packages/astro/src/remarkWikiLink.ts)
   - [ ] [migrations](https://kysely.dev/docs/migrations)
+  - [ ] SQLite type issues: `boolean` represented as `number`, `date` represented as `number`
 - plugin for markdown
   - [x] extract data, ast
   - [ ] Render to HTML

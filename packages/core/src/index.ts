@@ -5,7 +5,7 @@ import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { sql } from "drizzle-orm";
 import Database from "better-sqlite3";
-import { Db, getDrizzle } from "./db.js";
+import { Db, getDrizzle } from "./db_drizzle.js";
 import {
   getConnectedFiles,
   resolveLinks,
@@ -256,12 +256,11 @@ export class BrainDB {
       : Promise.resolve();
   }
 
-  // deprecate if Kysely option would work
-  query() {
+  // TODO: deprecate
+  drizzle() {
     return this.db.query;
   }
 
-  // experimental
   kysely() {
     return this.kyselyDb;
   }

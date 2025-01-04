@@ -1,6 +1,6 @@
 import { BaseSQLiteDatabase } from "drizzle-orm/sqlite-core";
 import { ExtractTablesWithRelations } from "drizzle-orm";
-import * as schema from "./schema.js";
+import * as schema from "./schema_drizzle.js";
 import { resolve } from "node:path";
 import { type Database as SQLite, RunResult } from "better-sqlite3";
 

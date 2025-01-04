@@ -1,9 +1,9 @@
 import { JsonObject } from "../types.js";
 import type { Node } from "unist";
-import { file } from "../schema.js";
-import { Db } from "../db.js";
+import { files } from "../schema_drizzle.js";
+import { Db } from "../db_drizzle.js";
 
-export type FileInsert = typeof file.$inferInsert;
+export type FileInsert = typeof files.$inferInsert;
 export type InsertCb = (
   data: JsonObject,
   ast: Node,

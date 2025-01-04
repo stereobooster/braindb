@@ -4,9 +4,9 @@ import { visit, SKIP, EXIT } from "unist-util-visit";
 import { mdParser } from "../parser.js";
 import type { Node } from "unist";
 import { dirname, resolve } from "node:path";
-import { link, task } from "../schema.js";
+import { links, tasks } from "../schema_drizzle.js";
 import { isExternalLink } from "../utils.js";
-import { Db } from "../db.js";
+import { Db } from "../db_drizzle.js";
 import path from "node:path";
 import { BasePlugin, InsertCb } from "./base.js";
 
@@ -61,7 +61,7 @@ export class MarkdownPlugin implements BasePlugin {
         const line = node.position.start.line as number;
         const column = node.position.start.column as number;
 
-        db.insert(link)
+        db.insert(links)
           .values({
             source: idPath,
             start,
@@ -87,7 +87,7 @@ export class MarkdownPlugin implements BasePlugin {
         const checked = node.checked;
         const ast = node.children[0];
 
-        db.insert(task)
+        db.insert(tasks)
           .values({
             source: idPath,
             start,

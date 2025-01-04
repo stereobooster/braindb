@@ -2,10 +2,10 @@ import { readFile, stat } from "node:fs/promises";
 import { dirname } from "node:path";
 import { eq } from "drizzle-orm";
 import type { Node } from "unist";
-import { file } from "./schema.js";
+import { files } from "./schema_drizzle.js";
 import { cheksum32, cheksumConfig, memoizeOnce } from "./utils.js";
 import { deleteFile } from "./queries.js";
-import { Db } from "./db.js";
+import { Db } from "./db_drizzle.js";
 import { BrainDBOptionsIn } from "./index.js";
 import { defaultGetSlug, defaultGetUrl } from "./defaults.js";
 import { Repository } from "@napi-rs/simple-git";
@@ -27,14 +27,14 @@ export async function addFile(
   // maybe use prepared statement?
   const [existingFile] = db
     .select({
-      id: file.id,
-      path: file.path,
-      mtime: file.mtime,
-      checksum: file.checksum,
-      cfghash: file.cfghash,
+      id: files.id,
+      path: files.path,
+      mtime: files.mtime,
+      checksum: files.checksum,
+      cfghash: files.cfghash,
     })
-    .from(file)
-    .where(eq(file.path, idPath))
+    .from(files)
+    .where(eq(files.path, idPath))
     .all();
   const { ext } = path.parse(idPath);
 
@@ -58,9 +58,9 @@ export async function addFile(
       existingFile.mtime === mtime
     ) {
       await db
-        .update(file)
+        .update(files)
         .set({ revision /*, updated_at */ })
-        .where(eq(file.path, idPath));
+        .where(eq(files.path, idPath));
       return;
     }
 
@@ -72,9 +72,9 @@ export async function addFile(
       existingFile.checksum === checksum
     ) {
       await db
-        .update(file)
+        .update(files)
         .set({ revision /*, updated_at */ })
-        .where(eq(file.path, idPath));
+        .where(eq(files.path, idPath));
       return;
     }
   } else {
@@ -113,13 +113,13 @@ export async function addFile(
       updated_at,
       revision,
       type,
-    } satisfies typeof file.$inferInsert;
+    } satisfies typeof files.$inferInsert;
 
     if (existingFile) deleteFile(db, idPath);
 
-    db.insert(file)
+    db.insert(files)
       .values(newFile)
-      .onConflictDoUpdate({ target: file.path, set: newFile })
+      .onConflictDoUpdate({ target: files.path, set: newFile })
       .run();
 
     return newFile;

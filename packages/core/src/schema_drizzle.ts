@@ -7,6 +7,7 @@ import {
   index,
 } from "drizzle-orm/sqlite-core";
 import { JsonObject } from "./types.js";
+import { relations } from "drizzle-orm";
 
 // int("updated_at", { mode: "timestamp" }),
 // const timestamp = customType<{
@@ -21,7 +22,7 @@ import { JsonObject } from "./types.js";
 //   },
 // });
 
-export const file = sqliteTable(
+export const files = sqliteTable(
   "files",
   {
     // -- private fileds --
@@ -55,7 +56,7 @@ export const file = sqliteTable(
   })
 );
 
-export type FileProps = typeof file.$inferSelect;
+export type FileProps = typeof files.$inferSelect;
 
 // TODO: better types for JSON columns https://github.com/drizzle-team/drizzle-orm/discussions/386
 // export const document = sqliteView("documents").as((qb) =>
@@ -65,7 +66,7 @@ export type FileProps = typeof file.$inferSelect;
 // InferSelectModel doesn't work for views
 // export type DocumentProps = typeof file.$inferSelect;
 
-export const link = sqliteTable(
+export const links = sqliteTable(
   "links",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
@@ -95,9 +96,9 @@ export const link = sqliteTable(
   })
 );
 
-export type LinkProps = typeof link.$inferSelect;
+export type LinkProps = typeof links.$inferSelect;
 
-export const task = sqliteTable(
+export const tasks = sqliteTable(
   "tasks",
   {
     id: integer("id").primaryKey({ autoIncrement: true }),
@@ -120,4 +121,9 @@ export const task = sqliteTable(
   })
 );
 
-export type TaskProps = typeof task.$inferSelect;
+export type TaskProps = typeof tasks.$inferSelect;
+
+export const filesRelations = relations(links, ({ one }) => ({
+  source: one(files, { fields: [links.source], references: [files.path] }),
+  target: one(files, { fields: [links.target], references: [files.path] }),
+}));
