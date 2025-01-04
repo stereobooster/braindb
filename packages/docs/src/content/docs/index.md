@@ -1,6 +1,7 @@
 ---
 title: BrainDB
 tableOfContents: false
+draft: false
 ---
 
 :::caution

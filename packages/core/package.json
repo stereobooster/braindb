@@ -54,6 +54,7 @@
     "chokidar": "^4.0.3",
     "deterministic-object-hash": "^2.0.2",
     "drizzle-orm": "^0.41.0",
+    "kysely": "^0.27.5",
     "mdast-util-to-string": "^4.0.0",
     "mitt": "^3.0.1",
     "remark-frontmatter": "^5.0.0",

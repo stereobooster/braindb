@@ -4,8 +4,8 @@ import chokidar, { FSWatcher } from "chokidar";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import { sql } from "drizzle-orm";
-
-import { Db, getDb } from "./db.js";
+import Database from "better-sqlite3";
+import { Db, getDrizzle } from "./db.js";
 import {
   getConnectedFiles,
   resolveLinks,
@@ -14,6 +14,7 @@ import {
 } from "./queries.js";
 import { addFile } from "./addFile.js";
 import { symmetricDifference } from "./utils.js";
+import { getKysely, KyselyDb } from "./schema_kysely.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
@@ -82,6 +83,7 @@ export class BrainDB {
   private cfg: BrainDBOptionsIn;
   private emitter: Emitter<Events>;
   private db: Db;
+  private kyselyDb: KyselyDb;
   private watcher: FSWatcher | undefined;
   private initializing = true;
   private initQueue: Promise<string>[] = [];
@@ -99,13 +101,15 @@ export class BrainDB {
 
     // @ts-expect-error https://nodejs.org/api/events.html#eventtarget-and-event-api
     this.emitter = mitt<Events>();
+    let dbPath = ":memory:";
     if (this.cfg.dbPath) {
-      let dbPath = join(this.cfg.dbPath, ".braindb");
+      dbPath = join(this.cfg.dbPath, ".braindb");
       mkdirSync(dbPath, { recursive: true });
-      this.db = getDb(join(dbPath, "db.sqlite"));
-    } else {
-      this.db = getDb(":memory:");
+      dbPath = join(dbPath, "db.sqlite");
     }
+    const sqlite = new Database(dbPath);
+    this.db = getDrizzle(sqlite);
+    this.kyselyDb = getKysely(sqlite);
   }
 
   start(silent?: boolean) {
@@ -252,9 +256,14 @@ export class BrainDB {
       : Promise.resolve();
   }
 
-  // TODO: replace with Kysely
+  // deprecate if Kysely option would work
   query() {
     return this.db.query;
+  }
+
+  // experimental
+  kysely() {
+    return this.kyselyDb;
   }
 
   // this is experimental - do not use it

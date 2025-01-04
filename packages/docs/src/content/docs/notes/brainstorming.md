@@ -148,8 +148,10 @@ ala Single Table Inheritance
   - `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
 - [x] change filewatcher to watch all files
 - [x] expose query interface
-- [ ] replace Drizzle with Kysely
-  - [migrations](https://kysely.dev/docs/migrations)
+- replace Drizzle with Kysely
+  - [x] create scheme
+  - [ ] Kysely doesn't support `sync` execution, so I would need to change [remarkWikiLink](packages/astro/src/remarkWikiLink.ts)
+  - [ ] [migrations](https://kysely.dev/docs/migrations)
 - plugin for markdown
   - [x] extract data, ast
   - [ ] Render to HTML
@@ -170,6 +172,11 @@ ala Single Table Inheritance
 ### Other
 
 - schema
+  - `validated` table: `path`, `schema_name`. Every valid file added to this table
+    - I can't do post-validation, because this way I would not know which are valid during SQL execution
+  - maybe add view on top: `SELECT path, data FROM file WHERE schema_name = <schema>`
+    - but this won't allow "strict" schemas (which don't allow extra fields)
+    - can I add views dynamically to "query" interface?
 - remark-wiki-img
 - rehype-embeddable
   - image special tags in URL
@@ -184,6 +191,8 @@ ala Single Table Inheritance
     - shape, icon, link, color
   - ERD
   - Sequence diagram
+- tree representation in DB for: headers, tasks
 - `.gitignore`
 - file-to-table solution (csv, JSONL etc.)
   - do I have use-case for it? I can read file directly from fs
+- backlinks point to source paragraph (anchor)

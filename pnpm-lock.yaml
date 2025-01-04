@@ -72,6 +72,9 @@ importers:
       drizzle-orm:
         specifier: ^0.41.0
         version: 0.41.0(@types/better-sqlite3@7.6.12)(better-sqlite3@11.9.1)(gel@2.0.1)(kysely@0.27.5)
+      kysely:
+        specifier: ^0.27.5
+        version: 0.27.5
       mdast-util-to-string:
         specifier: ^4.0.0
         version: 4.0.0
@@ -154,6 +157,9 @@ importers:
       astro-robots-txt:
         specifier: ^1.0.0
         version: 1.0.0
+      kysely:
+        specifier: ^0.27.5
+        version: 0.27.5
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
@@ -5780,8 +5786,7 @@ snapshots:
 
   klona@2.0.6: {}
 
-  kysely@0.27.5:
-    optional: true
+  kysely@0.27.5: {}
 
   lilconfig@3.1.3: {}
 

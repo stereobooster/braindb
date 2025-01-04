@@ -40,6 +40,9 @@ export default defineConfig({
           },
         },
       ],
+      components: {
+        TableOfContents: "./src/overrides/TableOfContents.astro",
+      },
     }),
     robotsTxt(),
     brainDbAstro(),
@@ -58,8 +61,8 @@ export default defineConfig({
           // path to files in a browser
           webPath: "/beoe",
           d2Options: {
-            pad: 20
-          }
+            pad: 20,
+          },
         },
       ],
     ],
