@@ -13,7 +13,7 @@ import {
 } from "./queries.js";
 import { addFile } from "./addFile.js";
 import { symmetricDifference } from "./utils.js";
-import { getKysely } from "./schema_kysely.js";
+import { getKysely } from "./db_kysely.js";
 import { AllDb } from "./db.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
