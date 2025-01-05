@@ -10,3 +10,4 @@ draft: true
 - [content-structure](https://github.com/MicroWebStacks/content-structure)
 - Astro Content Layer
 - Nuxt Content
+- [velite](https://github.com/zce/velite)

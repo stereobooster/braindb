@@ -151,8 +151,13 @@ ala Single Table Inheritance
 - replace Drizzle with Kysely
   - [x] create scheme
   - [x] Kysely doesn't support `sync` execution, so I would need to change [remarkWikiLink](packages/astro/src/remarkWikiLink.ts)
+  - [x] replace all internal drizzle before migration
   - [ ] [migrations](https://kysely.dev/docs/migrations)
-  - [ ] SQLite type issues: `boolean` represented as `number`, `date` represented as `number`
+  - [ ] type issues
+    - `boolean` represented as `number`
+    - `date` represented as `number`
+    - [`JSON`](https://github.com/WiseLibs/better-sqlite3/issues/99) represented as `string`
+    - Does [pglite](https://github.com/dnlsandiego/kysely-pglite) handle types better?
 - plugin for markdown
   - [x] extract data, ast
   - [ ] Render to HTML

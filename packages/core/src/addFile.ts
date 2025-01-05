@@ -1,17 +1,16 @@
 import { readFile, stat } from "node:fs/promises";
 import { dirname } from "node:path";
-import { eq } from "drizzle-orm";
 import type { Node } from "unist";
-import { files } from "./schema_drizzle.js";
 import { cheksum32, cheksumConfig, memoizeOnce } from "./utils.js";
 import { deleteFile } from "./queries.js";
-import { Db } from "./db_drizzle.js";
 import { BrainDBOptionsIn } from "./index.js";
 import { defaultGetSlug, defaultGetUrl } from "./defaults.js";
 import { Repository } from "@napi-rs/simple-git";
 import path from "node:path";
 import { getPlugin } from "./plugins/index.js";
 import { InsertCb } from "./plugins/base.js";
+import { AllDb } from "./db.js";
+import { FilesTable } from "./schema_kysely.js";
 
 export const emptyAst: Node = {} as any;
 
@@ -19,23 +18,17 @@ const getRepo = memoizeOnce((path: string) => Repository.discover(path));
 const getRepoPath = memoizeOnce((repo: Repository) => dirname(repo.path()));
 
 export async function addFile(
-  db: Db,
+  db: AllDb,
   idPath: string,
   cfg: BrainDBOptionsIn,
   revision: number
 ) {
   // maybe use prepared statement?
-  const [existingFile] = db
-    .select({
-      id: files.id,
-      path: files.path,
-      mtime: files.mtime,
-      checksum: files.checksum,
-      cfghash: files.cfghash,
-    })
-    .from(files)
-    .where(eq(files.path, idPath))
-    .all();
+  const [existingFile] = await db.kysely
+    .selectFrom("files")
+    .select(["id", "path", "mtime", "checksum", "cfghash"])
+    .where("path", "=", idPath)
+    .execute();
   const { ext } = path.parse(idPath);
 
   const absolutePath = cfg.root + idPath;
@@ -57,10 +50,10 @@ export async function addFile(
       existingFile.cfghash === cfghash &&
       existingFile.mtime === mtime
     ) {
-      await db
-        .update(files)
+      await db.kysely
+        .updateTable("files")
         .set({ revision /*, updated_at */ })
-        .where(eq(files.path, idPath));
+        .where("path", "=", idPath);
       return;
     }
 
@@ -71,10 +64,10 @@ export async function addFile(
       existingFile.cfghash === cfghash &&
       existingFile.checksum === checksum
     ) {
-      await db
-        .update(files)
+      await db.kysely
+        .updateTable("files")
         .set({ revision /*, updated_at */ })
-        .where(eq(files.path, idPath));
+        .where("path", "=", idPath);
       return;
     }
   } else {
@@ -96,15 +89,15 @@ export async function addFile(
     }
   }
 
-  const insert: InsertCb = (data, ast, type) => {
+  const insert: InsertCb = async (data, ast, type) => {
     const getUrl = cfg.url || defaultGetUrl;
     const getSlug = cfg.slug || defaultGetSlug;
 
     const newFile = {
-      id: existingFile?.id,
-      data: data,
+      id: existingFile?.id as any,
+      data: data as any,
       path: idPath,
-      ast: cfg.storeMarkdown === false ? emptyAst : ast,
+      ast: cfg.storeMarkdown === false ? emptyAst : (ast as any),
       mtime,
       checksum,
       cfghash,
@@ -113,22 +106,19 @@ export async function addFile(
       updated_at,
       revision,
       type,
-    } satisfies typeof files.$inferInsert;
+    } satisfies FilesTable;
 
     if (existingFile) deleteFile(db, idPath);
 
-    db.insert(files)
-      .values(newFile)
-      .onConflictDoUpdate({ target: files.path, set: newFile })
-      .run();
+    await db.kysely.insertInto("files").values(newFile).execute();
 
     return newFile;
   };
 
   const plugin = getPlugin(ext);
   if (plugin) {
-    plugin.process(db, idPath, content, insert);
+    await plugin.process(db, idPath, content, insert);
   } else {
-    insert({}, emptyAst, null);
+    await insert({}, emptyAst, null);
   }
 }

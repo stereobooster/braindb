@@ -4,21 +4,21 @@ import { visit, SKIP, EXIT } from "unist-util-visit";
 import { mdParser } from "../parser.js";
 import type { Node } from "unist";
 import { dirname, resolve } from "node:path";
-import { links, tasks } from "../schema_drizzle.js";
 import { isExternalLink } from "../utils.js";
-import { Db } from "../db_drizzle.js";
 import path from "node:path";
 import { BasePlugin, InsertCb } from "./base.js";
+import { AllDb } from "../db.js";
 
 export class MarkdownPlugin implements BasePlugin {
-  process(db: Db, idPath: string, content: Buffer, insert: InsertCb) {
+  async process(db: AllDb, idPath: string, content: Buffer, insert: InsertCb) {
     const ast = mdParser.parse(content.toString("utf8"));
     const data = getFrontmatter(ast);
     const { name } = path.parse(idPath);
     if (!data.title) data.title = name;
 
-    const newFile = insert(data, ast, "markdown");
+    const newFile = await insert(data, ast, "markdown");
 
+    const promises: Promise<any>[] = [];
     visit(ast as any, (node) => {
       if (node.type === "link" || node.type === "wikiLink") {
         if (node.type === "link") {
@@ -61,18 +61,21 @@ export class MarkdownPlugin implements BasePlugin {
         const line = node.position.start.line as number;
         const column = node.position.start.column as number;
 
-        db.insert(links)
-          .values({
-            source: idPath,
-            start,
-            target_url,
-            target_path,
-            target_slug,
-            target_anchor,
-            line,
-            column,
-          })
-          .run();
+        promises.push(
+          db.kysely
+            .insertInto("links")
+            .values({
+              source: idPath,
+              start,
+              target_url,
+              target_path,
+              target_slug,
+              target_anchor,
+              line,
+              column,
+            })
+            .execute()
+        );
 
         return SKIP;
       }
@@ -87,16 +90,19 @@ export class MarkdownPlugin implements BasePlugin {
         const checked = node.checked;
         const ast = node.children[0];
 
-        db.insert(tasks)
-          .values({
-            source: idPath,
-            start,
-            line,
-            column,
-            checked,
-            ast,
-          })
-          .run();
+        promises.push(
+          db.kysely
+            .insertInto("tasks")
+            .values({
+              source: idPath,
+              start,
+              line,
+              column,
+              checked,
+              ast,
+            })
+            .execute()
+        );
 
         return SKIP;
       }
@@ -105,6 +111,8 @@ export class MarkdownPlugin implements BasePlugin {
       //   return SKIP;
       // }
     });
+
+    if (promises.length > 0) await Promise.all(promises);
   }
 
   render(_path: string): string {

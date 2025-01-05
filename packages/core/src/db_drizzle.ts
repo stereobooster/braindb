@@ -16,7 +16,7 @@ export const getDrizzle = (sqlite: SQLite) => {
   return db;
 };
 
-export type Db = BaseSQLiteDatabase<
+export type DrizzleDb = BaseSQLiteDatabase<
   "sync",
   void | RunResult,
   typeof schema,

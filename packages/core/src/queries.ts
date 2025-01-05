@@ -1,12 +1,41 @@
-import { and, eq, isNull, ne, sql, isNotNull, not } from "drizzle-orm";
-import { files, links, tasks } from "./schema_drizzle.js";
-import { Db } from "./db_drizzle.js";
+import { AllDb } from "./db.js";
+import {
+  DeleteQueryBuilder,
+  SelectQueryBuilder,
+  UpdateQueryBuilder,
+} from "kysely";
 
-export function resolveLinks(db: Db) {
+/**
+ * some dark magic
+ */
+function syncDelete<DB, TB extends keyof DB, O>(
+  db: AllDb,
+  query: DeleteQueryBuilder<DB, TB, O>,
+  ...params: any[]
+) {
+  return db.sqlite.prepare(query.compile().sql).run(params);
+}
+
+function syncUpdate<DB, UT extends keyof DB, TB extends keyof DB, O>(
+  db: AllDb,
+  query: UpdateQueryBuilder<DB, UT, TB, O>,
+  ...params: any[]
+): Awaited<ReturnType<UpdateQueryBuilder<DB, UT, TB, O>["execute"]>> {
+  return db.sqlite.prepare(query.compile().sql).run(params) as any;
+}
+
+function syncSelect<DB, TB extends keyof DB, O>(
+  db: AllDb,
+  query: SelectQueryBuilder<DB, TB, O>,
+  ...params: any[]
+): Awaited<ReturnType<SelectQueryBuilder<DB, TB, O>["execute"]>> {
+  return db.sqlite.prepare(query.compile().sql).run(params) as any;
+}
+
+export function resolveLinks(db: AllDb) {
   // TODO: check for ambiguous: slugs, urls
   // Maybe update would be better than replace?
-  db.run(
-    sql`
+  db.sqlite.exec(`
   REPLACE INTO links
   SELECT
     links.id,
@@ -23,24 +52,22 @@ export function resolveLinks(db: Db) {
       links.target_slug = files.slug OR
       links.target_url = files.url OR
       links.target_path = files.path
-  WHERE links.target IS NULL;`
-  );
+  WHERE links.target IS NULL;`);
 }
 
-export function unresolvedLinks(db: Db, idPath?: string) {
-  return db
-    .select({ source: links.source, start: links.start })
-    .from(links)
-    .where(
-      idPath === undefined
-        ? isNull(links.target)
-        : and(isNull(links.target), eq(links.source, idPath))
-    )
-    .all();
+export function unresolvedLinks(db: AllDb, idPath?: string) {
+  const query = db.kysely
+    .selectFrom("links")
+    .select(["source", "start"])
+    .where("target", "is", null);
+
+  return idPath === undefined
+    ? syncSelect(db, query, null)
+    : syncSelect(db, query.where("source", "=", idPath), null, idPath);
 }
 
 type GetFilesProps = {
-  db: Db;
+  db: AllDb;
   idPath: string;
   selfLinks?: boolean;
 };
@@ -48,44 +75,42 @@ type GetFilesProps = {
 /**
  * Incoming links
  */
-export function getFilesFrom({
-  db,
-  idPath,
-  selfLinks = false,
-}: GetFilesProps) {
-  return db
-    .selectDistinct({ source: links.source })
-    .from(links)
-    .where(
-      selfLinks
-        ? eq(links.target, idPath)
-        : and(eq(links.target, idPath), ne(links.source, idPath))
-    )
-    .all()
-    .map((x) => x.source);
+export function getFilesFrom({ db, idPath, selfLinks = false }: GetFilesProps) {
+  const query = db.kysely
+    .selectFrom("links")
+    .select(["source"])
+    .distinct()
+    .where("target", "=", idPath);
+
+  return (
+    selfLinks
+      ? syncSelect(db, query, idPath)
+      : syncSelect(db, query.where("source", "!=", idPath), idPath, idPath)
+  ).map((x) => x.source);
 }
 
 /**
  * Outgoing links
  */
-export function getFilesTo({
-  db,
-  idPath,
-  selfLinks = false,
-}: GetFilesProps) {
-  return db
-    .selectDistinct({ to: links.target })
-    .from(links)
-    .where(
-      and(
-        isNotNull(links.target),
-        selfLinks
-          ? eq(links.source, idPath)
-          : and(eq(links.source, idPath), ne(links.target, idPath))
-      )
-    )
-    .all()
-    .map((x) => x.to as string);
+export function getFilesTo({ db, idPath, selfLinks = false }: GetFilesProps) {
+  const query = db.kysely
+    .selectFrom("links")
+    .select(["target"])
+    .distinct()
+    .where("target", "is not", null)
+    .where("source", "=", idPath);
+
+  return (
+    selfLinks
+      ? syncSelect(db, query, null, idPath)
+      : syncSelect(
+          db,
+          query.where("target", "!=", idPath),
+          null,
+          idPath,
+          idPath
+        )
+  ).map((x) => x.target) as string[];
 }
 
 /**
@@ -95,21 +120,40 @@ export function getConnectedFiles(props: GetFilesProps) {
   return [...new Set([...getFilesFrom(props), ...getFilesTo(props)])];
 }
 
-export function deleteFile(db: Db, idPath: string) {
-  db.delete(files).where(eq(files.path, idPath)).run();
-  db.delete(links).where(eq(links.source, idPath)).run();
-  db.update(links).set({ target: null }).where(eq(links.target, idPath)).run();
-  db.delete(tasks).where(eq(tasks.source, idPath)).run();
+export function deleteFile(db: AllDb, idPath: string) {
+  syncDelete(
+    db,
+    db.kysely.deleteFrom("files").where("path", "=", idPath),
+    idPath
+  );
+  syncDelete(
+    db,
+    db.kysely.deleteFrom("links").where("source", "=", idPath),
+    idPath
+  );
+  syncUpdate(
+    db,
+    db.kysely
+      .updateTable("links")
+      .set({ target: null })
+      .where("target", "=", idPath),
+    null,
+    idPath
+  );
+  syncDelete(
+    db,
+    db.kysely.deleteFrom("tasks").where("source", "=", idPath),
+    idPath
+  );
 }
 
-export function deleteOldRevision(db: Db, revision: number) {
-  db.select({
-    path: files.path,
-  })
-    .from(files)
-    .where(not(eq(files.revision, revision)))
-    .all()
-    .forEach(({ path }) => {
-      deleteFile(db, path);
-    });
+export function deleteOldRevision(db: AllDb, revision: number) {
+  syncSelect(
+    db,
+    db.kysely
+      .selectFrom("files")
+      .select(["path"])
+      .where("revision", "!=", revision),
+    revision
+  ).forEach(({ path }) => deleteFile(db, path));
 }

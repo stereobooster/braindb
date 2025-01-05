@@ -3,9 +3,8 @@ import mitt, { Emitter, Handler, WildcardHandler } from "mitt";
 import chokidar, { FSWatcher } from "chokidar";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
-import { sql } from "drizzle-orm";
-import Database from "better-sqlite3";
-import { Db, getDrizzle } from "./db_drizzle.js";
+import SQLite from "better-sqlite3";
+import { getDrizzle } from "./db_drizzle.js";
 import {
   getConnectedFiles,
   resolveLinks,
@@ -14,7 +13,8 @@ import {
 } from "./queries.js";
 import { addFile } from "./addFile.js";
 import { symmetricDifference } from "./utils.js";
-import { getKysely, KyselyDb } from "./schema_kysely.js";
+import { getKysely } from "./schema_kysely.js";
+import { AllDb } from "./db.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
@@ -82,8 +82,7 @@ export type BrainDBOptionsOut = {
 export class BrainDB {
   private cfg: BrainDBOptionsIn;
   private emitter: Emitter<Events>;
-  private db: Db;
-  private kyselyDb: KyselyDb;
+  private db: AllDb;
   private watcher: FSWatcher | undefined;
   private initializing = true;
   private initQueue: Promise<string>[] = [];
@@ -107,9 +106,13 @@ export class BrainDB {
       mkdirSync(dbPath, { recursive: true });
       dbPath = join(dbPath, "db.sqlite");
     }
-    const sqlite = new Database(dbPath);
-    this.db = getDrizzle(sqlite);
-    this.kyselyDb = getKysely(sqlite);
+    const sqlite = new SQLite(dbPath);
+    getDrizzle(sqlite);
+    this.db = {
+      sqlite,
+      // drizzle: getDrizzle(sqlite),
+      kysely: getKysely(sqlite),
+    };
   }
 
   start(silent?: boolean) {
@@ -257,11 +260,12 @@ export class BrainDB {
   }
 
   kysely() {
-    return this.kyselyDb;
+    return this.db.kysely;
   }
 
   // this is experimental - do not use it
   __rawQuery(query: string) {
-    return this.db.all(sql.raw(query));
+    // Does this returns JSON for JSON columns?
+    return this.db.sqlite.prepare(query).all();
   }
 }

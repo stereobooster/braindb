@@ -30,6 +30,7 @@ See [[dataview]]
 - [ ] [[frontmatter-schema]]
 - [ ] Extract tags?
   - what about other taxonomies?
+- [ ] more data for tasks https://publish.obsidian.md/tasks/Reference/Task+Formats/Dataview+Format
 
 ## Components
 

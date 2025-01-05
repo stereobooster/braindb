@@ -4,7 +4,7 @@ import { Generated, JSONColumnType } from "kysely";
 import type { Node } from "unist";
 import { JsonObject } from "./types.js";
 
-interface FileTable {
+export interface FilesTable {
   // -- private fileds --
   // can use Inode number here
   id: Generated<number>;
@@ -29,11 +29,10 @@ interface FileTable {
   ast: JSONColumnType<Node>;
 }
 
-interface LinkTable {
+interface LinksTable {
   id: Generated<number>;
   // edge for directed graph
   source: string;
-  target: string;
   /**
    * Options to uniqlly identify link in the file
    * - **path + start.offset**
@@ -42,15 +41,16 @@ interface LinkTable {
    * - path + start.column + start.line
    */
   start: number;
-  target_slug: string;
-  target_url: string;
-  target_path: string;
-  target_anchor: string;
+  target: string | null;
+  target_slug: string | null;
+  target_url: string | null;
+  target_path: string | null;
+  target_anchor: string | null;
   line: number;
   column: number;
 }
 
-interface TaskTable {
+interface TasksTable {
   id: Generated<number>;
   source: string;
   /**
@@ -70,9 +70,9 @@ interface TaskTable {
 // export type File = Selectable<FileTable>;
 
 interface Database {
-  files: FileTable;
-  links: LinkTable;
-  tasks: TaskTable;
+  files: FilesTable;
+  links: LinksTable;
+  tasks: TasksTable;
 }
 
 export const getKysely = (database: SQLite) => {
@@ -81,7 +81,7 @@ export const getKysely = (database: SQLite) => {
   });
   return new Kysely<Database>({
     dialect,
-    plugins: [new ParseJSONResultsPlugin()]
+    plugins: [new ParseJSONResultsPlugin()],
   });
 };
 
