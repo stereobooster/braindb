@@ -4,7 +4,6 @@ import chokidar, { FSWatcher } from "chokidar";
 import { mkdirSync } from "node:fs";
 import { join } from "node:path";
 import SQLite from "better-sqlite3";
-import { getDrizzle } from "./db_drizzle.js";
 import {
   getConnectedFiles,
   resolveLinks,
@@ -13,7 +12,7 @@ import {
 } from "./queries.js";
 import { addFile } from "./addFile.js";
 import { symmetricDifference } from "./utils.js";
-import { getKysely } from "./db_kysely.js";
+import { getKysely, migrateKysely } from "./db_kysely.js";
 import { AllDb } from "./db.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
@@ -83,6 +82,7 @@ export class BrainDB {
   private cfg: BrainDBOptionsIn;
   private emitter: Emitter<Events>;
   private db: AllDb;
+  private migrations: Promise<any>;
   private watcher: FSWatcher | undefined;
   private initializing = true;
   private initQueue: Promise<string>[] = [];
@@ -108,10 +108,11 @@ export class BrainDB {
     }
     // const sqlite = new SQLite(dbPath, { verbose: console.log });
     const sqlite = new SQLite(dbPath);
-    getDrizzle(sqlite);
+    const kysely = getKysely(sqlite);
+    this.migrations = migrateKysely(kysely);
     this.db = {
       sqlite,
-      kysely: getKysely(sqlite),
+      kysely,
     };
   }
 
@@ -154,6 +155,7 @@ export class BrainDB {
         this.emitter.emit("ready");
       })
       .on("add", async (file: string) => {
+        await this.migrations;
         const idPath = fileToPathId(file);
 
         if (this.initializing) {
@@ -185,7 +187,8 @@ export class BrainDB {
           this.emitter.emit("update", { path } as any)
         );
       })
-      .on("unlink", (file: string) => {
+      .on("unlink", async (file: string) => {
+        await this.migrations;
         const idPath = fileToPathId(file);
 
         const linksBefore = getConnectedFiles({
@@ -203,6 +206,7 @@ export class BrainDB {
         );
       })
       .on("change", async (file: string) => {
+        await this.migrations;
         const idPath = fileToPathId(file);
 
         const linksBefore = getConnectedFiles({
@@ -248,8 +252,9 @@ export class BrainDB {
     return this;
   }
 
-  ready() {
+  async ready() {
     if (!this.watcher) return Promise.reject(new Error("BraindDB not started"));
+    await this.migrations;
 
     return this.initializing
       ? new Promise((resolve) => {
