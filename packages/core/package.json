@@ -25,8 +25,7 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "files": [
-    "./dist/*",
-    "./drizzle/**/*"
+    "./dist/*"
   ],
   "types": "./dist/index.d.js",
   "scripts": {
@@ -35,16 +34,14 @@
     "build": "rm -rf dist && tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf dist",
-    "tsc": "tsc",
-    "generate": "drizzle-kit generate"
+    "tsc": "tsc"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "@types/serialize-javascript": "^5.0.4",
-    "@types/unist": "^3.0.3",
-    "drizzle-kit": "^0.30.6"
+    "@types/unist": "^3.0.3"
   },
   "dependencies": {
     "@braindb/remark-wiki-link": "workspace:*",
@@ -53,7 +50,6 @@
     "better-sqlite3": "^11.9.1",
     "chokidar": "^4.0.3",
     "deterministic-object-hash": "^2.0.2",
-    "drizzle-orm": "^0.41.0",
     "kysely": "^0.27.5",
     "mdast-util-to-string": "^4.0.0",
     "mitt": "^3.0.1",
