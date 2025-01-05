@@ -148,30 +148,31 @@ ala Single Table Inheritance
   - `Document`, `Link`, `documentsSync`, `documents`, `findDocumentSync`, `linksSync`, `tasks` etc.
 - [x] change filewatcher to watch all files
 - [x] expose query interface
+- plugin for markdown
+  - [x] extract data, ast
 - replace Drizzle with Kysely
   - [x] create scheme
   - [x] Kysely doesn't support `sync` execution, so I would need to change [remarkWikiLink](packages/astro/src/remarkWikiLink.ts)
   - [x] replace all internal drizzle before migration
   - [x] [migrations](https://kysely.dev/docs/migrations)
-  - [ ] type issues
+  - [ ] I'm on the fence with `sync` execution of SQLite
+- contentlayer
+  - [ ] type issues https://www.sqlite.org/datatype3.html
     - `boolean` represented as `number`
     - `date` represented as `number`
     - [`JSON`](https://github.com/WiseLibs/better-sqlite3/issues/99) represented as `string`
     - Does [pglite](https://github.com/dnlsandiego/kysely-pglite) handle types better?
-  - [ ] I'm on the fence with `sync` execution of SQLite
-- plugin for markdown
-  - [x] extract data, ast
-  - [ ] Render to HTML
-- [ ] content-layer documentation
-- [ ] create plugin for images (to make sure plugin system works)
-  - extract dimensions
-- [ ] create plugin for JSON
+  - [ ] Render to HTML (markdown plugin)
+  - [ ] documentation
 - rename all SQL tables, columns
   - [x] `from` -> `source`, `to` -> `target`
   - [x] `frontmatter` -> `data`
   - [x] rename all `Document` to `File` (`addDocument`, `getDocumentsFrom`, ...)
   - [ ] maybe `files.path` -> `files.source`? or `*.source` -> `*.path`
   - [ ] maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
+- [ ] create plugin for images (to make sure plugin system works)
+  - extract dimensions
+- [ ] create plugin for JSON
 - maybe backward compatibility
   - [ ] maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
   - [ ] restore deleted classes and methods (from 1-st item)
