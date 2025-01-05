@@ -110,6 +110,7 @@ export async function addFile(
 
     if (existingFile) deleteFile(db, idPath);
 
+    // it stucks here
     await db.kysely.insertInto("files").values(newFile).execute();
 
     return newFile;
