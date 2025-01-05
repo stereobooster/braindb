@@ -6,9 +6,6 @@ import {
   UpdateQueryBuilder,
 } from "kysely";
 
-/**
- * some dark magic
- */
 function syncDelete<DB, TB extends keyof DB, O>(
   db: AllDb,
   query: DeleteQueryBuilder<DB, TB, O>

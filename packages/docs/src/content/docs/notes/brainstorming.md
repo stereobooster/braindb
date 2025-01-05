@@ -158,6 +158,7 @@ ala Single Table Inheritance
     - `date` represented as `number`
     - [`JSON`](https://github.com/WiseLibs/better-sqlite3/issues/99) represented as `string`
     - Does [pglite](https://github.com/dnlsandiego/kysely-pglite) handle types better?
+  - [ ] I'm on the fence with `sync` execution of SQLite
 - plugin for markdown
   - [x] extract data, ast
   - [ ] Render to HTML

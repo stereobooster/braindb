@@ -15,9 +15,11 @@ export interface FilesTable {
   checksum: number;
   // config hash
   cfghash: number;
+  // to track deleted files when BrainDB wasn't running
   revision: number;
-  // maybe enum?
+  // which plugin
   type: string | null;
+  ast: JSONColumnType<Node>;
   // -- public fileds --
   path: string;
   // for link resolution
@@ -26,7 +28,6 @@ export interface FilesTable {
   updated_at: number; // Date?
   // content
   data: JSONColumnType<JsonObject>;
-  ast: JSONColumnType<Node>;
 }
 
 interface LinksTable {
