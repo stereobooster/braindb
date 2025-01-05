@@ -8,17 +8,17 @@ import { isExternalLink } from "../utils.js";
 import path from "node:path";
 import { BasePlugin, InsertCb } from "./base.js";
 import { AllDb } from "../db.js";
+import { syncInsert } from "../queries.js";
 
 export class MarkdownPlugin implements BasePlugin {
-  async process(db: AllDb, idPath: string, content: Buffer, insert: InsertCb) {
+  process(db: AllDb, idPath: string, content: Buffer, insert: InsertCb) {
     const ast = mdParser.parse(content.toString("utf8"));
     const data = getFrontmatter(ast);
     const { name } = path.parse(idPath);
     if (!data.title) data.title = name;
 
-    const newFile = await insert(data, ast, "markdown");
+    const newFile = insert(data, ast, "markdown");
 
-    const promises: Promise<any>[] = [];
     visit(ast as any, (node) => {
       if (node.type === "link" || node.type === "wikiLink") {
         if (node.type === "link") {
@@ -61,20 +61,18 @@ export class MarkdownPlugin implements BasePlugin {
         const line = node.position.start.line as number;
         const column = node.position.start.column as number;
 
-        promises.push(
-          db.kysely
-            .insertInto("links")
-            .values({
-              source: idPath,
-              start,
-              target_url,
-              target_path,
-              target_slug,
-              target_anchor,
-              line,
-              column,
-            })
-            .execute()
+        syncInsert(
+          db,
+          db.kysely.insertInto("links").values({
+            source: idPath,
+            start,
+            target_url,
+            target_path,
+            target_slug,
+            target_anchor,
+            line,
+            column,
+          })
         );
 
         return SKIP;
@@ -90,18 +88,17 @@ export class MarkdownPlugin implements BasePlugin {
         const checked = node.checked;
         const ast = node.children[0];
 
-        promises.push(
-          db.kysely
-            .insertInto("tasks")
-            .values({
-              source: idPath,
-              start,
-              line,
-              column,
-              checked,
-              ast,
-            })
-            .execute()
+        syncInsert(
+          db,
+          db.kysely.insertInto("tasks").values({
+            source: idPath,
+            start,
+            line,
+            column,
+            // NOTE: type mismatch caused slient issue in SQLite
+            checked: checked ? 1 : 0,
+            ast,
+          })
         );
 
         return SKIP;
@@ -111,8 +108,6 @@ export class MarkdownPlugin implements BasePlugin {
       //   return SKIP;
       // }
     });
-
-    if (promises.length > 0) await Promise.all(promises);
   }
 
   render(_path: string): string {

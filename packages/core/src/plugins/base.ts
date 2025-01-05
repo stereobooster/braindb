@@ -7,9 +7,10 @@ export type InsertCb = (
   data: JsonObject,
   ast: Node,
   type: string | null
-) => Promise<FilesTable>;
+) => FilesTable;
 
 export interface BasePlugin {
-  process(db: AllDb, idPath: string, content: Buffer, insert: InsertCb): Promise<void>;
+  // this probably should be async
+  process(db: AllDb, idPath: string, content: Buffer, insert: InsertCb): void;
   render(path: string): string;
 }

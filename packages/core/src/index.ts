@@ -106,11 +106,11 @@ export class BrainDB {
       mkdirSync(dbPath, { recursive: true });
       dbPath = join(dbPath, "db.sqlite");
     }
+    // const sqlite = new SQLite(dbPath, { verbose: console.log });
     const sqlite = new SQLite(dbPath);
     getDrizzle(sqlite);
     this.db = {
       sqlite,
-      // drizzle: getDrizzle(sqlite),
       kysely: getKysely(sqlite),
     };
   }

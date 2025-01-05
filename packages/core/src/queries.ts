@@ -1,6 +1,7 @@
 import { AllDb } from "./db.js";
 import {
   DeleteQueryBuilder,
+  InsertQueryBuilder,
   SelectQueryBuilder,
   UpdateQueryBuilder,
 } from "kysely";
@@ -10,26 +11,46 @@ import {
  */
 function syncDelete<DB, TB extends keyof DB, O>(
   db: AllDb,
-  query: DeleteQueryBuilder<DB, TB, O>,
-  ...params: any[]
+  query: DeleteQueryBuilder<DB, TB, O>
 ) {
-  return db.sqlite.prepare(query.compile().sql).run(params);
+  const c = query.compile();
+  const params = c.parameters.map((x) =>
+    typeof x === "object" && x !== null ? JSON.stringify(x) : x
+  );
+  db.sqlite.prepare(c.sql).run(...params);
 }
 
-function syncUpdate<DB, UT extends keyof DB, TB extends keyof DB, O>(
+export function syncUpdate<DB, UT extends keyof DB, TB extends keyof DB, O>(
   db: AllDb,
-  query: UpdateQueryBuilder<DB, UT, TB, O>,
-  ...params: any[]
-): Awaited<ReturnType<UpdateQueryBuilder<DB, UT, TB, O>["execute"]>> {
-  return db.sqlite.prepare(query.compile().sql).run(params) as any;
+  query: UpdateQueryBuilder<DB, UT, TB, O>
+) {
+  const c = query.compile();
+  const params = c.parameters.map((x) =>
+    typeof x === "object" && x !== null ? JSON.stringify(x) : x
+  );
+  db.sqlite.prepare(c.sql).run(...params);
 }
 
-function syncSelect<DB, TB extends keyof DB, O>(
+export function syncInsert<DB, TB extends keyof DB, O>(
   db: AllDb,
-  query: SelectQueryBuilder<DB, TB, O>,
-  ...params: any[]
+  query: InsertQueryBuilder<DB, TB, O>
+) {
+  const c = query.compile();
+  const params = c.parameters.map((x) =>
+    typeof x === "object" && x !== null ? JSON.stringify(x) : x
+  );
+  db.sqlite.prepare(c.sql).run(...params);
+}
+
+export function syncSelect<DB, TB extends keyof DB, O>(
+  db: AllDb,
+  query: SelectQueryBuilder<DB, TB, O>
 ): Awaited<ReturnType<SelectQueryBuilder<DB, TB, O>["execute"]>> {
-  return db.sqlite.prepare(query.compile().sql).run(params) as any;
+  const c = query.compile();
+  const params = c.parameters.map((x) =>
+    typeof x === "object" && x !== null ? JSON.stringify(x) : x
+  );
+  return db.sqlite.prepare(c.sql).all(...params) as any;
 }
 
 export function resolveLinks(db: AllDb) {
@@ -62,8 +83,8 @@ export function unresolvedLinks(db: AllDb, idPath?: string) {
     .where("target", "is", null);
 
   return idPath === undefined
-    ? syncSelect(db, query, null)
-    : syncSelect(db, query.where("source", "=", idPath), null, idPath);
+    ? syncSelect(db, query)
+    : syncSelect(db, query.where("source", "=", idPath));
 }
 
 type GetFilesProps = {
@@ -84,8 +105,8 @@ export function getFilesFrom({ db, idPath, selfLinks = false }: GetFilesProps) {
 
   return (
     selfLinks
-      ? syncSelect(db, query, idPath)
-      : syncSelect(db, query.where("source", "!=", idPath), idPath, idPath)
+      ? syncSelect(db, query)
+      : syncSelect(db, query.where("source", "!=", idPath))
   ).map((x) => x.source);
 }
 
@@ -102,14 +123,8 @@ export function getFilesTo({ db, idPath, selfLinks = false }: GetFilesProps) {
 
   return (
     selfLinks
-      ? syncSelect(db, query, null, idPath)
-      : syncSelect(
-          db,
-          query.where("target", "!=", idPath),
-          null,
-          idPath,
-          idPath
-        )
+      ? syncSelect(db, query)
+      : syncSelect(db, query.where("target", "!=", idPath))
   ).map((x) => x.target) as string[];
 }
 
@@ -121,30 +136,16 @@ export function getConnectedFiles(props: GetFilesProps) {
 }
 
 export function deleteFile(db: AllDb, idPath: string) {
-  syncDelete(
-    db,
-    db.kysely.deleteFrom("files").where("path", "=", idPath),
-    idPath
-  );
-  syncDelete(
-    db,
-    db.kysely.deleteFrom("links").where("source", "=", idPath),
-    idPath
-  );
+  syncDelete(db, db.kysely.deleteFrom("files").where("path", "=", idPath));
+  syncDelete(db, db.kysely.deleteFrom("links").where("source", "=", idPath));
   syncUpdate(
     db,
     db.kysely
       .updateTable("links")
       .set({ target: null })
-      .where("target", "=", idPath),
-    null,
-    idPath
+      .where("target", "=", idPath)
   );
-  syncDelete(
-    db,
-    db.kysely.deleteFrom("tasks").where("source", "=", idPath),
-    idPath
-  );
+  syncDelete(db, db.kysely.deleteFrom("tasks").where("source", "=", idPath));
 }
 
 export function deleteOldRevision(db: AllDb, revision: number) {
@@ -153,7 +154,6 @@ export function deleteOldRevision(db: AllDb, revision: number) {
     db.kysely
       .selectFrom("files")
       .select(["path"])
-      .where("revision", "!=", revision),
-    revision
+      .where("revision", "!=", revision)
   ).forEach(({ path }) => deleteFile(db, path));
 }

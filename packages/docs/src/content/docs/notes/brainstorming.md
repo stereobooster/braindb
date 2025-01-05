@@ -152,7 +152,6 @@ ala Single Table Inheritance
   - [x] create scheme
   - [x] Kysely doesn't support `sync` execution, so I would need to change [remarkWikiLink](packages/astro/src/remarkWikiLink.ts)
   - [x] replace all internal drizzle before migration
-  - [ ] **problem**: async queries locks database
   - [ ] [migrations](https://kysely.dev/docs/migrations)
   - [ ] type issues
     - `boolean` represented as `number`

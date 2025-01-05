@@ -2,7 +2,7 @@ import { readFile, stat } from "node:fs/promises";
 import { dirname } from "node:path";
 import type { Node } from "unist";
 import { cheksum32, cheksumConfig, memoizeOnce } from "./utils.js";
-import { deleteFile } from "./queries.js";
+import { deleteFile, syncInsert, syncSelect, syncUpdate } from "./queries.js";
 import { BrainDBOptionsIn } from "./index.js";
 import { defaultGetSlug, defaultGetUrl } from "./defaults.js";
 import { Repository } from "@napi-rs/simple-git";
@@ -24,11 +24,13 @@ export async function addFile(
   revision: number
 ) {
   // maybe use prepared statement?
-  const [existingFile] = await db.kysely
-    .selectFrom("files")
-    .select(["id", "path", "mtime", "checksum", "cfghash"])
-    .where("path", "=", idPath)
-    .execute();
+  const [existingFile] = syncSelect(
+    db,
+    db.kysely
+      .selectFrom("files")
+      .select(["id", "path", "mtime", "checksum", "cfghash"])
+      .where("path", "=", idPath)
+  );
   const { ext } = path.parse(idPath);
 
   const absolutePath = cfg.root + idPath;
@@ -36,7 +38,6 @@ export async function addFile(
   const st = await stat(absolutePath);
   const mtime = st.mtimeMs;
   let checksum = 0;
-  let content: Buffer | null = null;
   let cfghash = 0;
 
   if (cfg.cache) {
@@ -50,28 +51,31 @@ export async function addFile(
       existingFile.cfghash === cfghash &&
       existingFile.mtime === mtime
     ) {
-      await db.kysely
-        .updateTable("files")
-        .set({ revision /*, updated_at */ })
-        .where("path", "=", idPath);
+      syncUpdate(
+        db,
+        db.kysely
+          .updateTable("files")
+          .set({ revision /*, updated_at */ })
+          .where("path", "=", idPath)
+      );
       return;
     }
 
-    content = await readFile(absolutePath);
-    checksum = cheksum32(content);
+    checksum = cheksum32(await readFile(absolutePath));
     if (
       existingFile &&
       existingFile.cfghash === cfghash &&
       existingFile.checksum === checksum
     ) {
-      await db.kysely
-        .updateTable("files")
-        .set({ revision /*, updated_at */ })
-        .where("path", "=", idPath);
+      syncUpdate(
+        db,
+        db.kysely
+          .updateTable("files")
+          .set({ revision /*, updated_at */ })
+          .where("path", "=", idPath)
+      );
       return;
     }
-  } else {
-    content = await readFile(absolutePath);
   }
 
   let updated_at = Math.round(mtime);
@@ -89,7 +93,7 @@ export async function addFile(
     }
   }
 
-  const insert: InsertCb = async (data, ast, type) => {
+  const insert: InsertCb = (data, ast, type) => {
     const getUrl = cfg.url || defaultGetUrl;
     const getSlug = cfg.slug || defaultGetSlug;
 
@@ -110,16 +114,15 @@ export async function addFile(
 
     if (existingFile) deleteFile(db, idPath);
 
-    // it stucks here
-    await db.kysely.insertInto("files").values(newFile).execute();
+    syncInsert(db, db.kysely.insertInto("files").values(newFile));
 
     return newFile;
   };
 
   const plugin = getPlugin(ext);
   if (plugin) {
-    await plugin.process(db, idPath, content, insert);
+    plugin.process(db, idPath, await readFile(absolutePath), insert);
   } else {
-    await insert({}, emptyAst, null);
+    insert({}, emptyAst, null);
   }
 }
