@@ -156,14 +156,17 @@ ala Single Table Inheritance
   - [x] replace all internal drizzle before migration
   - [x] [migrations](https://kysely.dev/docs/migrations)
   - [ ] I'm on the fence with `sync` execution of SQLite
+- [ ] sample site, to make sure contentlayer works
 - contentlayer
-  - [ ] type issues https://www.sqlite.org/datatype3.html
+  - [ ] Render to HTML (markdown plugin)
+    - accepts `path`, returns string
+  - [ ] documentation
+    - `kysely`, `events`, ~~`render`~~ `html`
+  - [ ] [type](https://www.sqlite.org/datatype3.html) issues
     - `boolean` represented as `number`
     - `date` represented as `number`
     - [`JSON`](https://github.com/WiseLibs/better-sqlite3/issues/99) represented as `string`
     - Does [pglite](https://github.com/dnlsandiego/kysely-pglite) handle types better?
-  - [ ] Render to HTML (markdown plugin)
-  - [ ] documentation
 - rename all SQL tables, columns
   - [x] `from` -> `source`, `to` -> `target`
   - [x] `frontmatter` -> `data`

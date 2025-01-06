@@ -3,6 +3,7 @@ title: alternatives
 draft: true
 ---
 
+- [content-collections](https://www.content-collections.dev/)
 - [contentlayer2](https://github.com/timlrx/contentlayer2)
   - [Contentlayer2 fork](https://github.com/contentlayerdev/contentlayer/issues/429#issuecomment-2030339798)
 - [markdownlayer](https://github.com/mburumaxwell/markdownlayer)
