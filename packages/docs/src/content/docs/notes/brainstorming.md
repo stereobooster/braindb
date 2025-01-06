@@ -156,7 +156,10 @@ ala Single Table Inheritance
   - [x] replace all internal drizzle before migration
   - [x] [migrations](https://kysely.dev/docs/migrations)
   - [ ] I'm on the fence with `sync` execution of SQLite
-- [ ] sample site, to make sure contentlayer works
+- [ ] sample site, to make sure contentlayer works. Maybe:
+  - https://nextra.site/
+    - https://the-guild.dev/blog/nextra-3#remote-docs-support
+  - https://fumadocs.vercel.app/docs/ui
 - contentlayer
   - [ ] Render to HTML (markdown plugin)
     - accepts `path`, returns string
@@ -182,6 +185,10 @@ ala Single Table Inheritance
 
 ### Other
 
+- DX
+  - live-reload: I have events, but I need to figure out how to implement plugins for Vite / Next.js
+  - TypeScript: I have idea on how to add schema, but I need to figure out details
+  - MDX: I can easily render Markdown, but MDX would be more complicated
 - schema
   - `validated` table: `path`, `schema_name`. Every valid file added to this table
     - I can't do post-validation, because this way I would not know which are valid during SQL execution
