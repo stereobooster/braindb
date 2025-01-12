@@ -21,8 +21,11 @@ sidebar:
       2. `ID3`: [music-metadata](https://github.com/borewit/music-metadata), [audio-metadata](https://github.com/tmont/audio-metadata), [parse-audio-metadata](https://github.com/andriuskv/parse-audio-metadata)
       3. [STT](https://www.npmjs.com/search?q=speech-to-text), [pocketsphinx](https://syl22-00.github.io/pocketsphinx.js/)
    5. [JSON canvas](https://jsoncanvas.org/)
-   6. no plugin = no data
-   7. plugin responsible for
+   6. MDX
+      1. https://github.com/mdx-js/mdx
+      2. https://github.com/web-infra-dev/mdx-rs
+   7. no plugin = no data
+   8. plugin responsible for
       1. gathering data
       2. gathering parts like tasks, headers, links (markdown)
       3. resolving links

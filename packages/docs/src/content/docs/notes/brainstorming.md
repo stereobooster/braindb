@@ -157,9 +157,9 @@ ala Single Table Inheritance
   - [x] [migrations](https://kysely.dev/docs/migrations)
   - [ ] I'm on the fence with `sync` execution of SQLite
 - [ ] sample site, to make sure contentlayer works. Maybe:
-  - https://nextra.site/
-    - https://the-guild.dev/blog/nextra-3#remote-docs-support
-  - https://fumadocs.vercel.app/docs/ui
+  - https://fumadocs.vercel.app/docs/headless/remote
+  - https://stereobooster.com/posts/components-for-web/
+  - https://imfing.github.io/hextra/docs/guide/markdown/
 - contentlayer
   - [ ] Render to HTML (markdown plugin)
     - accepts `path`, returns string
