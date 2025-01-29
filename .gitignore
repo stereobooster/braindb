@@ -199,3 +199,4 @@ pnpm-debug.log*
 .DS_Store
 
 packages/docs/public/beoe/*
+.braindb

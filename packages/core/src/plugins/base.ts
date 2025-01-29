@@ -13,5 +13,5 @@ export interface BasePlugin {
   // 1. this probably should be async
   // 2. maybe avoid passing `content`?
   process(db: AllDb, idPath: string, content: Buffer, insert: InsertCb): void;
-  render(path: string): string;
+  render(data: any): Promise<string>;
 }

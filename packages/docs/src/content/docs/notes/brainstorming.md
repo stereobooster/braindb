@@ -185,6 +185,14 @@ ala Single Table Inheritance
 
 ### Other
 
+- remark-rehype plugins
+  - `remarkParse`, `remarkFrontmatter`, `wikiLinkPlugin`, `remarkGfm`
+  - 👉 user supplied remark plugins
+  - 👈 store `AST`
+  - dataview, wiki link resolution (order important)
+  - `remarkRehype`
+  - 👉 user supplied rehype plugins
+  - 👈 render `HTML`
 - DX
   - live-reload: I have events, but I need to figure out how to implement plugins for Vite / Next.js
   - TypeScript: I have idea on how to add schema, but I need to figure out details

@@ -1,7 +1,7 @@
 import { parse as parseYaml } from "yaml";
 import { JsonObject } from "../types.js";
 import { visit, SKIP, EXIT } from "unist-util-visit";
-import { mdParser } from "../parser.js";
+import { mdParser } from "./parser.js";
 import type { Node } from "unist";
 import { dirname, resolve } from "node:path";
 import { isExternalLink } from "../utils.js";
@@ -110,8 +110,10 @@ export class MarkdownPlugin implements BasePlugin {
     });
   }
 
-  render(_path: string): string {
-    throw new Error("Not impelemented");
+  render(data: any) {
+    return mdParser
+      .run(data)
+      .then((root) => mdParser.stringify(root) as string);
   }
 }
 

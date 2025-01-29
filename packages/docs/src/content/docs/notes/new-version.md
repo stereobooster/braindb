@@ -24,6 +24,7 @@ sidebar:
    6. MDX
       1. https://github.com/mdx-js/mdx
       2. https://github.com/web-infra-dev/mdx-rs
+      3. https://github.com/kentcdodds/mdx-bundler
    7. no plugin = no data
    8. plugin responsible for
       1. gathering data

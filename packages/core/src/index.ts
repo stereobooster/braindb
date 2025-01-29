@@ -14,6 +14,7 @@ import { addFile } from "./addFile.js";
 import { symmetricDifference } from "./utils.js";
 import { getKysely, migrateKysely } from "./db_kysely.js";
 import { AllDb } from "./db.js";
+import { getPlugin } from "./plugins/index.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
@@ -265,6 +266,15 @@ export class BrainDB {
 
   kysely() {
     return this.db.kysely;
+  }
+
+  html(ast: any) {
+    // this.db.kysely
+    //   .selectFrom("files")
+    //   .select(["ast"])
+    //   .where("path", "=", idPath);
+    // if (!file) return Promise.resolve(undefined);
+    return getPlugin(".md")!.render(ast);
   }
 
   // this is experimental - do not use it

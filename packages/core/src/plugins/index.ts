@@ -1,7 +1,7 @@
 import { BasePlugin } from "./base.js";
 import { MarkdownPlugin } from "./markdown.js";
 
-const plugins: Record<string, BasePlugin> = {
+const plugins: Record<string, BasePlugin | undefined> = {
   ".md": new MarkdownPlugin(),
   ".mdx": new MarkdownPlugin(),
   // ".json":
