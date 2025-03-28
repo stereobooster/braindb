@@ -24,7 +24,7 @@ export const remarkWikiLink: Plugin<[{ bdb: BrainDB }], Root> = ({ bdb }) => {
       if (slugWithoutAnchor) {
         const doc = bdb.documentsSync({ slug: slugWithoutAnchor })[0];
         if (doc) {
-          if (!doc.frontmatter().draft || import.meta.env.DEV) {
+          if (!doc.frontmatter().draft || (import.meta.env && import.meta.env.DEV)) {
             node.data = {
               hName: "a",
               hProperties: {

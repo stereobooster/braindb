@@ -1,6 +1,6 @@
 {
   "name": "@braindb/remark-dataview",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "markdown-graph-content-layer-database",
   "repository": {
     "type": "git",
@@ -37,11 +37,11 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@beoe/remark-code-hook": "^0.0.1",
+    "@beoe/remark-code-hook": "^0.1.0",
     "@braindb/core": "workspace:*",
     "@types/mdast": "^4.0.4",
     "fenceparser": "^2.2.0",
-    "node-sql-parser": "^5.3.2",
+    "node-sql-parser": "^5.3.8",
     "unified": "^11.0.5"
   }
 }

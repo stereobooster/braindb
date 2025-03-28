@@ -44,11 +44,11 @@
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "micromark": "^4.0.0",
-    "vitest": "^1.6.0",
-    "vite-tsconfig-paths": "^4.3.2"
+    "micromark": "^4.0.2",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.0.9"
   },
   "dependencies": {
-    "micromark-util-types": "^2.0.0"
+    "micromark-util-types": "^2.0.2"
   }
 }

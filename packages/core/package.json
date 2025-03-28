@@ -39,31 +39,31 @@
     "generate": "drizzle-kit generate:sqlite"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.10",
+    "@types/better-sqlite3": "^7.6.12",
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "@types/serialize-javascript": "^5.0.4",
-    "@types/unist": "^3.0.2",
-    "drizzle-kit": "^0.22.7"
+    "@types/unist": "^3.0.3",
+    "drizzle-kit": "^0.30.6"
   },
   "dependencies": {
     "@braindb/remark-wiki-link": "workspace:*",
-    "@napi-rs/simple-git": "^0.1.16",
-    "@node-rs/xxhash": "^1.7.3",
-    "better-sqlite3": "^11.1.1",
-    "chokidar": "^3.6.0",
+    "@napi-rs/simple-git": "^0.1.19",
+    "@node-rs/xxhash": "^1.7.6",
+    "better-sqlite3": "^11.9.1",
+    "chokidar": "^4.0.3",
     "deterministic-object-hash": "^2.0.2",
-    "drizzle-orm": "^0.31.2",
+    "drizzle-orm": "^0.41.0",
     "mdast-util-to-string": "^4.0.0",
     "mitt": "^3.0.1",
     "remark-frontmatter": "^5.0.0",
-    "remark-gfm": "^4.0.0",
+    "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
     "strip-markdown": "^6.0.0",
     "unified": "^11.0.5",
     "unist-util-map": "^4.0.0",
     "unist-util-visit": "^5.0.0",
-    "yaml": "^2.4.5"
+    "yaml": "^2.7.0"
   }
 }
