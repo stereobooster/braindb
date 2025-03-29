@@ -126,10 +126,16 @@ export class BrainDB {
     const fileToPathId = (file: string) =>
       (file.startsWith("/") ? file : "/" + file).replace(this.cfg.root, "");
 
-    const files = `${this.cfg.root}${this.cfg.source}/**/*.{md,mdx}`;
+    const files = `${this.cfg.root}${this.cfg.source}/`;
+    const dotfilesRegex = /(^|[\/\\])\../;
+
     this.watcher = chokidar
       .watch(files, {
-        ignored: /(^|[\/\\])\../, // ignore dotfiles
+        ignored: (path, stats) => {
+          return (stats?.isFile() &&
+            !(path.endsWith(".md") || path.endsWith(".mdx")) &&
+            !dotfilesRegex.test(path)) as boolean;
+        },
         persistent: true,
       })
       .on("error", (error: any) => console.log(`Watcher error: ${error}`))
@@ -305,6 +311,6 @@ export class BrainDB {
 
   // this is experimental - do not use it
   __rawQuery(query: string) {
-    return this.db.all(sql.raw(query))
+    return this.db.all(sql.raw(query));
   }
 }
