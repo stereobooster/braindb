@@ -222,3 +222,30 @@ ala Single Table Inheritance
 - file-to-table solution (csv, JSONL etc.)
   - do I have use-case for it? I can read file directly from fs
 - backlinks point to source paragraph (anchor)
+
+### without fumadocs
+
+- Astro website with any frameowrk ([including shadcn](https://stereobooster.com/posts/components-for-web/#pre-styled-versions-of-headless-components))
+  - generate pages (each md file -> page)
+  - generate ToC
+  - backlinks
+  - generate sidebar
+- markdown to HTML
+  - rehype plugins
+    - code highlighter
+  - add ids to headers
+  - images
+  - diagrams
+- search / faceted UI
+  - SQLite HTTPFS
+  - faceted UI
+    - tags
+    - tree
+  - mirror options in URL
+- themeswitcher
+- SEO/SMO tags
+- othe
+  - breadcrumbs
+  - tags
+- https://blog.kuzudb.com/post/kuzu-wasm-rag/
+- https://astro-tips.dev/tips/shadcn/
