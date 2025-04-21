@@ -11,6 +11,9 @@
   "dependencies": {
     "@braindb/core": "workspace:*",
     "@braindb/remark-wiki-link": "workspace:*",
+    "@beoe/cache": "^0.1.0",
+    "@beoe/rehype-vizdom": "^0.4.2",
+    "@beoe/rehype-d2": "^0.5.4",
     "fumadocs-core": "14.7.3",
     "fumadocs-mdx": "11.3.0",
     "fumadocs-ui": "14.7.3",

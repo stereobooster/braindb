@@ -1,13 +1,15 @@
 import { BasePlugin } from "./base.js";
 import { MarkdownPlugin } from "./markdown.js";
+import { MarkdownPluginOptions } from "./parser.js";
 
-const plugins: Record<string, BasePlugin | undefined> = {
-  ".md": new MarkdownPlugin(),
-  ".mdx": new MarkdownPlugin(),
-  // ".json":
-  // ".jpg", ".png", ".svg"
-};
+export class Plugins {
+  private plugins: Record<string, BasePlugin | undefined> = {};
 
-export function getPlugin(extension: string) {
-  return plugins[extension];
+  constructor(opts: MarkdownPluginOptions = {}) {
+    this.plugins[".md"] = this.plugins[".mdx"] = new MarkdownPlugin(opts);
+  }
+
+  getPlugin(extension: string) {
+    return this.plugins[extension];
+  }
 }

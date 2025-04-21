@@ -1,7 +1,6 @@
 import { parse as parseYaml } from "yaml";
 import { JsonObject } from "../types.js";
 import { visit, SKIP, EXIT } from "unist-util-visit";
-import { mdParser } from "./parser.js";
 import type { Node } from "unist";
 import { dirname, resolve } from "node:path";
 import { isExternalLink } from "../utils.js";
@@ -9,10 +8,21 @@ import path from "node:path";
 import { BasePlugin, InsertCb } from "./base.js";
 import { AllDb } from "../db.js";
 import { syncInsert } from "../queries.js";
+import {
+  getParser,
+  MarkdownPluginOptions,
+  MarkdownProcessor,
+} from "./parser.js";
 
 export class MarkdownPlugin implements BasePlugin {
+  private mdParser: MarkdownProcessor;
+
+  constructor(opts: MarkdownPluginOptions = {}) {
+    this.mdParser = getParser(opts);
+  }
+
   process(db: AllDb, idPath: string, content: Buffer, insert: InsertCb) {
-    const ast = mdParser.parse(content.toString("utf8"));
+    const ast = this.mdParser.parse(content.toString("utf8"));
     const data = getFrontmatter(ast);
     const { name } = path.parse(idPath);
     if (!data.title) data.title = name;
@@ -111,9 +121,9 @@ export class MarkdownPlugin implements BasePlugin {
   }
 
   render(data: any) {
-    return mdParser
+    return this.mdParser
       .run(data)
-      .then((root) => mdParser.stringify(root) as string);
+      .then((root) => this.mdParser.stringify(root) as string);
   }
 }
 

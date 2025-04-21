@@ -7,7 +7,7 @@ import { BrainDBOptionsIn } from "./index.js";
 import { defaultGetSlug, defaultGetUrl } from "./defaults.js";
 import { Repository } from "@napi-rs/simple-git";
 import path from "node:path";
-import { getPlugin } from "./plugins/index.js";
+import { Plugins } from "./plugins/index.js";
 import { InsertCb } from "./plugins/base.js";
 import { AllDb } from "./db.js";
 import { FilesTable } from "./schema_kysely.js";
@@ -21,7 +21,8 @@ export async function addFile(
   db: AllDb,
   idPath: string,
   cfg: BrainDBOptionsIn,
-  revision: number
+  revision: number,
+  plugins: Plugins
 ) {
   // maybe use prepared statement?
   const [existingFile] = syncSelect(
@@ -119,7 +120,7 @@ export async function addFile(
     return newFile;
   };
 
-  const plugin = getPlugin(ext);
+  const plugin = plugins.getPlugin(ext);
   if (plugin) {
     plugin.process(db, idPath, await readFile(absolutePath), insert);
   } else {

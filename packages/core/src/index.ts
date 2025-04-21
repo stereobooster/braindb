@@ -14,7 +14,8 @@ import { addFile } from "./addFile.js";
 import { symmetricDifference } from "./utils.js";
 import { getKysely, migrateKysely } from "./db_kysely.js";
 import { AllDb } from "./db.js";
-import { getPlugin } from "./plugins/index.js";
+import { Plugins } from "./plugins/index.js";
+import { MarkdownPluginOptions } from "./plugins/parser.js";
 
 // TODO: action in the event itself, so it would be easier to match on it
 type Events = {
@@ -61,7 +62,7 @@ export type BrainDBOptionsIn = {
    * you can set this to `false` in order to save some memory
    */
   storeMarkdown?: boolean;
-};
+} & MarkdownPluginOptions;
 
 export type BrainDBOptionsOut = {
   linkType?: "PML" | "web";
@@ -87,10 +88,15 @@ export class BrainDB {
   private watcher: FSWatcher | undefined;
   private initializing = true;
   private initQueue: Promise<string>[] = [];
+  private plugins: Plugins;
 
   constructor(cfg: BrainDBOptionsIn) {
     this.cfg = cfg;
     this.cfg.root = this.cfg.root.replace(/\/$/, "");
+    this.plugins = new Plugins({
+      remarkPlugins: cfg.remarkPlugins,
+      rehypePlugins: cfg.rehypePlugins,
+    });
 
     if (this.cfg.source === undefined) this.cfg.source = "";
     this.cfg.source = this.cfg.source.replace(/\/$/, "");
@@ -159,9 +165,13 @@ export class BrainDB {
         const idPath = fileToPathId(file);
 
         if (this.initializing) {
-          const p = addFile(this.db, idPath, this.cfg, revision).then(
-            () => idPath
-          );
+          const p = addFile(
+            this.db,
+            idPath,
+            this.cfg,
+            revision,
+            this.plugins
+          ).then(() => idPath);
           this.initQueue.push(p);
           await p;
           return;
@@ -172,7 +182,7 @@ export class BrainDB {
           idPath,
         });
 
-        await addFile(this.db, idPath, this.cfg, revision);
+        await addFile(this.db, idPath, this.cfg, revision, this.plugins);
         resolveLinks(this.db);
         this.emitter.emit("create", {
           path: idPath,
@@ -214,7 +224,7 @@ export class BrainDB {
           idPath,
         });
 
-        await addFile(this.db, idPath, this.cfg, revision);
+        await addFile(this.db, idPath, this.cfg, revision, this.plugins);
         resolveLinks(this.db);
         this.emitter.emit("update", {
           path: idPath,
@@ -274,7 +284,7 @@ export class BrainDB {
     //   .select(["ast"])
     //   .where("path", "=", idPath);
     // if (!file) return Promise.resolve(undefined);
-    return getPlugin(".md")!.render(ast);
+    return this.plugins.getPlugin(".md")!.render(ast);
   }
 
   // this is experimental - do not use it
