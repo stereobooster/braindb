@@ -177,7 +177,7 @@ ala Single Table Inheritance
   - [ ] maybe `files.path` -> `files.source`? or `*.source` -> `*.path`
   - [ ] maybe prefix service fields (`checksum`, `mtime`, etc.) with `_`, so it would be clear this is not for public use?
 - [ ] create plugin for images (to make sure plugin system works)
-  - extract dimensions
+  - [extract dimensions](https://github.com/image-size/image-size)
 - [ ] create plugin for JSON
 - maybe backward compatibility
   - [ ] maybe create `documents` [view](https://orm.drizzle.team/docs/views) as fallback
@@ -233,6 +233,7 @@ ala Single Table Inheritance
 - markdown to HTML
   - rehype plugins
     - code highlighter
+      - https://github.com/rehype-pretty/rehype-pretty-code
   - add ids to headers
   - images
   - diagrams
@@ -241,11 +242,20 @@ ala Single Table Inheritance
   - faceted UI
     - tags
     - tree
+  - sort 
+    - date
+    - alphabetical
+  - pagination
   - mirror options in URL
 - themeswitcher
 - SEO/SMO tags
-- othe
+- other
   - breadcrumbs
   - tags
 - https://blog.kuzudb.com/post/kuzu-wasm-rag/
 - https://astro-tips.dev/tips/shadcn/
+- docs
+  - https://github.com/shadcn-ui/taxonomy/blob/main/app/(docs)/docs/%5B%5B...slug%5D%5D/page.tsx
+  - https://shadcn-docs-nuxt.vercel.app/
+  - https://ui.shadcn.com/blocks/sidebar
+  - VitePress, Rspress, Nextra, https://vocs.dev/docs, fumadocs
