@@ -222,6 +222,11 @@ ala Single Table Inheritance
 - file-to-table solution (csv, JSONL etc.)
   - do I have use-case for it? I can read file directly from fs
 - backlinks point to source paragraph (anchor)
+- new db
+  - https://github.com/surrealdb/surrealdb.node supports types for nested fields, but doesn't support HTTPFS
+  - https://docs.kuzudb.com/ maybe
+  - can use Zod coerce to output JSON columns
+    - https://github.com/windwp/kysely-zod-sqlite
 
 ### without fumadocs
 
@@ -242,7 +247,7 @@ ala Single Table Inheritance
   - faceted UI
     - tags
     - tree
-  - sort 
+  - sort
     - date
     - alphabetical
   - pagination
@@ -259,3 +264,13 @@ ala Single Table Inheritance
   - https://shadcn-docs-nuxt.vercel.app/
   - https://ui.shadcn.com/blocks/sidebar
   - VitePress, Rspress, Nextra, https://vocs.dev/docs, fumadocs
+  - https://imfing.github.io/hextra/docs/
+  - https://github.com/chrismwilliams/astro-theme-cactus
+  - https://astro-paper.pages.dev/
+  - https://github.com/adrian-ub/astro-vitesse
+  - https://github.com/trevortylerlee/astro-micro
+  - toc
+    - https://github.com/fuma-nama/fumadocs/blob/dev/packages/ui/src/components/layout/toc-clerk.tsx
+    - https://github.com/shuding/nextra/blob/main/packages/nextra-theme-docs/src/components/toc.tsx
+  - https://github.com/huntabyte/shadcn-svelte/blob/main/sites/docs/src/lib/components/docs/tree.svelte
+  - https://elderguide.com/tech/elderjs/
